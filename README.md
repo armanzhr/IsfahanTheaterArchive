@@ -1,4 +1,4 @@
-<h1 align="center">Nextjs Starter Kit: The Complete SAAS Toolkit</h1>
+<h1 align="center">تئاتر اصفهان: The Complete SAAS Toolkit</h1>
 <div>
     <div align="center">
         <a href="https://x.com/rasmickyy">
@@ -16,6 +16,7 @@ Everything you need to quickly build your SaaS, AI product, or any other web app
 [![Star History Chart](https://api.star-history.com/svg?repos=michaelshimeles/nextjs-starter-kit&type=Date)](https://star-history.com/#michaelshimeles/nextjs-starter-kit&Date)
 
 ## Battries Include
+
 - Functional subscription payments via Stripe
 - User authentication
 - Built in api ratelimiting
@@ -50,7 +51,6 @@ Everything you need to quickly build your SaaS, AI product, or any other web app
     </a>
 </div>
 
-
 ## Getting Started
 
 ### Prerequisites
@@ -67,31 +67,31 @@ Everything you need to quickly build your SaaS, AI product, or any other web app
 ### Installation
 
 1. Clone the repository:
-    ```
-    git clone https://github.com/michaelshimeles/nextjs14-starter-template
-    ```
+   ```
+   git clone https://github.com/michaelshimeles/nextjs14-starter-template
+   ```
 2. Install the required dependencies:
-    ```
-    yarn add
-    ```
-    or
-    ```
-    bun install
-    ```
+   ```
+   yarn add
+   ```
+   or
+   ```
+   bun install
+   ```
 3. Create a `.env` file in the root of your project and add your API keys:
-    ```
-    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-    CLERK_SECRET_KEY=
-    NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-    NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-    NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
-    NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
-    WEBHOOK_SECRET=
-    NEXT_PUBLIC_SUPABASE_URL=
-    SUPABASE_SERVICE_KEY=
-    DATABASE_URL=
-    DIRECT_URL=
-
+   ```
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+   CLERK_SECRET_KEY=
+   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+   NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+   NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+   WEBHOOK_SECRET=
+   NEXT_PUBLIC_SUPABASE_URL=
+   SUPABASE_SERVICE_KEY=
+   DATABASE_URL=
+   DIRECT_URL=
+   ```
 
 ### Setting up webhooks
 
@@ -103,19 +103,20 @@ You need to setup webhooks for both Clerk Auth & Stripe.
 ### Running the Server
 
 To start the server, execute:
+
 ```
 yarn dev
 ```
+
 or
+
 ```
 bun run dev
 ```
 
-
 ## Contributing
 
 Contributions to the project are welcome. Feel free to fork the repository, make your changes, and submit a pull request. You can also open issues to suggest improvements or report bugs.
-
 
 ## License
 
