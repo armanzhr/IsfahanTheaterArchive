@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fa" dir="rtl" suppressHydrationWarning>
+    <html lang="fa" dir="rtl" className="h-full" suppressHydrationWarning>
       <head>
         <link
           rel="preload"
@@ -27,7 +27,7 @@ export default function RootLayout({
           as="image"
         />
       </head>
-      <body className={vazir.className}>
+      <body className={`h-full ${vazir.className}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
