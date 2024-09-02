@@ -1,4 +1,4 @@
-import { People } from "@/utils/types";
+import { People, Roles } from "@/utils/types";
 import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
@@ -27,6 +27,12 @@ interface StateStoreProps {
     }
   ) => Promise<void>;
   deletePeople: (peopleID: number) => Promise<void>;
+
+  //   ---------------
+  roles: Roles[] | null;
+  isGettingRoles: boolean;
+  isLoadingRoles: boolean;
+  getRoles: () => Promise<void>;
 }
 
 export const useStateStore = create<StateStoreProps>((set) => ({
@@ -80,6 +86,46 @@ export const useStateStore = create<StateStoreProps>((set) => ({
       throw error;
     } finally {
       set({ isLoadingPeople: true });
+    }
+  },
+  //   -----------------------
+  isGettingRoles: false,
+  isLoadingRoles: false,
+  roles: null,
+  getRoles: async () => {
+    set({ isGettingPeople: true });
+    try {
+      const { data } = await axios.get(config.baseURL + "/Roles");
+      set({ people: data });
+    } catch (error) {
+      throw error;
+    } finally {
+      set({ isGettingPeople: true });
+    }
+  },
+  createRoles: async (model) => {
+    set({ isLoadingRoles: true });
+    try {
+      const { data } = await axios.post(config.baseURL + "/Roles", model);
+      set({ people: data });
+    } catch (error) {
+      throw error;
+    } finally {
+      set({ isLoadingRoles: true });
+    }
+  },
+  updateRoles: async (roleID, model) => {
+    set({ isLoadingRoles: true });
+    try {
+      const { data } = await axios.put(
+        config.baseURL + "/Roles/" + roleID,
+        model
+      );
+      set({ people: data });
+    } catch (error) {
+      throw error;
+    } finally {
+      set({ isLoadingRoles: true });
     }
   },
 }));

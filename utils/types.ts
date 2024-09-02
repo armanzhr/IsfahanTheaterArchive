@@ -8,3 +8,9 @@ export interface People {
   isDeleted: boolean;
   imagesIDs: [number];
 }
+export interface Roles {
+  id: number;
+  name: string;
+  isDeleted: boolean;
+  createdAt: string;
+}
