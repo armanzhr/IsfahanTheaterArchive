@@ -8,22 +8,9 @@ import React, { useEffect } from "react";
 import { toast } from "sonner";
 import People from "./people";
 import { usePeopleStore } from "@/service/store/usePeopleStore";
+import Roles from "./roles";
 
 const Home = () => {
-  const { getPeople, people, isGettingPeople } = usePeopleStore();
-  const fetchPeople = async () => {
-    try {
-      const res = await getPeople();
-    } catch (error) {
-      toast.error("خطا در دریافت لیست عوامل");
-    }
-  };
-  useEffect(() => {
-    if (!people) {
-      fetchPeople();
-    }
-  }, [people]);
-
   return (
     <Tabs defaultValue="people" className="w-full">
       <TabsList className="w-full">
@@ -35,7 +22,7 @@ const Home = () => {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="roles">
-        <div>test</div>
+        <Roles />
       </TabsContent>
       <TabsContent value="people">
         <People />

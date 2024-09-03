@@ -7,9 +7,9 @@ interface RolesStateStore {
   isGettingRoles: boolean;
   isLoadingRoles: boolean;
   getRoles: () => Promise<void>;
-  createRoles: (model: { name: string }) => Promise<void>;
-  updateRoles: (rolesID: number, model: { name: string }) => Promise<void>;
-  deleteRoles: (peopleID: number) => Promise<void>;
+  createRole: (model: { name: string }) => Promise<void>;
+  updateRole: (rolesID: number, model: { name: string }) => Promise<void>;
+  deleteRole: (peopleID: number) => Promise<void>;
 }
 
 export const useRolesStore = create<RolesStateStore>((set) => ({
@@ -24,10 +24,10 @@ export const useRolesStore = create<RolesStateStore>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isGettingRoles: true });
+      set({ isGettingRoles: false });
     }
   },
-  createRoles: async (model) => {
+  createRole: async (model) => {
     set({ isLoadingRoles: true });
     try {
       const { data } = await axios.post(config.baseURL + "/Roles", model);
@@ -35,10 +35,10 @@ export const useRolesStore = create<RolesStateStore>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingRoles: true });
+      set({ isLoadingRoles: false });
     }
   },
-  updateRoles: async (RolesID, model) => {
+  updateRole: async (RolesID, model) => {
     set({ isLoadingRoles: true });
     try {
       const { data } = await axios.put(
@@ -49,10 +49,10 @@ export const useRolesStore = create<RolesStateStore>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingRoles: true });
+      set({ isLoadingRoles: false });
     }
   },
-  deleteRoles: async (RolesID) => {
+  deleteRole: async (RolesID) => {
     set({ isLoadingRoles: true });
     try {
       const { data } = await axios.delete(config.baseURL + "/Roles/" + RolesID);
@@ -60,7 +60,7 @@ export const useRolesStore = create<RolesStateStore>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingRoles: true });
+      set({ isLoadingRoles: false });
     }
   },
 }));
