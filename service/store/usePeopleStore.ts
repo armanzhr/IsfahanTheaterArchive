@@ -41,7 +41,7 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isGettingPeople: true });
+      set({ isGettingPeople: false });
     }
   },
   createPeople: async (model) => {
@@ -52,7 +52,7 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingPeople: true });
+      set({ isLoadingPeople: false });
     }
   },
   updatePeople: async (peopleID, model) => {
@@ -66,7 +66,7 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingPeople: true });
+      set({ isLoadingPeople: false });
     }
   },
   deletePeople: async (peopleID) => {
@@ -79,7 +79,7 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingPeople: true });
+      set({ isLoadingPeople: false });
     }
   },
 }));
