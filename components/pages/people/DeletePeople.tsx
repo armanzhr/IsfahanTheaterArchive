@@ -1,22 +1,57 @@
-import React from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { usePeopleStore } from "@/service/store/usePeopleStore";
+import { People } from "@/utils/types";
+import { TrashIcon } from "lucide-react";
+import React, { useState } from "react";
+import { toast } from "sonner";
 
-const DeletePeople = () => {
+const DeletePeople = ({ people }: { people: People }) => {
+  const [open, setOpen] = useState(false);
+  const { deletePeople } = usePeopleStore();
+  const handleDeletePeople = async () => {
+    try {
+      await deletePeople(people.id);
+      toast.error("کاربر با موفقیت حذف شد");
+      setOpen(false);
+    } catch (error) {
+      toast.error("خطا در حذف کاربر");
+    }
+  };
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="outline">Show Dialog</Button>
+        <Button
+          onClick={() => setOpen(true)}
+          variant="outline"
+          className="h-8 w-8"
+          size="icon"
+        >
+          <TrashIcon className="h-4 w-4" />
+        </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="w-4/5 lg:w-2/5 rounded">
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+          <AlertDialogTitle className="text-start">
+            حذف {people.firstName} {people.lastName}
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-start">
+            آیا از حذف کاربر مورد نظر اطمینان دارید؟
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+        <AlertDialogFooter className="md:gap-2">
+          <AlertDialogCancel className="">لفو</AlertDialogCancel>
+          <Button onClick={() => handleDeletePeople()}>حذف</Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

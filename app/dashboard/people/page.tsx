@@ -4,14 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { useStateStore } from "@/service/store/useStateStore";
-
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 import People from "./people";
+import { usePeopleStore } from "@/service/store/usePeopleStore";
 
 const Home = () => {
-  const { getPeople, people, isGettingPeople } = useStateStore();
+  const { getPeople, people, isGettingPeople } = usePeopleStore();
   const fetchPeople = async () => {
     try {
       const res = await getPeople();

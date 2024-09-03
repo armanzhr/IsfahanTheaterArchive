@@ -1,13 +1,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useStateStore } from "@/service/store/useStateStore";
+import { useRolesStore } from "@/service/store/useRolesStore";
+
 import { Roles as RolesType } from "@/utils/types";
 import { DramaIcon, PencilIcon, TrashIcon } from "lucide-react";
 import React, { useState } from "react";
 
 const Roles = () => {
-  const { roles } = useStateStore();
+  const { roles } = useRolesStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<RolesType | null>();
   const handleCreatePeople = () => {

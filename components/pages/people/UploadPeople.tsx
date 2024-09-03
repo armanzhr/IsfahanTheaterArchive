@@ -12,7 +12,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
-import { useStateStore } from "@/service/store/useStateStore";
+import { usePeopleStore } from "@/service/store/usePeopleStore";
+
 import { People } from "@/utils/types";
 import { PencilIcon } from "lucide-react";
 import React, { useEffect } from "react";
@@ -29,7 +30,7 @@ const UploadPeople = ({
   editValue?: People | null;
 }) => {
   const { handleSubmit, register, watch, setValue, reset } = useForm();
-  const { isLoadingPeople, createPeople, updatePeople } = useStateStore();
+  const { isLoadingPeople, createPeople, updatePeople } = usePeopleStore();
   const firstName = watch("firstName");
   const lastName = watch("lastName");
 
@@ -74,7 +75,7 @@ const UploadPeople = ({
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent side="left">
         <SheetHeader>
-          <SheetTitle>
+          <SheetTitle className="text-center mt-3">
             {editValue ? "ویرایش کاربر" : "ایجاد کاربر جدید"}
           </SheetTitle>
         </SheetHeader>
