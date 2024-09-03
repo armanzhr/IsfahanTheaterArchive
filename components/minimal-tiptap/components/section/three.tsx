@@ -34,7 +34,7 @@ const COLORS: ColorPalette[] = [
     label: "Palette 1",
     inverse: "hsl(var(--background))",
     colors: [
-      { cssVar: "hsl(var(--foreground))", label: "پیشفرض(سیاه)" },
+      { cssVar: "hsl(var(--foreground))", label: "پیشفرض" },
       { cssVar: "var(--mt-accent-bold-blue)", label: "ابی پررنگ" },
       { cssVar: "var(--mt-accent-bold-teal)", label: "سبزآبی پررنگ" },
       { cssVar: "var(--mt-accent-bold-green)", label: "سبز پررنگ" },
@@ -60,7 +60,7 @@ const COLORS: ColorPalette[] = [
     label: "Palette 3",
     inverse: "hsl(var(--foreground))",
     colors: [
-      { cssVar: "hsl(var(--background))", label: "سفید", darkLabel: "سیاه" },
+      { cssVar: "hsl(var(--background))", label: "تضاد" },
       { cssVar: "var(--mt-accent-blue-subtler)", label: "آبی کم رنگ" },
       { cssVar: "var(--mt-accent-teal-subtler)", label: "سبزآبی کم رنگ" },
       { cssVar: "var(--mt-accent-green-subtler)", label: "سبز کم رنگ" },
@@ -78,6 +78,7 @@ const MemoizedColorButton = React.memo<{
   onClick: (value: string) => void;
 }>(({ color, isSelected, inverse, onClick }) => {
   const isDarkMode = useTheme();
+
   const label = isDarkMode && color.darkLabel ? color.darkLabel : color.label;
 
   return (

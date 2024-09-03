@@ -35,6 +35,9 @@ const UploadShow = ({
   const { createRole, updateRole } = useRolesStore();
   const title = watch("title");
   const [test, setTest] = useState("");
+  useEffect(() => {
+    console.log(test);
+  }, [test]);
   // Generate slug when title changes
   useEffect(() => {
     const slug = `${title}`.trim().replace(/\s+/g, "-");
@@ -109,10 +112,11 @@ const UploadShow = ({
               className="w-full"
               editorContentClassName="p-5"
               output="html"
-              placeholder="Type your description here..."
+              placeholder="توضیح خود را وارد نمایید"
               autofocus={true}
               immediatelyRender={true}
               editable={true}
+              shouldRerenderOnTransaction
               injectCSS={true}
               editorClassName="focus:outline-none"
             />
