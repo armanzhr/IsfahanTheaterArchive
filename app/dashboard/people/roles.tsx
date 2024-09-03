@@ -59,7 +59,7 @@ const Roles = () => {
           ) : (
             roles?.map((item) => (
               <>
-                <div className="flex justify-between items-center hover:bg-gray-100 dark:hover:bg-zinc-800 transition ease-in-out duration-300 p-2 rounded-md">
+                <div className="flex justify-between items-center hover:bg-gray-50 dark:hover:bg-zinc-900 transition ease-in-out duration-300 p-2 rounded-md">
                   <div className="flex items-center gap-3">
                     <Avatar className=" h-12 w-12 sm:flex">
                       <AvatarImage src="/avatars/02.png" alt="Avatar" />
