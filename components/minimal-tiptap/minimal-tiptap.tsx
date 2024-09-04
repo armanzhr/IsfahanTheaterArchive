@@ -14,6 +14,7 @@ import { LinkBubbleMenu } from "./components/bubble-menu/link-bubble-menu";
 import { ImageBubbleMenu } from "./components/bubble-menu/image-bubble-menu";
 import type { UseMinimalTiptapEditorProps } from "./hooks/use-minimal-tiptap";
 import { useMinimalTiptapEditor } from "./hooks/use-minimal-tiptap";
+import { ScrollArea } from "../ui/scroll-area";
 
 export interface MinimalTiptapProps
   extends Omit<UseMinimalTiptapEditorProps, "onUpdate"> {
@@ -82,10 +83,15 @@ export const MinimalTiptapEditor = React.forwardRef<
       )}
     >
       <Toolbar editor={editor} />
-      <EditorContent
-        editor={editor}
-        className={cn("minimal-tiptap-editor", editorContentClassName)}
-      />
+      <ScrollArea>
+        <EditorContent
+          editor={editor}
+          className={cn(
+            "minimal-tiptap-editor text-end",
+            editorContentClassName
+          )}
+        />
+      </ScrollArea>
       <LinkBubbleMenu editor={editor} />
       <ImageBubbleMenu editor={editor} />
     </div>
