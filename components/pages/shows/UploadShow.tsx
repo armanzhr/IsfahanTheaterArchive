@@ -1,3 +1,4 @@
+"use client";
 import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Sheet,
   SheetClose,
@@ -31,6 +33,18 @@ import { People, Roles } from "@/utils/types";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Cat, Dog, Fish, Rabbit, Turtle } from "lucide-react";
+import { usePeopleStore } from "@/service/store/usePeopleStore";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+const frameworksList = [
+  { value: "react", label: "React", icon: Turtle },
+  { value: "angular", label: "Angular", icon: Turtle },
+  { value: "vue", label: "Vue", icon: Turtle },
+  { value: "svelte", label: "Svelte", icon: Turtle },
+  { value: "ember", label: "Ember", icon: Turtle },
+];
 
 const UploadShow = ({
   open,
@@ -42,7 +56,13 @@ const UploadShow = ({
   editValue?: Roles | null;
 }) => {
   const { handleSubmit, register, watch, setValue, reset } = useForm();
-  const { createRole, updateRole } = useRolesStore();
+
+  const { people } = usePeopleStore();
+  const { createRole, updateRole, roles } = useRolesStore();
+  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([
+    "react",
+    "angular",
+  ]);
   const title = watch("title");
   const [test, setTest] = useState<string>("");
   useEffect(() => {
@@ -98,7 +118,7 @@ const UploadShow = ({
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="flex flex-col gap-4 py-4">
+            <div className="flex flex-col gap-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="firstName" className="text-right">
                   *عنوان نمایش
@@ -142,11 +162,35 @@ const UploadShow = ({
                 </TooltipProvider>
               </div>
             </div>
-
+            <div className="flex gap-4 py-4">
+              <Label htmlFor="name" className="text-right">
+                *عوامل
+              </Label>
+              <div className="flex flex-col gap-3 max-h-96">
+                <ScrollArea dir="rtl">
+                  {roles?.map((item) => (
+                    <div className="flex gap-3 items-start" key={item.id}>
+                      <p className="text-sm font-semibold">{item.name}</p>
+                      <MultiSelect
+                        options={people}
+                        onValueChange={setSelectedFrameworks}
+                        defaultValue={selectedFrameworks}
+                        value={selectedFrameworks}
+                        placeholder="Select frameworks"
+                        variant="default"
+                        animation={2}
+                        maxCount={10}
+                      />
+                    </div>
+                  ))}
+                </ScrollArea>
+              </div>
+            </div>
             <SheetFooter>
               <Button type="submit">{editValue ? "ویرایش" : "ایجاد"}</Button>
             </SheetFooter>
           </form>
+
           <DrawerFooter>
             <Button>Submit</Button>
             <DrawerClose asChild>

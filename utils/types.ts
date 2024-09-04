@@ -7,6 +7,7 @@ export interface People {
   createdAt: string;
   isDeleted: boolean;
   imagesIDs: [number];
+  avatarImageId: number;
 }
 export interface Roles {
   id: number;
