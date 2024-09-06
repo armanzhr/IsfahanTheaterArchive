@@ -424,9 +424,9 @@ const UploadShow = ({
             </div>
           </main>
           <DrawerFooter>
-            <Button>Submit</Button>
+            <Button>آپلود</Button>
             <DrawerClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">لغو</Button>
             </DrawerClose>
           </DrawerFooter>
         </DrawerContent>
