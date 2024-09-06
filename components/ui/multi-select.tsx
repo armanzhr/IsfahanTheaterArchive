@@ -29,7 +29,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
-import { People } from "@/utils/types";
+import { People, Roles } from "@/utils/types";
 
 /**
  * Variants for the multi-select component to handle different styles.
@@ -69,10 +69,10 @@ interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
    * Callback function triggered when the selected values change.
    * Receives an array of the new selected values.
    */
-  onValueChange: (value: number[]) => void;
+  onValueChange: (value: { roleId: number; people: number[] }) => void;
 
   /** The default selected values when the component mounts. */
-  defaultValue: number[];
+  defaultValue: { roleId: number; people: number[] };
 
   /**
    * Placeholder text to be displayed when no values are selected.
@@ -110,6 +110,7 @@ interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
    * Optional, can be used to add custom styles.
    */
   className?: string;
+  role: Roles;
 }
 
 export const MultiSelect = React.forwardRef<
@@ -121,19 +122,22 @@ export const MultiSelect = React.forwardRef<
       options,
       onValueChange,
       variant,
-      defaultValue = [],
+      defaultValue = { roleId: 0, people: [] },
       placeholder = "Select options",
       animation = 0,
       maxCount = 3,
       modalPopover = false,
       asChild = false,
       className,
+      role,
       ...props
     },
     ref
   ) => {
-    const [selectedValues, setSelectedValues] =
-      React.useState<number[]>(defaultValue);
+    const [selectedValues, setSelectedValues] = React.useState<{
+      roleId: number;
+      people: number[];
+    }>(defaultValue);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
 
@@ -147,43 +151,45 @@ export const MultiSelect = React.forwardRef<
       if (event.key === "Enter") {
         setIsPopoverOpen(true);
       } else if (event.key === "Backspace" && !event.currentTarget.value) {
-        const newSelectedValues = [...selectedValues];
+        const newSelectedValues = [...selectedValues.people];
         newSelectedValues.pop();
-        setSelectedValues(newSelectedValues);
-        onValueChange(newSelectedValues);
+        setSelectedValues({ roleId: role.id, people: newSelectedValues });
+        onValueChange({ roleId: role.id, people: newSelectedValues });
       }
     };
 
     const toggleOption = (value: number) => {
-      const newSelectedValues = selectedValues.includes(value)
-        ? selectedValues.filter((v) => v !== value)
-        : [...selectedValues, value];
-      setSelectedValues(newSelectedValues);
-      onValueChange(newSelectedValues);
+      const newSelectedValues = selectedValues.people.includes(value)
+        ? selectedValues.people.filter((v) => v !== value)
+        : [...selectedValues.people, value];
+
+      setSelectedValues({ roleId: role.id, people: newSelectedValues });
+      onValueChange({ roleId: role.id, people: newSelectedValues });
     };
 
     const handleClear = () => {
-      setSelectedValues([]);
-      onValueChange([]);
+      setSelectedValues({ roleId: role.id, people: [] });
+      onValueChange({ roleId: role.id, people: [] });
     };
 
     const handleTogglePopover = () => {
       setIsPopoverOpen((prev) => !prev);
+      console.log(role);
     };
 
     const clearExtraOptions = () => {
-      const newSelectedValues = selectedValues.slice(0, maxCount);
-      setSelectedValues(newSelectedValues);
-      onValueChange(newSelectedValues);
+      const newSelectedValues = selectedValues.people.slice(0, maxCount);
+      setSelectedValues({ roleId: role.id, people: newSelectedValues });
+      onValueChange({ roleId: role.id, people: newSelectedValues });
     };
 
     const toggleAll = () => {
-      if (selectedValues.length === options.length) {
+      if (selectedValues.people.length === options.length) {
         handleClear();
       } else {
         const allValues = options.map((option) => option.id);
-        setSelectedValues(allValues);
-        onValueChange(allValues);
+        setSelectedValues({ roleId: role.id, people: allValues });
+        onValueChange({ roleId: role.id, people: allValues });
       }
     };
 
@@ -220,7 +226,9 @@ export const MultiSelect = React.forwardRef<
                 <CommandEmpty>No results found.</CommandEmpty>
                 <CommandGroup>
                   {options.map((option) => {
-                    const isSelected = selectedValues.includes(option.id);
+                    const isSelected = selectedValues.people.includes(
+                      option.id
+                    );
                     return (
                       <CommandItem
                         key={option.id}
@@ -255,7 +263,7 @@ export const MultiSelect = React.forwardRef<
                 <CommandSeparator />
                 <CommandGroup>
                   <div className="flex items-center justify-between">
-                    {selectedValues.length > 0 && (
+                    {selectedValues.people.length > 0 && (
                       <>
                         <CommandItem
                           onSelect={handleClear}
@@ -283,7 +291,7 @@ export const MultiSelect = React.forwardRef<
         </Popover>
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-wrap items-center">
-            {selectedValues.slice(0, maxCount).map((value) => {
+            {selectedValues.people.slice(0, maxCount).map((value) => {
               const option = options.find((o) => o.id === value);
 
               return (
@@ -314,7 +322,7 @@ export const MultiSelect = React.forwardRef<
                 </Badge>
               );
             })}
-            {selectedValues.length > maxCount && (
+            {selectedValues.people.length > maxCount && (
               <Badge
                 className={cn(
                   "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
@@ -323,7 +331,7 @@ export const MultiSelect = React.forwardRef<
                 )}
                 style={{ animationDuration: `${animation}s` }}
               >
-                {`+ ${selectedValues.length - maxCount} more`}
+                {`+ ${selectedValues.people.length - maxCount} more`}
                 <XCircle
                   className="ml-2 h-4 w-4 cursor-pointer"
                   onClick={(event) => {
