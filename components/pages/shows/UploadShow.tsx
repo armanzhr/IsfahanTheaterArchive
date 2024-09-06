@@ -14,17 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Textarea } from "@/components/ui/textarea";
+
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import { useRolesStore } from "@/service/store/useRolesStore";
@@ -63,14 +53,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import Image from "next/image";
+import { Separator } from "@/components/ui/separator";
+import { Content } from "@tiptap/core";
 
 const UploadShow = ({
   open,
@@ -85,17 +70,9 @@ const UploadShow = ({
 
   const { people } = usePeopleStore();
   const { createRole, updateRole, roles } = useRolesStore();
-  const [selectedFrameworks, setSelectedFrameworks] = useState<{
-    roleId: number;
-    people: number[];
-  }>({
-    roleId: 0,
-    people: [],
-  });
-  const [isPopoverOpen, setIsPopoverOpen] = useState(true);
 
   const title = watch("title");
-  const [test, setTest] = useState<string>("");
+  const [test, setTest] = useState<Content>("");
   useEffect(() => {
     console.log(test);
   }, [test]);
@@ -136,17 +113,15 @@ const UploadShow = ({
     }
   };
 
-  const handleTogglePopover = (item) => {
-    setIsPopoverOpen((prev) => !prev);
-    console.log(item);
-  };
-  useEffect(() => {
-    console.log(isPopoverOpen);
-  }, [isPopoverOpen]);
-
   const [selectedPeopleByRole, setSelectedPeopleByRole] = React.useState({}); // State for tracking selected people per role
 
-  const handleChangeValue = ({ roleId, people }) => {
+  const handleChangeValue = ({
+    roleId,
+    people,
+  }: {
+    roleId: number;
+    people: number[];
+  }) => {
     // Update the state for the specific role
     setSelectedPeopleByRole((prev) => ({
       ...prev, // Copy previous selections
@@ -167,74 +142,6 @@ const UploadShow = ({
               {editValue ? "ویرایش نمایش" : "ایجاد نمایش جدید"}
             </DrawerTitle>
           </DrawerHeader>
-          {/* <form
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className="flex flex-col gap-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="firstName" className="text-right">
-                  *عنوان نمایش
-                </Label>
-                <Input
-                  id="firstName"
-                  className="col-span-3"
-                  {...register("title", { required: true })}
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  *لینک
-                </Label>
-                <Input
-                  id="lastName"
-                  className="col-span-3"
-                  {...register("slug", { required: true })}
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  *توضیحات
-                </Label>
-                
-              </div>
-            </div>
-            <div className="flex gap-4 py-4">
-              <Label htmlFor="name" className="text-right">
-                *عوامل
-              </Label>
-              <div className="flex flex-col gap-3 max-h-96">
-                <ScrollArea dir="rtl">
-                  {roles?.map((item) => (
-                    <div className="flex gap-3 items-start" key={item.id}>
-                      <p className="text-sm font-semibold">{item.name}</p>
-
-                      <MultiSelect
-                        options={people}
-                        onValueChange={handleChangeValue}
-                        defaultValue={{
-                          roleId: item.id, // Pass the role's ID
-                          people: selectedPeopleByRole[item.id] || [], // Pass selected people specific to this role
-                        }}
-                        value={{
-                          roleId: item.id, // Pass the role's ID
-                          people: selectedPeopleByRole[item.id] || [], // Pass selected people specific to this role
-                        }}
-                        role={item}
-                        placeholder="Select frameworks"
-                        variant="default"
-                        animation={2}
-                        maxCount={10}
-                      />
-                    </div>
-                  ))}
-                </ScrollArea>
-              </div>
-            </div>
-            <SheetFooter>
-               <Button type="submit">{editValue ? "ویرایش" : "ایجاد"}</Button> 
-            </SheetFooter>
-          </form> */}
           <main className="grid overflow-y-auto flex-1 items-start gap-4 sm:px-6 sm:py-0 md:gap-8">
             <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
               <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
@@ -289,10 +196,7 @@ const UploadShow = ({
                   </Card>
                   <Card x-chunk="dashboard-07-chunk-1">
                     <CardHeader>
-                      <CardTitle>Stock</CardTitle>
-                      <CardDescription>
-                        Lipsum dolor sit amet, consectetur adipiscing elit
-                      </CardDescription>
+                      <CardTitle className="text-lg">زمان و محل اجرا</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <Table>
@@ -419,7 +323,7 @@ const UploadShow = ({
                     <CardFooter className="justify-center border-t">
                       <Button size="sm" variant="ghost" className="gap-1">
                         <PlusCircle className="h-3.5 w-3.5" />
-                        Add Variant
+                        افزودن
                       </Button>
                     </CardFooter>
                   </Card>
@@ -427,25 +331,41 @@ const UploadShow = ({
                 <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
                   <Card x-chunk="dashboard-07-chunk-3">
                     <CardHeader>
-                      <CardTitle>Product Status</CardTitle>
+                      <CardTitle className="text-lg">عوامل</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="grid gap-6">
-                        <div className="grid gap-3">
-                          <Label htmlFor="status">Status</Label>
-                          <Select>
-                            <SelectTrigger
-                              id="status"
-                              aria-label="Select status"
-                            >
-                              <SelectValue placeholder="Select status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="draft">Draft</SelectItem>
-                              <SelectItem value="published">Active</SelectItem>
-                              <SelectItem value="archived">Archived</SelectItem>
-                            </SelectContent>
-                          </Select>
+                        <div className="flex flex-col gap-3 h-60">
+                          <ScrollArea dir="rtl">
+                            {roles?.map((item) => (
+                              <div
+                                className="flex gap-3 mb-3 items-start"
+                                key={item.id}
+                              >
+                                <p className="text-sm font-semibold">
+                                  {item.name}
+                                </p>
+
+                                <MultiSelect
+                                  options={people}
+                                  onValueChange={handleChangeValue}
+                                  defaultValue={{
+                                    roleId: item.id, // Pass the role's ID
+                                    people: selectedPeopleByRole[item.id] || [], // Pass selected people specific to this role
+                                  }}
+                                  value={{
+                                    roleId: item.id, // Pass the role's ID
+                                    people: selectedPeopleByRole[item.id] || [], // Pass selected people specific to this role
+                                  }}
+                                  role={item}
+                                  placeholder="Select frameworks"
+                                  variant="default"
+                                  animation={2}
+                                  maxCount={10}
+                                />
+                              </div>
+                            ))}
+                          </ScrollArea>
                         </div>
                       </div>
                     </CardContent>
@@ -455,10 +375,7 @@ const UploadShow = ({
                     x-chunk="dashboard-07-chunk-4"
                   >
                     <CardHeader>
-                      <CardTitle>Product Images</CardTitle>
-                      <CardDescription>
-                        Lipsum dolor sit amet, consectetur adipiscing elit
-                      </CardDescription>
+                      <CardTitle className="text-lg">تصاویر نمایش</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="grid gap-2">

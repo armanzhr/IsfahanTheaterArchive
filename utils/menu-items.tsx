@@ -1,4 +1,11 @@
-import { HomeIcon, MapPin, Settings, Theater, UsersIcon } from "lucide-react";
+import {
+  HomeIcon,
+  Image as PhotoIcon,
+  MapPin,
+  Settings,
+  Theater,
+  UsersIcon,
+} from "lucide-react";
 
 export const menuItems = () => {
   return [
@@ -21,6 +28,11 @@ export const menuItems = () => {
       name: "محل های اجرا",
       pathname: "/dashboard/venues",
       icon: <MapPin className="h-3 w-3" />,
+    },
+    {
+      name: "رسانه",
+      pathname: "/dashboard/media",
+      icon: <PhotoIcon className="h-3 w-3" />,
     },
     {
       name: "تنظیمات",

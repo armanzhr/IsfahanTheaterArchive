@@ -1,14 +1,17 @@
-import { Roles } from "@/utils/types";
+import { Roles, Venues } from "@/utils/types";
 import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
 interface VenuesStateStore {
-  venues: any | null;
+  venues: Venues | null;
   isGettingVenues: boolean;
   isLoadingVenues: boolean;
   getVenues: () => Promise<void>;
-  createVenues: (model: { name: string }) => Promise<void>;
-  updateVenues: (venuesID: number, model: { name: string }) => Promise<void>;
+  createVenues: (model: { name: string; address: string }) => Promise<void>;
+  updateVenues: (
+    venuesID: number,
+    model: { name: string; address: string }
+  ) => Promise<void>;
   deleteVenues: (peopleID: number) => Promise<void>;
 }
 
@@ -24,7 +27,7 @@ export const useVenuesStore = create<VenuesStateStore>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isGettingVenues: true });
+      set({ isGettingVenues: false });
     }
   },
   createVenues: async (model) => {
@@ -35,7 +38,7 @@ export const useVenuesStore = create<VenuesStateStore>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingVenues: true });
+      set({ isLoadingVenues: false });
     }
   },
   updateVenues: async (venuesID, model) => {
@@ -49,7 +52,7 @@ export const useVenuesStore = create<VenuesStateStore>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingVenues: true });
+      set({ isLoadingVenues: false });
     }
   },
   deleteVenues: async (venuesID) => {
@@ -62,7 +65,7 @@ export const useVenuesStore = create<VenuesStateStore>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingVenues: true });
+      set({ isLoadingVenues: false });
     }
   },
 }));

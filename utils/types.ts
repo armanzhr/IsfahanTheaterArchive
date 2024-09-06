@@ -15,3 +15,9 @@ export interface Roles {
   isDeleted: boolean;
   createdAt: string;
 }
+export interface Venues {
+  id: number;
+  name: string;
+  address: string;
+  createdAt: string;
+}
