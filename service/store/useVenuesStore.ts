@@ -3,7 +3,7 @@ import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
 interface VenuesStateStore {
-  venues: Venues | null;
+  venues: Venues[] | null;
   isGettingVenues: boolean;
   isLoadingVenues: boolean;
   getVenues: () => Promise<void>;

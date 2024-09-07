@@ -29,7 +29,7 @@ const UploadVenues = ({
 
   useEffect(() => {
     setValue("name", editValue?.name);
-    setValue("adress", editValue?.address);
+    setValue("address", editValue?.address);
   }, [editValue]);
 
   const onSubmit = async (data: any) => {
