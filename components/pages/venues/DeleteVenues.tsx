@@ -41,7 +41,7 @@ const DeleteVenues = ({
       <AlertDialogContent className="w-4/5 lg:w-2/5 rounded">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-start">
-            حذف {venue.name}
+            حذف {venue?.name}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-start">
             آیا از حذف محل اجرای مورد نظر اطمینان دارید؟

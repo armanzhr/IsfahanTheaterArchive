@@ -40,6 +40,8 @@ const Venues = () => {
   const { getVenues, venues, isGettingVenues } = useVenuesStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<VenuesType | null>();
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+  const [selectedVenue, setSelectedVenue] = useState<VenuesType>();
 
   const fetchVenues = async () => {
     try {
@@ -61,6 +63,10 @@ const Venues = () => {
   const handleEditVenue = (item: VenuesType) => {
     setEditValue(item);
     setOpen(true);
+  };
+  const handleDeleteVenue = (item: VenuesType) => {
+    setSelectedVenue(item);
+    setOpenDeleteModal(true);
   };
   return (
     <main className="flex flex-col gap-4 p-4 lg:gap-6">
@@ -108,7 +114,10 @@ const Venues = () => {
                           <PencilIcon className="w-3 h-3" />
                           <p>ویرایش</p>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2">
+                        <DropdownMenuItem
+                          onClick={() => handleDeleteVenue(venue)}
+                          className="gap-2"
+                        >
                           <TrashIcon className="w-3 h-3" />
                           <p>حذف</p>
                         </DropdownMenuItem>
@@ -122,7 +131,11 @@ const Venues = () => {
         </CardContent>
       </Card>
       <UploadVenues editValue={editValue} setOpen={setOpen} open={open} />
-      <DeleteVenues venue={selectedVenue} />
+      <DeleteVenues
+        setOpen={setOpenDeleteModal}
+        open={openDeleteModal}
+        venue={selectedVenue!}
+      />
     </main>
   );
 };
