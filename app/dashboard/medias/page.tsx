@@ -1,4 +1,6 @@
 "use client";
+import MediaDetailBody from "@/components/pages/medias/MediaDetailBody";
+import MediaDetailFooter from "@/components/pages/medias/MediaDetailFooter";
 import UploadImage from "@/components/pages/medias/UploadImage";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,11 +10,13 @@ import { Media } from "@/utils/types";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
-const MediaPage = () => {
+const MediaPage = ({ mode }: { mode: "edit" | "view" }) => {
   const { getMediasList, selectedKey, setSelectedKey, listMedias } =
     useMediaStore();
   const [selectedImage, setSelectedImage] = useState<Media | null>(null);
   const [isMediumScreen, setIsMediumScreen] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMediumScreen(window.innerWidth >= 768); //
