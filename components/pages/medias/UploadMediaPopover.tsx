@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
@@ -32,8 +33,6 @@ const UploadMediaPopover = ({
     if (mode === "edit") {
       const model = {
         ...data,
-        id: selectedImage?.id,
-        access: isSelected ? "Public" : "Private",
       };
       if (selectedImage) {
         //mode === edit
@@ -48,22 +47,20 @@ const UploadMediaPopover = ({
     } else {
       //mode === upload
       const model = new FormData();
-      model.append("access", isSelected ? "Public" : "Private");
-      model.append("title", data.title);
-      model.append("alt", data.alt);
-      model.append("description", data.description);
-      model.append("file", selectedFile!);
+
+      model.append("files[0].Title", data.title);
+      model.append("files[0].Alt", data.alt);
+      model.append("files[0].File", selectedFile!);
 
       try {
         await createMedia(model);
         toast.success("رسانه با موفقیت آپلود شد");
-        setSelectedKey("medias");
+        setSelectedKey("images");
       } catch (error) {
         toast.error("خطا در آپلود رسانه");
       }
       setIsOpen(false);
     }
-    await getMediasList();
   };
   useEffect(() => {
     if (selectedImage) {
@@ -85,11 +82,28 @@ const UploadMediaPopover = ({
           </p>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mt-2 flex flex-col gap-2 w-full">
-              <Input {...register("alt")} />
-              <Input {...register("title")} />
-              <Input {...register("description")} />
+              <div className="grid grid-cols-6 items-center gap-4">
+                <Label htmlFor="firstName" className="text-right">
+                  alt
+                </Label>
+                <Input className="col-span-5" {...register("alt")} />
+              </div>
+              <div className="grid grid-cols-6 items-center gap-4">
+                <Label htmlFor="firstName" className="text-right">
+                  عنوان*
+                </Label>
+                <Input
+                  className="col-span-5"
+                  {...register("title", { required: true })}
+                />
+              </div>
 
-              <Button type="submit" color="primary" className="w-full">
+              <Button
+                disabled={isLoadingMedia}
+                type="submit"
+                color="primary"
+                className="w-full"
+              >
                 ذخیره
               </Button>
             </div>

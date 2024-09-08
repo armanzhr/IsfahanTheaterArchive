@@ -18,7 +18,7 @@ interface MediaStore {
   deleteMedia: (mediaID: string) => Promise<AxiosResponse>;
 }
 export const useMediaStore = create<MediaStore>((set) => ({
-  selectedKey: "medias",
+  selectedKey: "images",
   setSelectedKey: (selectedKey) => {
     set({ selectedKey });
   },
@@ -33,6 +33,7 @@ export const useMediaStore = create<MediaStore>((set) => ({
     try {
       const { data } = await axios.get(config.baseURL + "/Images");
       set({ listMedias: data });
+
       return data;
     } catch (error) {
       throw error;
@@ -47,6 +48,7 @@ export const useMediaStore = create<MediaStore>((set) => ({
         config.baseURL + `/Images/${mediaID}`,
         model
       );
+      await useMediaStore.getState().getMediasList();
       return data;
     } catch (error) {
       throw error;
@@ -62,6 +64,8 @@ export const useMediaStore = create<MediaStore>((set) => ({
 
         { data: { id: Number(mediaID) } }
       );
+      await useMediaStore.getState().getMediasList();
+
       return data;
     } catch (error) {
       throw error;
@@ -77,6 +81,8 @@ export const useMediaStore = create<MediaStore>((set) => ({
 
         model
       );
+      await useMediaStore.getState().getMediasList();
+
       return data;
     } catch (error) {
       throw error;
