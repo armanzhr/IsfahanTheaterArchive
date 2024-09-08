@@ -1,66 +1,87 @@
-import { Roles } from "@/utils/types";
+import { Media, MediaModel } from "@/utils/types";
+import { AxiosResponse } from "axios";
 import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
-interface MediaStateStore {
-  media: any | null;
-  isGettingMedia: boolean;
-  isLoadingMedia: boolean;
-  getMedia: () => Promise<void>;
-  createMedia: (model: { name: string }) => Promise<void>;
-  updateMedia: (mediaID: number, model: { name: string }) => Promise<void>;
-  deleteMedia: (peopleID: number) => Promise<void>;
-}
 
-export const useMediaStore = create<MediaStateStore>((set) => ({
-  media: null,
-  isGettingMedia: false,
-  isLoadingMedia: false,
-  getMedia: async () => {
-    set({ isGettingMedia: true });
-    try {
-      const { data } = await axios.get(config.baseURL + "/Media");
-      set({ media: data });
-    } catch (error) {
-      throw error;
-    } finally {
-      set({ isGettingMedia: true });
-    }
+interface MediaStore {
+  selectedKey: any;
+  setSelectedKey: (selectedKey: any) => void;
+  selectedImage: string | null;
+  setSelectedImage: (selectedImage: string | null) => void;
+  isLoadingMedia: boolean;
+  isGettingFile: boolean;
+  listMedias: Media[];
+  getMediasList: () => Promise<void>;
+  updateMedia: (mediaID: number, model: MediaModel) => Promise<AxiosResponse>;
+  createMedia: (model: FormData) => Promise<AxiosResponse>;
+  deleteMedia: (mediaID: string) => Promise<AxiosResponse>;
+}
+export const useMediaStore = create<MediaStore>((set) => ({
+  selectedKey: "medias",
+  setSelectedKey: (selectedKey) => {
+    set({ selectedKey });
   },
-  createMedia: async (model) => {
+  selectedImage: null,
+  setSelectedImage: (selectedImage) => set({ selectedImage }),
+  isLoadingMedia: false,
+  isGettingFile: false,
+  listMedias: [],
+
+  getMediasList: async () => {
     set({ isLoadingMedia: true });
     try {
-      const { data } = await axios.post(config.baseURL + "/Media", model);
-      await useMediaStore.getState().getMedia();
+      const { data } = await axios.get(config.baseURL + "/Images");
+      set({ listMedias: data });
+      return data;
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingMedia: true });
+      set({ isLoadingMedia: false });
     }
   },
   updateMedia: async (mediaID, model) => {
     set({ isLoadingMedia: true });
     try {
       const { data } = await axios.put(
-        config.baseURL + "/Media/" + mediaID,
+        config.baseURL + `/Images/${mediaID}`,
         model
       );
-      await useMediaStore.getState().getMedia();
+      return data;
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingMedia: true });
+      set({ isLoadingMedia: false });
     }
   },
   deleteMedia: async (mediaID) => {
     set({ isLoadingMedia: true });
     try {
-      const { data } = await axios.delete(config.baseURL + "/Media/" + mediaID);
-      await useMediaStore.getState().getMedia();
+      const data = await axios.delete(
+        config.baseURL + `/Images/${mediaID}`,
+
+        { data: { id: Number(mediaID) } }
+      );
+      return data;
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingMedia: true });
+      set({ isLoadingMedia: false });
+    }
+  },
+  createMedia: async (model) => {
+    set({ isLoadingMedia: true });
+    try {
+      const data = await axios.post(
+        config.baseURL + `/Images`,
+
+        model
+      );
+      return data;
+    } catch (error) {
+      throw error;
+    } finally {
+      set({ isLoadingMedia: false });
     }
   },
 }));

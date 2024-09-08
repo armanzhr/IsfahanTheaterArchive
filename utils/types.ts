@@ -21,3 +21,14 @@ export interface Venues {
   address: string;
   createdAt: string;
 }
+export interface Media {
+  id: number;
+  url: string;
+  alt: string;
+  title: string;
+}
+export interface MediaModel {
+  alt: string;
+  title: string;
+  file: File;
+}

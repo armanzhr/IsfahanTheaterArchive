@@ -31,7 +31,7 @@ export const menuItems = () => {
     },
     {
       name: "رسانه",
-      pathname: "/dashboard/media",
+      pathname: "/dashboard/medias",
       icon: <PhotoIcon className="h-3 w-3" />,
     },
     {
