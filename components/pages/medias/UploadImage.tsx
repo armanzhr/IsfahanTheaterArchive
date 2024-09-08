@@ -1,15 +1,17 @@
-import { useMediaAPI } from "@/services/fileStore/useMediaAPI";
 import { PhotoIcon } from "@heroicons/react/24/outline";
-import { Button, Image } from "@nextui-org/react";
+
 import React, { SetStateAction, useState } from "react";
 import { toast } from "sonner";
-import UploadMediaPopover from "../media/uploadMediaPopover";
+import UploadMediaPopover from "./UploadMediaPopover";
+import { useMediaStore } from "@/service/store/useMediaStore";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 const UploadImage = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [previewSrc, setPreviewSrc] = useState<SetStateAction<any>>("");
   const [selectedFile, setSelectedFile] = useState<File | null>();
-  const { isLoadingMedia, createMedia } = useMediaAPI();
+  const { isLoadingMedia, createMedia } = useMediaStore();
 
   const handleDragOver = (e: any) => {
     e.preventDefault();
