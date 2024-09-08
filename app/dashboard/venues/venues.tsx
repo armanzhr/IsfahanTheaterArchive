@@ -84,8 +84,8 @@ const Venues = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>نام</TableHead>
-                <TableHead>محل</TableHead>
+                <TableHead className="text-start">نام</TableHead>
+                <TableHead className="text-start">محل</TableHead>
                 <TableHead>تنظیمات</TableHead>
               </TableRow>
             </TableHeader>
@@ -94,7 +94,7 @@ const Venues = () => {
                 <TableRow key={venue.id}>
                   <TableCell className="font-medium">{venue.name}</TableCell>
                   <TableCell>{venue.address}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-end">
                     <DropdownMenu dir="rtl">
                       <DropdownMenuTrigger asChild>
                         <Button
