@@ -75,6 +75,7 @@ import {
 import { useVenuesStore } from "@/service/store/useVenuesStore";
 import { cn } from "@/utils/cn";
 import { Calendar } from "@/components/ui/calendar";
+import { TimePickerDemo } from "@/components/ui/time-picker-demo";
 
 const UploadShow = ({
   open,
@@ -88,15 +89,25 @@ const UploadShow = ({
   const { handleSubmit, register, watch, setValue, reset } = useForm();
   const [commandOpen, setCommandOpen] = useState(false);
   const [commandValue, setCommandValue] = useState("");
-
+  const [date, setDate] = useState<Date>();
   const { people } = usePeopleStore();
   const { createRole, updateRole, roles } = useRolesStore();
   const { venues } = useVenuesStore();
   const title = watch("title");
   const [test, setTest] = useState<Content>("");
-  useEffect(() => {
-    console.log(test);
-  }, [test]);
+  const [selectedPeopleByRole, setSelectedPeopleByRole] = React.useState({}); // State for tracking selected people per role
+
+  const handleSelect = (newDay: Date | undefined) => {
+    if (!newDay) return;
+    if (!date) {
+      setDate(newDay);
+      return;
+    }
+    const diff = newDay.getTime() - date.getTime();
+    const diffInDays = diff / (1000 * 60 * 60 * 24);
+    const newDateFull = add(date, { days: Math.ceil(diffInDays) });
+    setDate(newDateFull);
+  };
 
   // Generate slug when title changes
   useEffect(() => {
@@ -134,8 +145,6 @@ const UploadShow = ({
     }
   };
 
-  const [selectedPeopleByRole, setSelectedPeopleByRole] = React.useState({}); // State for tracking selected people per role
-
   const handleChangeValue = ({
     roleId,
     people,
@@ -149,10 +158,6 @@ const UploadShow = ({
       [roleId]: people, // Update only the specific role's selected people
     }));
   };
-  useEffect(() => {
-    console.log(selectedPeopleByRole);
-  }, [selectedPeopleByRole]);
-
   return (
     <>
       <Drawer open={open} onOpenChange={setOpen}>
