@@ -76,7 +76,7 @@ import { useVenuesStore } from "@/service/store/useVenuesStore";
 import { cn } from "@/utils/cn";
 import { Calendar } from "@/components/ui/calendar";
 import { TimePickerDemo } from "@/components/ui/time-picker-demo";
-
+import { format } from "date-fns";
 const UploadShow = ({
   open,
   setOpen,
@@ -95,7 +95,7 @@ const UploadShow = ({
   const { venues } = useVenuesStore();
   const title = watch("title");
   const [test, setTest] = useState<Content>("");
-  const [selectedPeopleByRole, setSelectedPeopleByRole] = React.useState({}); // State for tracking selected people per role
+  const [selectedPeopleByRole, setSelectedPeopleByRole] = useState({}); // State for tracking selected people per role
 
   const handleSelect = (newDay: Date | undefined) => {
     if (!newDay) return;
@@ -289,11 +289,7 @@ const UploadShow = ({
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? (
-                              format(date, "PPP HH:mm:ss")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
+                            {date ? format(date) : <span>تاریخ و زمان</span>}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
