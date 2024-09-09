@@ -76,7 +76,11 @@ import { useVenuesStore } from "@/service/store/useVenuesStore";
 import { cn } from "@/utils/cn";
 import { Calendar } from "@/components/ui/calendar";
 import { TimePickerDemo } from "@/components/ui/time-picker-demo";
-import { format } from "date-fns";
+import { faIR } from "date-fns-jalali/locale";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
+import "react-modern-calendar-datepicker/lib/DatePicker.css";
+import DatePicker from "react-modern-calendar-datepicker";
+var moment = require("moment-jalaali");
 const UploadShow = ({
   open,
   setOpen,
@@ -89,26 +93,18 @@ const UploadShow = ({
   const { handleSubmit, register, watch, setValue, reset } = useForm();
   const [commandOpen, setCommandOpen] = useState(false);
   const [commandValue, setCommandValue] = useState("");
-  const [date, setDate] = useState<Date>();
+  const [selectedDay, setSelectedDay] = useState(null);
   const { people } = usePeopleStore();
   const { createRole, updateRole, roles } = useRolesStore();
   const { venues } = useVenuesStore();
   const title = watch("title");
-  const [test, setTest] = useState<Content>("");
+  const [description, setDescription] = useState<Content>("");
   const [selectedPeopleByRole, setSelectedPeopleByRole] = useState({}); // State for tracking selected people per role
 
-  const handleSelect = (newDay: Date | undefined) => {
-    if (!newDay) return;
-    if (!date) {
-      setDate(newDay);
-      return;
-    }
-    const diff = newDay.getTime() - date.getTime();
-    const diffInDays = diff / (1000 * 60 * 60 * 24);
-    const newDateFull = add(date, { days: Math.ceil(diffInDays) });
-    setDate(newDateFull);
-  };
-
+  useEffect(() => {
+    console.log(new Date());
+    console.log(new moment());
+  });
   // Generate slug when title changes
   useEffect(() => {
     const slug = `${title}`.trim().replace(/\s+/g, "-");
@@ -124,25 +120,9 @@ const UploadShow = ({
   }, [editValue]);
 
   const onSubmit = async (data: any) => {
-    if (editValue) {
-      try {
-        await updateRole(editValue.id, data);
-        toast.success("نقش با موفقیت ویرایش شد");
-        reset();
-        setOpen(false);
-      } catch (error) {
-        toast.error("خطا در ویرایش نقش");
-      }
-    } else {
-      try {
-        await createRole(data);
-        toast.success("نقش با موفقیت اضافه شد");
-        reset();
-        setOpen(false);
-      } catch (error) {
-        toast.error("خطا در ایجاد نقش");
-      }
-    }
+    console.log("form data", data);
+    console.log("description", description);
+    console.log("people", selectedPeopleByRole);
   };
 
   const handleChangeValue = ({
@@ -158,6 +138,16 @@ const UploadShow = ({
       [roleId]: people, // Update only the specific role's selected people
     }));
   };
+  const [inputs, setInputs] = useState([{ value: "" }]);
+  const addVenueInput = () => {
+    setInputs([...inputs, { value: "" }]);
+
+    const handleVenueChange = (index: number, event: any) => {
+      const newInputs = [...inputs];
+      newInputs[index].value = event.target.value;
+      setInputs(newInputs);
+    };
+  };
   return (
     <>
       <Drawer open={open} onOpenChange={setOpen}>
@@ -170,7 +160,11 @@ const UploadShow = ({
           </DrawerHeader>
           <main className="grid overflow-y-auto flex-1 items-start gap-4 sm:px-6 sm:py-0 md:gap-8">
             <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
-              <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                id="show-form"
+                className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8"
+              >
                 <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
                   <Card x-chunk="dashboard-07-chunk-0">
                     <CardHeader>
@@ -186,6 +180,7 @@ const UploadShow = ({
                               type="text"
                               className="w-full"
                               placeholder="نام نمایش را وارد نمایید"
+                              {...register("title")}
                             />
                           </div>
                           <div className="grid gap-3">
@@ -195,6 +190,7 @@ const UploadShow = ({
                               type="text"
                               className="w-full"
                               placeholder="پیوند را وارد نمایید"
+                              {...register("slug")}
                             />
                           </div>
                         </div>
@@ -203,8 +199,8 @@ const UploadShow = ({
                           <div className="grid-cols-2">
                             <TooltipProvider>
                               <MinimalTiptapEditor
-                                value={test}
-                                onChange={setTest}
+                                value={description}
+                                onChange={setDescription}
                                 throttleDelay={2000}
                                 className="h-full max-w-[33rem] col-span-2 max-h-72 rounded-xl"
                                 editorContentClassName="overflow-auto"
@@ -248,7 +244,7 @@ const UploadShow = ({
                               className="h-9"
                             />
                             <CommandList>
-                              <CommandEmpty>No framework found.</CommandEmpty>
+                              <CommandEmpty>محل اجرایی یافت نشد</CommandEmpty>
                               <CommandGroup>
                                 {venues?.map((venue) => (
                                   <CommandItem
@@ -279,34 +275,20 @@ const UploadShow = ({
                           </Command>
                         </PopoverContent>
                       </Popover>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-[280px] justify-start text-left font-normal",
-                              !date && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? format(date) : <span>تاریخ و زمان</span>}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={date}
-                            onSelect={(d) => handleSelect(d)}
-                            initialFocus
-                          />
-                          <div className="p-3 border-t border-border">
-                            <TimePickerDemo setDate={setDate} date={date} />
-                          </div>
-                        </PopoverContent>
-                      </Popover>
+                      <Input
+                        id="name"
+                        type="text"
+                        className="w-full"
+                        placeholder="پیوند را وارد نمایید"
+                      />
                     </CardContent>
                     <CardFooter className="justify-center border-t">
-                      <Button size="sm" variant="ghost" className="gap-1">
+                      <Button
+                        onClick={addVenueInput}
+                        size="sm"
+                        variant="ghost"
+                        className="gap-1"
+                      >
                         <PlusCircle className="h-3.5 w-3.5" />
                         افزودن
                       </Button>
@@ -399,21 +381,18 @@ const UploadShow = ({
                     </CardContent>
                   </Card>
                 </div>
-              </div>
-              <div className="flex items-center justify-center gap-2 md:hidden">
-                <Button variant="outline" size="sm">
-                  Discard
+              </form>
+
+              <DrawerFooter className="mb-2 p-0">
+                <Button type="submit" form="show-form">
+                  آپلود
                 </Button>
-                <Button size="sm">Save Product</Button>
-              </div>
+                <DrawerClose asChild>
+                  <Button variant="outline">لغو</Button>
+                </DrawerClose>
+              </DrawerFooter>
             </div>
           </main>
-          <DrawerFooter>
-            <Button>آپلود</Button>
-            <DrawerClose asChild>
-              <Button variant="outline">لغو</Button>
-            </DrawerClose>
-          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>
