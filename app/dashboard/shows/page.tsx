@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { usePeopleStore } from "@/service/store/usePeopleStore";
 import { useRolesStore } from "@/service/store/useRolesStore";
+import { useVenuesStore } from "@/service/store/useVenuesStore";
 
 import { Roles as RolesType } from "@/utils/types";
 import { DramaIcon, PencilIcon, TrashIcon, Turtle } from "lucide-react";
@@ -16,22 +18,44 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const Shows = () => {
-  const { getRoles, roles, isGettingRoles } = useRolesStore();
+  const { getPeople, people } = usePeopleStore();
+  const { getRoles, roles } = useRolesStore();
+  const { getVenues, venues } = useVenuesStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<RolesType | null>();
 
-  const fetchRoles = async () => {
+  const fetchPeoples = async () => {
     try {
-      const res = await getRoles();
+      const res = await getPeople();
     } catch (error) {
       toast.error("خطا در دریافت لیست عوامل");
     }
   };
+  const fetchRoles = async () => {
+    try {
+      const res = await getRoles();
+    } catch (error) {
+      toast.error("خطا در دریافت لیست نقش ها");
+    }
+  };
+  const fetchVenues = async () => {
+    try {
+      const res = await getVenues();
+    } catch (error) {
+      toast.error("خطا در دریافت لیست محل های اجرا");
+    }
+  };
   useEffect(() => {
+    if (!people) {
+      fetchPeoples();
+    }
     if (!roles) {
       fetchRoles();
     }
-  }, [roles]);
+    if (!venues) {
+      fetchVenues();
+    }
+  }, [people, roles, venues]);
 
   const handleCreateRole = () => {
     setEditValue(null);
@@ -57,42 +81,7 @@ const Shows = () => {
         <div
           dir="rtl"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2"
-        >
-          {isGettingRoles ? (
-            <SkeletonLoading count={6} />
-          ) : (
-            roles?.map((item) => (
-              <>
-                <div className="flex justify-between items-center hover:bg-gray-50 dark:hover:bg-zinc-900 transition ease-in-out duration-300 p-2 rounded-md">
-                  <div className="flex items-center gap-3">
-                    <Avatar className=" h-12 w-12 sm:flex">
-                      <AvatarImage src="/avatars/02.png" alt="Avatar" />
-                      <AvatarFallback>
-                        <DramaIcon className="opacity-50" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="grid gap-1">
-                      <p className="text-sm font-medium leading-none">
-                        {item.name}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() => handleEditRole(item)}
-                      variant="outline"
-                      className="h-8 w-8"
-                      size="icon"
-                    >
-                      <PencilIcon className="h-4 w-4" />
-                    </Button>
-                    <DeleteRole role={item} />
-                  </div>
-                </div>
-              </>
-            ))
-          )}
-        </div>
+        ></div>
       </ScrollArea>
       <UploadShow editValue={editValue} setOpen={setOpen} open={open} />
     </div>

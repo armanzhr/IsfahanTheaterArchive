@@ -24,7 +24,9 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
+  CalendarIcon,
   Cat,
+  CheckIcon,
   ChevronLeft,
   Dog,
   Fish,
@@ -56,6 +58,23 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { Content } from "@tiptap/core";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CaretSortIcon } from "@radix-ui/react-icons";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { useVenuesStore } from "@/service/store/useVenuesStore";
+import { cn } from "@/utils/cn";
+import { Calendar } from "@/components/ui/calendar";
 
 const UploadShow = ({
   open,
@@ -67,10 +86,12 @@ const UploadShow = ({
   editValue?: Roles | null;
 }) => {
   const { handleSubmit, register, watch, setValue, reset } = useForm();
+  const [commandOpen, setCommandOpen] = useState(false);
+  const [commandValue, setCommandValue] = useState("");
 
   const { people } = usePeopleStore();
   const { createRole, updateRole, roles } = useRolesStore();
-
+  const { venues } = useVenuesStore();
   const title = watch("title");
   const [test, setTest] = useState<Content>("");
   useEffect(() => {
@@ -199,126 +220,89 @@ const UploadShow = ({
                       <CardTitle className="text-lg">زمان و محل اجرا</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="w-[100px]">SKU</TableHead>
-                            <TableHead>Stock</TableHead>
-                            <TableHead>Price</TableHead>
-                            <TableHead className="w-[100px]">Size</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell className="font-semibold">
-                              GGPC-001
-                            </TableCell>
-                            <TableCell>
-                              <Label htmlFor="stock-1" className="sr-only">
-                                Stock
-                              </Label>
-                              <Input
-                                id="stock-1"
-                                type="number"
-                                defaultValue="100"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Label htmlFor="price-1" className="sr-only">
-                                Price
-                              </Label>
-                              <Input
-                                id="price-1"
-                                type="number"
-                                defaultValue="99.99"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <ToggleGroup
-                                type="single"
-                                defaultValue="s"
-                                variant="outline"
-                              >
-                                <ToggleGroupItem value="s">S</ToggleGroupItem>
-                                <ToggleGroupItem value="m">M</ToggleGroupItem>
-                                <ToggleGroupItem value="l">L</ToggleGroupItem>
-                              </ToggleGroup>
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-semibold">
-                              GGPC-002
-                            </TableCell>
-                            <TableCell>
-                              <Label htmlFor="stock-2" className="sr-only">
-                                Stock
-                              </Label>
-                              <Input
-                                id="stock-2"
-                                type="number"
-                                defaultValue="143"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Label htmlFor="price-2" className="sr-only">
-                                Price
-                              </Label>
-                              <Input
-                                id="price-2"
-                                type="number"
-                                defaultValue="99.99"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <ToggleGroup
-                                type="single"
-                                defaultValue="m"
-                                variant="outline"
-                              >
-                                <ToggleGroupItem value="s">S</ToggleGroupItem>
-                                <ToggleGroupItem value="m">M</ToggleGroupItem>
-                                <ToggleGroupItem value="l">L</ToggleGroupItem>
-                              </ToggleGroup>
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="font-semibold">
-                              GGPC-003
-                            </TableCell>
-                            <TableCell>
-                              <Label htmlFor="stock-3" className="sr-only">
-                                Stock
-                              </Label>
-                              <Input
-                                id="stock-3"
-                                type="number"
-                                defaultValue="32"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Label htmlFor="price-3" className="sr-only">
-                                Stock
-                              </Label>
-                              <Input
-                                id="price-3"
-                                type="number"
-                                defaultValue="99.99"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <ToggleGroup
-                                type="single"
-                                defaultValue="s"
-                                variant="outline"
-                              >
-                                <ToggleGroupItem value="s">S</ToggleGroupItem>
-                                <ToggleGroupItem value="m">M</ToggleGroupItem>
-                                <ToggleGroupItem value="l">L</ToggleGroupItem>
-                              </ToggleGroup>
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
+                      <Popover open={commandOpen} onOpenChange={setCommandOpen}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="w-[200px] justify-between"
+                          >
+                            {commandValue
+                              ? venues?.find(
+                                  (item) => item.id.toString() === commandValue
+                                )?.name
+                              : "انتخاب محل برگزاری"}
+                            <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[200px] p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="جست و جوی محل برگزاری"
+                              className="h-9"
+                            />
+                            <CommandList>
+                              <CommandEmpty>No framework found.</CommandEmpty>
+                              <CommandGroup>
+                                {venues?.map((venue) => (
+                                  <CommandItem
+                                    key={venue.id}
+                                    value={venue.id.toString()}
+                                    onSelect={(currentValue) => {
+                                      setCommandValue(
+                                        currentValue === commandValue
+                                          ? ""
+                                          : currentValue
+                                      );
+                                      setCommandOpen(false);
+                                    }}
+                                  >
+                                    {venue?.name}
+                                    <CheckIcon
+                                      className={cn(
+                                        "ml-auto h-4 w-4",
+                                        commandValue === venue.id.toString()
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-[280px] justify-start text-left font-normal",
+                              !date && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {date ? (
+                              format(date, "PPP HH:mm:ss")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={(d) => handleSelect(d)}
+                            initialFocus
+                          />
+                          <div className="p-3 border-t border-border">
+                            <TimePickerDemo setDate={setDate} date={date} />
+                          </div>
+                        </PopoverContent>
+                      </Popover>
                     </CardContent>
                     <CardFooter className="justify-center border-t">
                       <Button size="sm" variant="ghost" className="gap-1">

@@ -15,7 +15,7 @@ interface MediaStore {
   getMediasList: () => Promise<void>;
   updateMedia: (mediaID: number, model: MediaModel) => Promise<AxiosResponse>;
   createMedia: (model: FormData) => Promise<AxiosResponse>;
-  deleteMedia: (mediaID: string) => Promise<AxiosResponse>;
+  deleteMedia: (mediaID: number) => Promise<AxiosResponse>;
 }
 export const useMediaStore = create<MediaStore>((set) => ({
   selectedKey: "images",

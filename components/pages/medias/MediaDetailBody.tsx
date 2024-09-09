@@ -18,7 +18,7 @@ const MediaDetailBody = ({
         alt={selectedImage?.alt}
         crossOrigin="anonymous"
         className="object-cover"
-        src={`${config.baseURL}/${selectedImage.url}`}
+        src={`${config.fileURL}/${selectedImage.url}`}
       />
       <div className="text-start text-sm max-h-[100px]">
         <h6>عنوان : {selectedImage?.title}</h6>
