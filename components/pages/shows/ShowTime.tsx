@@ -36,7 +36,8 @@ import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { CalendarIcon, PlusCircle } from "lucide-react";
 import React, { useState } from "react";
-import { Calendar, CalendarProvider, DatePicker, TimePicker } from "zaman";
+import { CalendarProvider, Calendar } from "zaman";
+var moment = require("moment-jalaali");
 
 const ShowTime = ({
   commandValue,
@@ -47,7 +48,7 @@ const ShowTime = ({
 }) => {
   const [commandOpen, setCommandOpen] = useState(false);
   const { venues } = useVenuesStore();
-  const [calendarValue, setCalendarValue] = useState(new Date());
+  const [calendarValue, setCalendarValue] = useState(moment());
   return (
     <>
       <Card x-chunk="dashboard-07-chunk-1">
@@ -151,17 +152,21 @@ const ShowTime = ({
                       >
                         <CalendarIcon className="ml-2 h-4 w-4" />
                         {calendarValue ? (
-                          format(calendarValue, "PPP")
+                          moment(calendarValue).format("jYYYY/jMM/jDD")
                         ) : (
                           <span>تاریخ را انتخاب کنید</span>
                         )}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
+                    <PopoverContent
+                      className=" p-0 w-72 max-h-[300px] bg-red-300"
+                      align="start"
+                    >
                       <CalendarProvider>
                         <Calendar
+                          locale="fa"
                           defaultValue={calendarValue}
-                          onChange={(e) => setCalendarValue(new Date(e.value))}
+                          onChange={(e) => setCalendarValue(moment(e.value))}
                         />
                       </CalendarProvider>
                     </PopoverContent>
