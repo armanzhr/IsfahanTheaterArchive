@@ -36,7 +36,7 @@ import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { CalendarIcon, PlusCircle } from "lucide-react";
 import React, { useState } from "react";
-import { CalendarProvider, Calendar } from "zaman";
+import { CalendarProvider, Calendar, DatePicker } from "zaman";
 var moment = require("moment-jalaali");
 
 const ShowTime = ({
@@ -141,36 +141,13 @@ const ShowTime = ({
                   <Label htmlFor="username" className="text-right">
                     تاریخ و اجرا
                   </Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "col-span-3 justify-center text-left font-normal",
-                          !calendarValue && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="ml-2 h-4 w-4" />
-                        {calendarValue ? (
-                          moment(calendarValue).format("jYYYY/jMM/jDD")
-                        ) : (
-                          <span>تاریخ را انتخاب کنید</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className=" p-0 w-72 max-h-[300px] bg-red-300"
-                      align="start"
-                    >
-                      <CalendarProvider>
-                        <Calendar
-                          locale="fa"
-                          defaultValue={calendarValue}
-                          onChange={(e) => setCalendarValue(moment(e.value))}
-                        />
-                      </CalendarProvider>
-                    </PopoverContent>
-                  </Popover>
+
+                  <DatePicker
+                    className="z-50"
+                    locale="fa"
+                    defaultValue={calendarValue}
+                    onChange={(e) => setCalendarValue(moment(e.value))}
+                  />
                 </div>
               </div>
               <DialogFooter>
