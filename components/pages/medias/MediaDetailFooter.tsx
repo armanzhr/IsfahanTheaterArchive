@@ -15,7 +15,7 @@ const MediaDetailFooter = ({
 }) => {
   const { setSelectedImage } = useMediaStore();
   const handleSelectImage = () => {
-    setSelectedImage(selectedImage.url);
+    setSelectedImage(selectedImage);
   };
   return mode === "edit" ? (
     <>

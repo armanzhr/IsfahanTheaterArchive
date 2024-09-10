@@ -7,12 +7,14 @@ import config from "@/config";
 interface MediaStore {
   selectedKey: any;
   setSelectedKey: (selectedKey: any) => void;
-  selectedImage: string | null;
-  setSelectedImage: (selectedImage: string | null) => void;
+  selectedImage: Media | null;
+  setSelectedImage: (selectedImage: Media | null) => void;
   isLoadingMedia: boolean;
   isGettingFile: boolean;
   listMedias: Media[];
   getMediasList: () => Promise<void>;
+  media: Media | null;
+  getMedia: (id: number) => Promise<void>;
   updateMedia: (mediaID: number, model: MediaModel) => Promise<AxiosResponse>;
   createMedia: (model: FormData) => Promise<AxiosResponse>;
   deleteMedia: (mediaID: number) => Promise<AxiosResponse>;
@@ -27,12 +29,27 @@ export const useMediaStore = create<MediaStore>((set) => ({
   isLoadingMedia: false,
   isGettingFile: false,
   listMedias: [],
-
   getMediasList: async () => {
     set({ isLoadingMedia: true });
     try {
       const { data } = await axios.get(config.baseURL + "/Images");
       set({ listMedias: data });
+
+      return data;
+    } catch (error) {
+      throw error;
+    } finally {
+      set({ isLoadingMedia: false });
+    }
+  },
+  media: null,
+  getMedia: async (imageID) => {
+    set({ isLoadingMedia: true });
+    try {
+      const { data } = await axios.get(
+        config.baseURL + "/Images/" + IdleDeadline.toString()
+      );
+      set({ media: data });
 
       return data;
     } catch (error) {
