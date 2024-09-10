@@ -51,7 +51,9 @@ const UploadShow = ({
   const { roles } = useRolesStore();
   const title = watch("title");
   const [description, setDescription] = useState<Content>("");
-  const [showTimes, setShowsTime] = useState();
+  const [showTimes, setShowsTimes] = useState<
+    { venueId: number; showDate: string; showTimeStart: string }[]
+  >([]);
   const [selectedPeopleByRole, setSelectedPeopleByRole] = useState({}); // State for tracking selected people per role
 
   // Generate slug when title changes
@@ -108,6 +110,8 @@ const UploadShow = ({
                     register={register}
                   />
                   <ShowTime
+                    showTimes={showTimes}
+                    setShowTimes={setShowsTimes}
                     commandValue={commandValue}
                     setCommandValue={setCommandValue}
                   />

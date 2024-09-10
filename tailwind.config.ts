@@ -92,6 +92,10 @@ const config: Config = {
           from: { transform: "translateX(0)" },
           to: { transform: "translateX(calc(-100% - 4rem))" },
         },
+        "caret-blink": {
+          "0%,70%,100%": { opacity: "1" },
+          "20%,50%": { opacity: "0" },
+        },
 
         orbit: {
           "0%": {
@@ -140,6 +144,7 @@ const config: Config = {
         },
       },
       animation: {
+        "caret-blink": "caret-blink 1.25s ease-out infinite",
         "logo-cloud": "logo-cloud 30s linear infinite", // Adjust duration and timing as needed for your design.
         orbit: "orbit calc(var(--duration)*1s) linear infinite",
         gradient: "gradient 8s linear infinite",
