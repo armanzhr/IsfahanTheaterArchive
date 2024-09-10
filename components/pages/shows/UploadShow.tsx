@@ -34,6 +34,7 @@ import { useVenuesStore } from "@/service/store/useVenuesStore";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
 import ShowDetail from "./ShowDetail";
 import ShowTime from "./ShowTime";
+import ShowPeople from "./showPeople";
 var moment = require("moment-jalaali");
 const UploadShow = ({
   open,
@@ -47,8 +48,7 @@ const UploadShow = ({
   const { handleSubmit, register, watch, setValue, reset } = useForm();
 
   const [commandValue, setCommandValue] = useState("");
-  const { people } = usePeopleStore();
-  const { roles } = useRolesStore();
+
   const title = watch("title");
   const [description, setDescription] = useState<Content>("");
   const [showTimes, setShowsTimes] = useState<
@@ -70,20 +70,6 @@ const UploadShow = ({
     console.log("form data", data);
     console.log("description", description);
     console.log("people", selectedPeopleByRole);
-  };
-
-  const handleChangeValue = ({
-    roleId,
-    people,
-  }: {
-    roleId: number;
-    people: number[];
-  }) => {
-    // Update the state for the specific role
-    setSelectedPeopleByRole((prev) => ({
-      ...prev, // Copy previous selections
-      [roleId]: people, // Update only the specific role's selected people
-    }));
   };
 
   return (
@@ -117,47 +103,10 @@ const UploadShow = ({
                   />
                 </div>
                 <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
-                  <Card x-chunk="dashboard-07-chunk-3">
-                    <CardHeader>
-                      <CardTitle className="text-lg">عوامل</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid gap-6">
-                        <div className="flex flex-col gap-3 h-60">
-                          <ScrollArea dir="rtl">
-                            {roles?.map((item) => (
-                              <div
-                                className="flex gap-3 mb-3 items-start"
-                                key={item.id}
-                              >
-                                <p className="text-sm font-semibold">
-                                  {item.name}
-                                </p>
-
-                                <MultiSelect
-                                  options={people}
-                                  onValueChange={handleChangeValue}
-                                  defaultValue={{
-                                    roleId: item.id, // Pass the role's ID
-                                    people: selectedPeopleByRole[item.id] || [], // Pass selected people specific to this role
-                                  }}
-                                  value={{
-                                    roleId: item.id, // Pass the role's ID
-                                    people: selectedPeopleByRole[item.id] || [], // Pass selected people specific to this role
-                                  }}
-                                  role={item}
-                                  placeholder="Select frameworks"
-                                  variant="default"
-                                  animation={2}
-                                  maxCount={10}
-                                />
-                              </div>
-                            ))}
-                          </ScrollArea>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <ShowPeople
+                    selectedPeopleByRole={selectedPeopleByRole}
+                    setSelectedPeopleByRole={setSelectedPeopleByRole}
+                  />
                   <Card
                     className="overflow-hidden"
                     x-chunk="dashboard-07-chunk-4"
