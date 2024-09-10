@@ -1,5 +1,4 @@
 "use client";
-import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -11,30 +10,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
-
-import { TooltipProvider } from "@/components/ui/tooltip";
-
 import { useRolesStore } from "@/service/store/useRolesStore";
-
 import { People, Roles } from "@/utils/types";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import {
-  CalendarIcon,
-  Cat,
-  CheckIcon,
-  ChevronLeft,
-  Dog,
-  Fish,
-  PlusCircle,
-  Rabbit,
-  Turtle,
-  Upload,
-} from "lucide-react";
+import { Upload } from "lucide-react";
 import { usePeopleStore } from "@/service/store/usePeopleStore";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -46,41 +27,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
 import Image from "next/image";
-import { Separator } from "@/components/ui/separator";
 import { Content } from "@tiptap/core";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CaretSortIcon } from "@radix-ui/react-icons";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import { useVenuesStore } from "@/service/store/useVenuesStore";
-import { cn } from "@/utils/cn";
-import { Calendar } from "@/components/ui/calendar";
-import { TimePickerDemo } from "@/components/ui/time-picker-demo";
-import { faIR } from "date-fns-jalali/locale";
-import { DateTimePicker } from "@/components/ui/date-time-picker";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
-import DatePicker from "react-modern-calendar-datepicker";
 import ShowDetail from "./ShowDetail";
+import ShowTime from "./ShowTime";
 var moment = require("moment-jalaali");
 const UploadShow = ({
   open,
@@ -92,20 +45,15 @@ const UploadShow = ({
   editValue?: Roles | null;
 }) => {
   const { handleSubmit, register, watch, setValue, reset } = useForm();
-  const [commandOpen, setCommandOpen] = useState(false);
+
   const [commandValue, setCommandValue] = useState("");
-  const [selectedDay, setSelectedDay] = useState(null);
   const { people } = usePeopleStore();
-  const { createRole, updateRole, roles } = useRolesStore();
-  const { venues } = useVenuesStore();
+  const { roles } = useRolesStore();
   const title = watch("title");
   const [description, setDescription] = useState<Content>("");
+  const [showTimes, setShowsTime] = useState();
   const [selectedPeopleByRole, setSelectedPeopleByRole] = useState({}); // State for tracking selected people per role
 
-  useEffect(() => {
-    console.log(new Date());
-    console.log(new moment());
-  });
   // Generate slug when title changes
   useEffect(() => {
     const slug = `${title}`.trim().replace(/\s+/g, "-");
@@ -115,10 +63,6 @@ const UploadShow = ({
       setValue("slug", slug);
     }
   }, [title, setValue]);
-
-  useEffect(() => {
-    setValue("name", editValue?.name);
-  }, [editValue]);
 
   const onSubmit = async (data: any) => {
     console.log("form data", data);
@@ -139,16 +83,7 @@ const UploadShow = ({
       [roleId]: people, // Update only the specific role's selected people
     }));
   };
-  const [inputs, setInputs] = useState([{ value: "" }]);
-  const addVenueInput = () => {
-    setInputs([...inputs, { value: "" }]);
 
-    const handleVenueChange = (index: number, event: any) => {
-      const newInputs = [...inputs];
-      newInputs[index].value = event.target.value;
-      setInputs(newInputs);
-    };
-  };
   return (
     <>
       <Drawer open={open} onOpenChange={setOpen}>
@@ -172,84 +107,10 @@ const UploadShow = ({
                     setDescription={setDescription}
                     register={register}
                   />
-                  <Card x-chunk="dashboard-07-chunk-1">
-                    <CardHeader>
-                      <CardTitle className="text-lg">زمان و محل اجرا</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <Popover open={commandOpen} onOpenChange={setCommandOpen}>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={open}
-                            className="w-[200px] justify-between"
-                          >
-                            {commandValue
-                              ? venues?.find(
-                                  (item) => item.id.toString() === commandValue
-                                )?.name
-                              : "انتخاب محل برگزاری"}
-                            <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[200px] p-0">
-                          <Command>
-                            <CommandInput
-                              placeholder="جست و جوی محل برگزاری"
-                              className="h-9"
-                            />
-                            <CommandList>
-                              <CommandEmpty>محل اجرایی یافت نشد</CommandEmpty>
-                              <CommandGroup>
-                                {venues?.map((venue) => (
-                                  <CommandItem
-                                    key={venue.id}
-                                    value={venue.id.toString()}
-                                    onSelect={(currentValue) => {
-                                      setCommandValue(
-                                        currentValue === commandValue
-                                          ? ""
-                                          : currentValue
-                                      );
-                                      setCommandOpen(false);
-                                    }}
-                                  >
-                                    {venue?.name}
-                                    <CheckIcon
-                                      className={cn(
-                                        "ml-auto h-4 w-4",
-                                        commandValue === venue.id.toString()
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                      <Input
-                        id="name"
-                        type="text"
-                        className="w-full"
-                        placeholder="پیوند را وارد نمایید"
-                      />
-                    </CardContent>
-                    <CardFooter className="justify-center border-t">
-                      <Button
-                        onClick={addVenueInput}
-                        size="sm"
-                        variant="ghost"
-                        className="gap-1"
-                      >
-                        <PlusCircle className="h-3.5 w-3.5" />
-                        افزودن
-                      </Button>
-                    </CardFooter>
-                  </Card>
+                  <ShowTime
+                    commandValue={commandValue}
+                    setCommandValue={setCommandValue}
+                  />
                 </div>
                 <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
                   <Card x-chunk="dashboard-07-chunk-3">

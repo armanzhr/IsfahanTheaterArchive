@@ -35,9 +35,9 @@ const ShowDetail = ({
               />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="name">پیوند</Label>
+              <Label htmlFor="slug">پیوند</Label>
               <Input
-                id="name"
+                id="slug"
                 type="text"
                 className="w-full"
                 placeholder="پیوند را وارد نمایید"
