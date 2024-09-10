@@ -80,6 +80,7 @@ import { faIR } from "date-fns-jalali/locale";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
 import DatePicker from "react-modern-calendar-datepicker";
+import ShowDetail from "./ShowDetail";
 var moment = require("moment-jalaali");
 const UploadShow = ({
   open,
@@ -166,56 +167,11 @@ const UploadShow = ({
                 className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8"
               >
                 <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-                  <Card x-chunk="dashboard-07-chunk-0">
-                    <CardHeader>
-                      <CardTitle className="text-lg">جزییات نمایش</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid gap-6">
-                        <div className="grid grid-cols-3 gap-3">
-                          <div className="grid gap-3 col-span-2">
-                            <Label htmlFor="name">نام نمایش</Label>
-                            <Input
-                              id="name"
-                              type="text"
-                              className="w-full"
-                              placeholder="نام نمایش را وارد نمایید"
-                              {...register("title")}
-                            />
-                          </div>
-                          <div className="grid gap-3">
-                            <Label htmlFor="name">پیوند</Label>
-                            <Input
-                              id="name"
-                              type="text"
-                              className="w-full"
-                              placeholder="پیوند را وارد نمایید"
-                              {...register("slug")}
-                            />
-                          </div>
-                        </div>
-                        <div className="grid items-center gap-4">
-                          <Label htmlFor="description">توضیحات</Label>
-                          <div className="grid-cols-2">
-                            <TooltipProvider>
-                              <MinimalTiptapEditor
-                                value={description}
-                                onChange={setDescription}
-                                throttleDelay={2000}
-                                className="h-full max-w-[33rem] col-span-2 max-h-72 rounded-xl"
-                                editorContentClassName="overflow-auto"
-                                output="html"
-                                immediatelyRender={true}
-                                editable={true}
-                                injectCSS={true}
-                                editorClassName="focus:outline-none p-5"
-                              />
-                            </TooltipProvider>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <ShowDetail
+                    description={description}
+                    setDescription={setDescription}
+                    register={register}
+                  />
                   <Card x-chunk="dashboard-07-chunk-1">
                     <CardHeader>
                       <CardTitle className="text-lg">زمان و محل اجرا</CardTitle>
