@@ -35,12 +35,12 @@ const ShowDetail = ({
               />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="slug">پیوند</Label>
+              <Label htmlFor="slug">نامک</Label>
               <Input
                 id="slug"
                 type="text"
                 className="w-full"
-                placeholder="پیوند را وارد نمایید"
+                placeholder="نامک را وارد نمایید"
                 {...register("slug")}
               />
             </div>

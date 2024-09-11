@@ -5,6 +5,7 @@ import MediaDetailFooter from "@/components/pages/medias/MediaDetailFooter";
 import MediaDetailModal from "@/components/pages/medias/MediaDetailModal";
 import UploadImage from "@/components/pages/medias/UploadImage";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import config from "@/config";
 import { useMediaStore } from "@/service/store/useMediaStore";
@@ -62,81 +63,68 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
         <TabsTrigger value="images">تصاویر</TabsTrigger>
         <TabsTrigger value="upload">آپلود تصویر</TabsTrigger>
       </TabsList>
-      <TabsContent value="images" className="bg-red-300 h-full w-full ">
-        <Card>
-          <CardContent>
-            <div className=" flex h-full">
-              {listMedias.length > 0 ? (
-                <div className="gap-2 grid grid-cols-2 sm:grid-cols-4 md:w-3/5 w-full lg:w-3/4 overflow-y-auto">
-                  {listMedias.map((item, index) => (
-                    <Card
-                      className={`h-[140px] ${
-                        selectedImage &&
-                        (item === selectedImage ? "opacity-100" : "opacity-50")
-                      }`}
-                      key={index}
-                      onClick={() => handleSelectMedia(item)}
-                    >
-                      <CardContent className="overflow-visible p-0">
-                        <Image
-                          width={300}
-                          height={300}
-                          alt={item.title}
-                          crossOrigin="anonymous"
-                          className="object-cover"
-                          src={`${config.fileURL}/${item.url}`}
-                        />
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <div className="h-full text-sm w-3/4 flex items-center justify-center">
-                  <p>
-                    رسانه ای وجود ندارد . لطفا ابتدا از بخش آپلود رسانه ، رسانه
-                    خود را آپلود نمایید
-                  </p>
-                </div>
-              )}
+      <TabsContent value="images" className=" h-full w-full ">
+        <div className="h-[calc(100vh-150px)] grid grid-cols-10 gap-3">
+          <ScrollArea className="col-span-8">
+            <Card className=" grid grid-cols-7 gap-4 p-3">
+              {listMedias.map((item, index) => (
+                <Card
+                  className={`${
+                    selectedImage &&
+                    (item === selectedImage ? "opacity-100" : "opacity-50")
+                  }`}
+                  key={index}
+                  onClick={() => handleSelectMedia(item)}
+                >
+                  <CardContent className="overflow-visible p-0">
+                    <Image
+                      width={200}
+                      height={200}
+                      alt={item.title}
+                      crossOrigin="anonymous"
+                      className="aspect-square w-full rounded-md object-cover"
+                      src={`${config.fileURL}/${item.url}`}
+                    />
+                  </CardContent>
+                </Card>
+              ))}
+            </Card>
+          </ScrollArea>
 
-              {isMediumScreen ? (
-                <div className=" hidden md:block md:w-2/5 lg:w-1/4 ">
-                  <Card className="h-full">
-                    {selectedImage ? (
-                      <>
-                        <CardContent>
-                          <MediaDetailBody
-                            mode={mode}
-                            selectedImage={selectedImage}
-                          />
-                        </CardContent>
-                        <CardFooter className="w-full flex gap-3">
-                          <MediaDetailFooter
-                            mode={mode}
-                            selectedImage={selectedImage}
-                            setOpenDeleteModal={setOpenDeleteModal}
-                          />
-                        </CardFooter>
-                      </>
-                    ) : (
-                      <div className=" h-full flex justify-center items-center text-sm">
-                        <p>یک عکس را انتخاب کنید</p>
-                      </div>
-                    )}
-                  </Card>
-                </div>
+          {isMediumScreen ? (
+            <Card className="h-full hidden md:block col-span-2">
+              {selectedImage ? (
+                <>
+                  <CardContent>
+                    <MediaDetailBody
+                      mode={mode}
+                      selectedImage={selectedImage}
+                    />
+                  </CardContent>
+                  <CardFooter className="w-full flex gap-3">
+                    <MediaDetailFooter
+                      mode={mode}
+                      selectedImage={selectedImage}
+                      setOpenDeleteModal={setOpenDeleteModal}
+                    />
+                  </CardFooter>
+                </>
               ) : (
-                <MediaDetailModal
-                  selectedImage={selectedImage!}
-                  setOpenDeleteModal={setOpenDeleteModal}
-                  onOpenChange={onOpenChange}
-                  isOpen={isOpen}
-                />
+                <div className=" h-full flex justify-center items-center text-sm">
+                  <p>یک عکس را انتخاب کنید</p>
+                </div>
               )}
-              {/* <DeleteMedia></DeleteMedia> */}
-            </div>
-          </CardContent>
-        </Card>
+            </Card>
+          ) : (
+            <MediaDetailModal
+              selectedImage={selectedImage!}
+              setOpenDeleteModal={setOpenDeleteModal}
+              onOpenChange={onOpenChange}
+              isOpen={isOpen}
+            />
+          )}
+          {/* <DeleteMedia></DeleteMedia> */}
+        </div>
       </TabsContent>
       <TabsContent
         className="h-full w-full flex items-center justify-center"

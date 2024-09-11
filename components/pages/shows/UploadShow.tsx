@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/drawer";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { useRolesStore } from "@/service/store/useRolesStore";
-import { People, Roles } from "@/utils/types";
+import { Media, People, Roles } from "@/utils/types";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Upload } from "lucide-react";
@@ -50,7 +50,10 @@ const UploadShow = ({
   editValue?: Roles | null;
 }) => {
   const { handleSubmit, register, watch, setValue, reset } = useForm();
-  const [posterImageId, setPosterImageId] = useState<number>();
+  const [galleryImage, setGalleryImage] = useState<{
+    poster: Media | null;
+    otherImages: Media[];
+  }>({ poster: null, otherImages: [] });
   const [isOpenMediaModal, setIsOpenMediaModal] = useState(false);
   const { selectedImage, getMedia, media } = useMediaStore();
   const handleCloseMediaModal = () => {
@@ -62,6 +65,7 @@ const UploadShow = ({
 
   const title = watch("title");
   const [description, setDescription] = useState<Content>("");
+  const [imageMode, setImageMode] = useState<"avatar" | "gallery">();
   const [showTimes, setShowsTimes] = useState<
     { venueId: number; showDate: string; showTimeStart: string }[]
   >([]);
@@ -82,20 +86,19 @@ const UploadShow = ({
     console.log("description", description);
     console.log("people", selectedPeopleByRole);
   };
-  const getPoster = async (id: number) => {
-    try {
-      await getMedia(id);
-    } catch (error) {
-      toast.error("خطا در دریافت تصویر پوستر");
-    }
-  };
+
   useEffect(() => {
-    if (posterImageId) {
-      getPoster(posterImageId);
+    if (selectedImage) {
+      handleCloseMediaModal();
+      if (imageMode === "avatar") {
+        setGalleryImage((prev) => ({ ...prev, poster: selectedImage }));
+      } else if (imageMode === "gallery") {
+        setGalleryImage((prev) => ({
+          ...prev,
+          otherImages: [...prev?.otherImages, selectedImage],
+        }));
+      }
     }
-  }, []);
-  useEffect(() => {
-    handleCloseMediaModal();
   }, [selectedImage]);
   return (
     <>
@@ -141,19 +144,22 @@ const UploadShow = ({
                     </CardHeader>
                     <CardContent>
                       <div className="grid gap-2">
-                        <p>تصویر اصلی</p>
+                        <p>پوستر نمایش</p>
 
                         <button
-                          onClick={() => setIsOpenMediaModal(true)}
+                          onClick={() => {
+                            setIsOpenMediaModal(true);
+                            setImageMode("avatar");
+                          }}
                           className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed"
                         >
-                          {selectedImage ? (
+                          {galleryImage?.poster ? (
                             <Image
                               alt="Product image"
                               className="aspect-square w-full rounded-md object-cover"
                               height="300"
                               crossOrigin="anonymous"
-                              src={`${config.fileURL}/${selectedImage?.url}`}
+                              src={`${config.fileURL}/${galleryImage.poster?.url}`}
                               width="300"
                             />
                           ) : (
@@ -163,24 +169,29 @@ const UploadShow = ({
                           <span className="sr-only">Upload</span>
                         </button>
 
+                        <p>آلبوم</p>
                         <div className="grid grid-cols-3 gap-2">
-                          <button>
-                            <Image
-                              alt="Product image"
-                              className="aspect-square w-full rounded-md object-cover"
-                              height="84"
-                              src="/placeholder.svg"
-                              width="84"
-                            />
-                          </button>
-                          <button>
-                            <Image
-                              alt="Product image"
-                              className="aspect-square w-full rounded-md object-cover"
-                              height="84"
-                              src="/placeholder.svg"
-                              width="84"
-                            />
+                          {galleryImage?.otherImages.map((image) => (
+                            <button>
+                              <Image
+                                alt="show poster"
+                                className="aspect-square w-full rounded-md object-cover"
+                                height="84"
+                                src={`${config.fileURL}/${image.url}`}
+                                width="84"
+                              />
+                            </button>
+                          ))}
+                          <button
+                            onClick={() => {
+                              setIsOpenMediaModal(true);
+                              setImageMode("gallery");
+                            }}
+                            className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed"
+                          >
+                            <Upload className="h-4 w-4 text-muted-foreground" />
+
+                            <span className="sr-only">Upload</span>
                           </button>
                         </div>
                       </div>

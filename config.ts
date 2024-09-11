@@ -9,7 +9,7 @@ const config = {
     blog: true,
   },
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
-  fileURL: "http://radio.rx4.ir:8095",
+  fileURL: "http://192.168.10.50:8095",
 };
 
 export default config;

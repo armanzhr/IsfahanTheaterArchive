@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import React from "react";
 import Medias from "./Media";
+import { Drawer, DrawerContent, DrawerHeader } from "@/components/ui/drawer";
 
 const SelectImageHandler = ({
   isOpen,
@@ -10,17 +11,15 @@ const SelectImageHandler = ({
   onClose: () => void;
 }) => {
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="m-0">
-        <>
-          <DialogHeader className="flex flex-col gap-1">
-            انتخاب فایل
-          </DialogHeader>
+    <Drawer open={isOpen} onOpenChange={onClose}>
+      <DrawerContent className="m-0 p-3">
+        <DrawerHeader className="text-center">
+          <p className=" text-center font-bold">انتخاب فایل</p>
+        </DrawerHeader>
 
-          <Medias mode="view" />
-        </>
-      </DialogContent>
-    </Dialog>
+        <Medias mode="view" />
+      </DrawerContent>
+    </Drawer>
   );
 };
 
