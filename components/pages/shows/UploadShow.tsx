@@ -95,13 +95,18 @@ const UploadShow = ({
       title: data.title,
       slug: data.slug,
       description: description,
-      metaDescription: "",
+      metaDescription: "null",
       showTimes: showTimes,
       imageIds: galleryImage.otherImages.map((item) => item.id),
       showPeopleRoles: result,
     };
 
-    console.log(model);
+    try {
+      await createShows(model);
+      toast.success("نمایش با موفقیت ساخته شد");
+    } catch (error) {
+      toast.error("خطا در ایجاد نمایش");
+    }
   };
 
   useEffect(() => {

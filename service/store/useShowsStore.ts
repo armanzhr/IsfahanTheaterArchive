@@ -7,7 +7,27 @@ interface ShowsStateStore {
   isGettingShows: boolean;
   isLoadingShows: boolean;
   getShows: () => Promise<void>;
-  createShows: (model: { name: string }) => Promise<void>;
+  createShows: (model: {
+    posterImageId: number;
+    title: string;
+    slug: string;
+    description: string;
+    metaDescription: string;
+    showTimes: [
+      {
+        venueId: number;
+        showDate: string;
+        showTimeStart: string;
+      }
+    ];
+    showPeopleRoles: [
+      {
+        personId: number;
+        roleId: number;
+      }
+    ];
+    imageIds: [number];
+  }) => Promise<void>;
   updateShows: (showsID: number, model: { name: string }) => Promise<void>;
   deleteShows: (peopleID: number) => Promise<void>;
 }
@@ -24,7 +44,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isGettingShows: true });
+      set({ isGettingShows: false });
     }
   },
   createShows: async (model) => {
@@ -35,7 +55,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingShows: true });
+      set({ isLoadingShows: false });
     }
   },
   updateShows: async (showsID, model) => {
@@ -49,7 +69,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingShows: true });
+      set({ isLoadingShows: false });
     }
   },
   deleteShows: async (showsID) => {
@@ -60,7 +80,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
     } catch (error) {
       throw error;
     } finally {
-      set({ isLoadingShows: true });
+      set({ isLoadingShows: false });
     }
   },
 }));
