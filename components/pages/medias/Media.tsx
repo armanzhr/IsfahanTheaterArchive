@@ -97,7 +97,7 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
             <Card className="h-full hidden md:flex flex-col justify-between lg:col-span-2 md:col-span-3">
               {selectedImage ? (
                 <>
-                  <CardContent>
+                  <CardContent className="pt-6">
                     <MediaDetailBody
                       mode={mode}
                       selectedImage={selectedImage}

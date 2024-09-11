@@ -5,13 +5,13 @@ import { Drawer, DrawerContent, DrawerHeader } from "@/components/ui/drawer";
 
 const SelectImageHandler = ({
   isOpen,
-  onClose,
+  setOpen,
 }: {
   isOpen: boolean;
-  onClose: () => void;
+  setOpen: (data: boolean) => void;
 }) => {
   return (
-    <Drawer open={isOpen} onOpenChange={onClose}>
+    <Drawer open={isOpen} onOpenChange={setOpen}>
       <DrawerContent className="m-0 p-3">
         <DrawerHeader className="text-center">
           <p className=" text-center font-bold">انتخاب فایل</p>

@@ -20,7 +20,7 @@ const MediaDetailBody = ({
         height={300}
         alt={selectedImage?.alt}
         crossOrigin="anonymous"
-        className="object-cover max-h-[300px]"
+        className="object-cover max-h-[300px] rounded-md"
         src={`${config.fileURL}/${selectedImage.url}`}
       />
       <div dir="rtl" className="flex flex-col mt-3 text-sm max-h-[100px]">

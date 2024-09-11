@@ -58,7 +58,6 @@ const UploadShow = ({
   const { selectedImage, getMedia, media } = useMediaStore();
   const handleCloseMediaModal = () => {
     setIsOpenMediaModal(false);
-    console.log(selectedImage);
   };
 
   const [commandValue, setCommandValue] = useState("");
@@ -88,8 +87,10 @@ const UploadShow = ({
   };
 
   useEffect(() => {
+    console.log(selectedImage);
+
     if (selectedImage) {
-      handleCloseMediaModal();
+      setIsOpenMediaModal(false);
       if (imageMode === "avatar") {
         setGalleryImage((prev) => ({ ...prev, poster: selectedImage }));
       } else if (imageMode === "gallery") {
@@ -212,7 +213,7 @@ const UploadShow = ({
           </main>
           <SelectImageHandler
             isOpen={isOpenMediaModal}
-            onClose={handleCloseMediaModal}
+            setOpen={setIsOpenMediaModal}
           />
         </DrawerContent>
       </Drawer>
