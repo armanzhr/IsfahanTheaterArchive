@@ -15,7 +15,7 @@ import { useRolesStore } from "@/service/store/useRolesStore";
 import { Media, People, Roles } from "@/utils/types";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Upload } from "lucide-react";
+import { Upload, XIcon } from "lucide-react";
 import { usePeopleStore } from "@/service/store/usePeopleStore";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -39,6 +39,7 @@ import SelectImageHandler from "../medias/SelectImage";
 import { useMediaStore } from "@/service/store/useMediaStore";
 import { toast } from "sonner";
 import config from "@/config";
+import { useShowsStore } from "@/service/store/useShowsStore";
 var moment = require("moment-jalaali");
 const UploadShow = ({
   open,
@@ -59,7 +60,7 @@ const UploadShow = ({
   const handleCloseMediaModal = () => {
     setIsOpenMediaModal(false);
   };
-
+  const { createShows } = useShowsStore();
   const [commandValue, setCommandValue] = useState("");
 
   const title = watch("title");
@@ -81,9 +82,26 @@ const UploadShow = ({
   }, [title, setValue]);
 
   const onSubmit = async (data: any) => {
-    console.log("form data", data);
-    console.log("description", description);
-    console.log("people", selectedPeopleByRole);
+    const result = [];
+
+    for (const [roleId, peopleIds] of Object.entries(selectedPeopleByRole)) {
+      peopleIds.forEach((personId) => {
+        result.push({ roleId: parseInt(roleId), personId });
+      });
+    }
+
+    const model = {
+      posterImageId: galleryImage.poster?.id,
+      title: data.title,
+      slug: data.slug,
+      description: description,
+      metaDescription: "",
+      showTimes: showTimes,
+      imageIds: galleryImage.otherImages.map((item) => item.id),
+      showPeopleRoles: result,
+    };
+
+    console.log(model);
   };
 
   useEffect(() => {
@@ -147,53 +165,99 @@ const UploadShow = ({
                       <div className="grid gap-2">
                         <p>پوستر نمایش</p>
 
-                        <button
-                          onClick={() => {
-                            setIsOpenMediaModal(true);
-                            setImageMode("avatar");
-                          }}
-                          className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed"
-                        >
-                          {galleryImage?.poster ? (
-                            <Image
-                              alt="Product image"
-                              className="aspect-square w-full rounded-md object-cover"
-                              height="300"
-                              crossOrigin="anonymous"
-                              src={`${config.fileURL}/${galleryImage.poster?.url}`}
-                              width="300"
-                            />
-                          ) : (
-                            <Upload className="h-4 w-4 text-muted-foreground" />
-                          )}
+                        <Card>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsOpenMediaModal(true);
+                              setImageMode("avatar");
+                            }}
+                            className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed"
+                          >
+                            {galleryImage?.poster ? (
+                              <Image
+                                alt="Product image"
+                                className="aspect-square w-full rounded-md object-cover"
+                                height="300"
+                                crossOrigin="anonymous"
+                                src={`${config.fileURL}/${galleryImage.poster?.url}`}
+                                width="300"
+                              />
+                            ) : (
+                              <Upload className="h-4 w-4 text-muted-foreground" />
+                            )}
 
-                          <span className="sr-only">Upload</span>
-                        </button>
+                            <span className="sr-only">Upload</span>
+                          </button>
+                          {galleryImage.poster && (
+                            <div className="flex justify-center">
+                              <Button
+                                type="button"
+                                onClick={() =>
+                                  setGalleryImage((prev) => ({
+                                    ...prev,
+                                    poster: null,
+                                  }))
+                                }
+                                size="icon"
+                                className="h-5 w-5"
+                                variant="ghost"
+                              >
+                                <XIcon className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          )}
+                        </Card>
 
                         <p>آلبوم</p>
                         <div className="grid grid-cols-3 gap-2">
                           {galleryImage?.otherImages.map((image) => (
-                            <button>
-                              <Image
-                                alt="show poster"
-                                className="aspect-square w-full rounded-md object-cover"
-                                height="84"
-                                src={`${config.fileURL}/${image.url}`}
-                                width="84"
-                              />
-                            </button>
+                            <Card>
+                              <button type="button">
+                                <Image
+                                  alt="show poster"
+                                  className="aspect-square w-full rounded-md object-cover"
+                                  height="84"
+                                  src={`${config.fileURL}/${image.url}`}
+                                  width="84"
+                                />
+                              </button>
+                              <div className="flex justify-center">
+                                <Button
+                                  type="button"
+                                  size="icon"
+                                  className="h-5 w-5"
+                                  variant="ghost"
+                                >
+                                  <XIcon
+                                    onClick={() =>
+                                      setGalleryImage((prev) => ({
+                                        ...prev,
+                                        otherImages: prev.otherImages.filter(
+                                          (item) => item.id !== image.id
+                                        ),
+                                      }))
+                                    }
+                                    className="h-4 w-4"
+                                  />
+                                </Button>
+                              </div>
+                            </Card>
                           ))}
-                          <button
-                            onClick={() => {
-                              setIsOpenMediaModal(true);
-                              setImageMode("gallery");
-                            }}
-                            className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed"
-                          >
-                            <Upload className="h-4 w-4 text-muted-foreground" />
+                          <div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIsOpenMediaModal(true);
+                                setImageMode("gallery");
+                              }}
+                              className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed"
+                            >
+                              <Upload className="h-4 w-4 text-muted-foreground" />
 
-                            <span className="sr-only">Upload</span>
-                          </button>
+                              <span className="sr-only">Upload</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </CardContent>
