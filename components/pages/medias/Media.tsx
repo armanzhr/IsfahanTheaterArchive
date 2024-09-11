@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import config from "@/config";
 import { useMediaStore } from "@/service/store/useMediaStore";
+import { cn } from "@/utils/cn";
 import { Media } from "@/utils/types";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -65,14 +66,15 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
       </TabsList>
       <TabsContent value="images" className=" h-full w-full ">
         <div className="h-[calc(100vh-150px)] grid grid-cols-10 gap-3">
-          <ScrollArea className="col-span-8">
-            <Card className=" grid grid-cols-7 gap-4 p-3">
+          <ScrollArea className="col-span-10 lg:col-span-8 md:col-span-7">
+            <Card className=" grid lg:grid-cols-7 grid-cols-3 gap-4 p-3">
               {listMedias.map((item, index) => (
                 <Card
-                  className={`${
+                  className={cn(
                     selectedImage &&
-                    (item === selectedImage ? "opacity-100" : "opacity-50")
-                  }`}
+                      (item === selectedImage ? "opacity-100" : "opacity-50"),
+                    "ease-out duration-300 cursor-pointer hover:opacity-100"
+                  )}
                   key={index}
                   onClick={() => handleSelectMedia(item)}
                 >
@@ -92,7 +94,7 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
           </ScrollArea>
 
           {isMediumScreen ? (
-            <Card className="h-full hidden md:block col-span-2">
+            <Card className="h-full hidden md:flex flex-col justify-between lg:col-span-2 md:col-span-3">
               {selectedImage ? (
                 <>
                   <CardContent>

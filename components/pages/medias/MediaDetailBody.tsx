@@ -17,12 +17,12 @@ const MediaDetailBody = ({
         height={300}
         alt={selectedImage?.alt}
         crossOrigin="anonymous"
-        className="object-cover"
+        className="object-cover max-h-[300px]"
         src={`${config.fileURL}/${selectedImage.url}`}
       />
       <div className="text-start text-sm max-h-[100px]">
-        <h6>عنوان : {selectedImage?.title}</h6>
-        <p> alt : {selectedImage?.alt}</p>
+        <h6>عنوان : {selectedImage?.title ?? "---"}</h6>
+        <p> متن جایگزین : {selectedImage?.alt ?? "---"}</p>
       </div>
     </>
   );

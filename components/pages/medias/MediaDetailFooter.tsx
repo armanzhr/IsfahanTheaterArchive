@@ -26,8 +26,8 @@ const MediaDetailFooter = ({
       </UploadMediaPopover>
       <Button
         onClick={() => setOpenDeleteModal(true)}
-        color="danger"
-        className="w-full"
+        variant={"outline"}
+        // className="w-full"
       >
         حذف
       </Button>

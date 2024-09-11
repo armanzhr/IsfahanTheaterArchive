@@ -83,7 +83,7 @@ const UploadMediaPopover = ({
             <div className="mt-2 flex flex-col gap-2 w-full">
               <div className="grid grid-cols-3 items-center gap-4">
                 <Label htmlFor="firstName" className="text-right">
-                  نام جایگزین
+                  متن جایگزین
                 </Label>
                 <Input
                   defaultValue={""}
