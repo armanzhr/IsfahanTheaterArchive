@@ -1,7 +1,7 @@
 import config from "@/config";
 import { Media } from "@/utils/types";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 
 const MediaDetailBody = ({
   selectedImage,
@@ -10,6 +10,9 @@ const MediaDetailBody = ({
   selectedImage: Media;
   mode: "view" | "edit";
 }) => {
+  useEffect(() => {
+    console.log(selectedImage);
+  }, [selectedImage]);
   return (
     <>
       <Image
@@ -20,9 +23,16 @@ const MediaDetailBody = ({
         className="object-cover max-h-[300px]"
         src={`${config.fileURL}/${selectedImage.url}`}
       />
-      <div className="text-start text-sm max-h-[100px]">
-        <h6>عنوان : {selectedImage?.title ?? "---"}</h6>
-        <p> متن جایگزین : {selectedImage?.alt ?? "---"}</p>
+      <div dir="rtl" className="flex flex-col mt-3 text-sm max-h-[100px]">
+        <h6>
+          <strong>عنوان</strong> :{" "}
+          {selectedImage.title ? selectedImage.title : "---"}
+        </h6>
+        <p>
+          {" "}
+          <strong>متن جایگزین </strong>:{" "}
+          {selectedImage.alt ? selectedImage.title : "---"}
+        </p>
       </div>
     </>
   );

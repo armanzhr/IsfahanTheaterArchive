@@ -3,6 +3,7 @@ import { Media } from "@/utils/types";
 import React from "react";
 import UploadMediaPopover from "./UploadMediaPopover";
 import { Button } from "@/components/ui/button";
+import { Trash } from "lucide-react";
 
 const MediaDetailFooter = ({
   selectedImage,
@@ -19,17 +20,14 @@ const MediaDetailFooter = ({
   };
   return mode === "edit" ? (
     <>
-      <UploadMediaPopover mode="edit" selectedImage={selectedImage}>
-        <Button color="warning" className="w-full">
-          ویرایش
-        </Button>
-      </UploadMediaPopover>
       <Button
+        className="w-full"
         onClick={() => setOpenDeleteModal(true)}
         variant={"outline"}
         // className="w-full"
       >
-        حذف
+        حذف تصویر
+        <Trash className="w-4 h-4 ml-1" />
       </Button>
     </>
   ) : (
