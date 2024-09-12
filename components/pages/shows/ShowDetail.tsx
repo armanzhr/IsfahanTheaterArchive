@@ -47,13 +47,13 @@ const ShowDetail = ({
           </div>
           <div className="grid items-center gap-4">
             <Label htmlFor="description">توضیحات</Label>
-            <div className="grid-cols-2">
+            <div className="grid-cols-2 grid">
               <TooltipProvider>
                 <MinimalTiptapEditor
                   value={description}
                   onChange={setDescription}
                   throttleDelay={2000}
-                  className="h-full max-w-[33rem] col-span-2 max-h-72 rounded-xl"
+                  className="h-full col-span-2 max-h-72 rounded-xl"
                   editorContentClassName="overflow-auto"
                   output="html"
                   immediatelyRender={true}

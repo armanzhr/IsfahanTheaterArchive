@@ -70,6 +70,9 @@ const UploadShow = ({
     { venueId: number; showDate: string; showTimeStart: string }[]
   >([]);
   const [selectedPeopleByRole, setSelectedPeopleByRole] = useState({}); // State for tracking selected people per role
+  const { getPeople, people } = usePeopleStore();
+  const { getRoles, roles } = useRolesStore();
+  const { getVenues, venues } = useVenuesStore();
 
   // Generate slug when title changes
   useEffect(() => {
@@ -80,6 +83,39 @@ const UploadShow = ({
       setValue("slug", slug);
     }
   }, [title, setValue]);
+
+  const fetchPeoples = async () => {
+    try {
+      const res = await getPeople();
+    } catch (error) {
+      toast.error("خطا در دریافت لیست عوامل");
+    }
+  };
+  const fetchRoles = async () => {
+    try {
+      const res = await getRoles();
+    } catch (error) {
+      toast.error("خطا در دریافت لیست نقش ها");
+    }
+  };
+  const fetchVenues = async () => {
+    try {
+      const res = await getVenues();
+    } catch (error) {
+      toast.error("خطا در دریافت لیست محل های اجرا");
+    }
+  };
+  useEffect(() => {
+    if (!people) {
+      fetchPeoples();
+    }
+    if (!roles) {
+      fetchRoles();
+    }
+    if (!venues) {
+      fetchVenues();
+    }
+  }, [people, roles, venues]);
 
   const onSubmit = async (data: any) => {
     const result = [];
@@ -104,6 +140,7 @@ const UploadShow = ({
     try {
       await createShows(model);
       toast.success("نمایش با موفقیت ساخته شد");
+      setOpen(false);
     } catch (error) {
       toast.error("خطا در ایجاد نمایش");
     }

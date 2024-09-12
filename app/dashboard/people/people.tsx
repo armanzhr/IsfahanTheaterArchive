@@ -51,7 +51,7 @@ const People = () => {
         />
       </div>
 
-      <ScrollArea className="h-[calc(100dvh-200px)] px-4 mt-4">
+      <ScrollArea className="h-[calc(100dvh-220px)] px-4 mt-4">
         <div
           dir="rtl"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2"

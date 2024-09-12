@@ -15,7 +15,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 const Medias = ({ mode }: { mode: "edit" | "view" }) => {
-  const { getMediasList, selectedKey, setSelectedKey, listMedias } =
+  const { getMediasList, media, selectedKey, setSelectedKey, listMedias } =
     useMediaStore();
   const [selectedImage, setSelectedImage] = useState<Media | null>(null);
   const [isMediumScreen, setIsMediumScreen] = useState(false);
@@ -45,8 +45,10 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
     await getMediasList();
   };
   useEffect(() => {
-    handleGetMediasList();
-  }, []);
+    if (media) {
+      handleGetMediasList();
+    }
+  }, [media]);
 
   const handleSelectMedia = (item: Media) => {
     setSelectedImage(item);

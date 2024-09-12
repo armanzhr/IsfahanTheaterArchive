@@ -3,7 +3,23 @@ import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
 interface ShowsStateStore {
-  shows: any | null;
+  shows:
+    | {
+        posterImageId: number;
+        title: string;
+        slug: string;
+        description: string;
+        metaDescription: string;
+        showTimes: {
+          id: number;
+          showId: number;
+          venueId: number;
+          showDate: string;
+          showTimeStart: string;
+          isDeleted: boolean;
+        }[];
+      }[]
+    | null;
   isGettingShows: boolean;
   isLoadingShows: boolean;
   getShows: () => Promise<void>;
@@ -39,7 +55,9 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
   getShows: async () => {
     set({ isGettingShows: true });
     try {
-      const { data } = await axios.get(config.baseURL + "/Shows");
+      const { data } = await axios.get(
+        config.baseURL + "/Shows/GetShowsForEdit"
+      );
       set({ shows: data });
     } catch (error) {
       throw error;

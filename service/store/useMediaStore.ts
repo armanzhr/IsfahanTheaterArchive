@@ -13,7 +13,7 @@ interface MediaStore {
   isGettingFile: boolean;
   listMedias: Media[];
   getMediasList: () => Promise<void>;
-  media: Media | null;
+  media: Media[] | null;
   getMedia: (id: number) => Promise<void>;
   updateMedia: (mediaID: number, model: MediaModel) => Promise<AxiosResponse>;
   createMedia: (model: FormData) => Promise<AxiosResponse>;

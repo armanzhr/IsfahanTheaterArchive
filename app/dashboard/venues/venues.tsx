@@ -69,9 +69,9 @@ const Venues = () => {
     setOpenDeleteModal(true);
   };
   return (
-    <main className="flex flex-col gap-4 p-4 lg:gap-6">
+    <main className="flex flex-col gap-4 p-1 lg:gap-6">
       <Card>
-        <CardContent className="p-4">
+        <CardContent className="p-1">
           <div className="flex gap-3 ">
             <Input
               dir="rtl"
