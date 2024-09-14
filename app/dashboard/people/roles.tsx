@@ -16,6 +16,18 @@ const Roles = () => {
   const { getRoles, roles, isGettingRoles } = useRolesStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<RolesType | null>();
+  const [searchInputValue, setSearchInputValue] = useState<string>("");
+  const [filteredItems, setFilteredItems] = useState<RolesType[] | null>();
+
+  const handleFilterItems = () => {
+    setFilteredItems(
+      roles?.filter((item) => item.name.includes(searchInputValue))
+    );
+  };
+
+  useEffect(() => {
+    handleFilterItems();
+  }, [searchInputValue]);
 
   const fetchRoles = async () => {
     try {
@@ -25,6 +37,7 @@ const Roles = () => {
     }
   };
   useEffect(() => {
+    setFilteredItems(roles);
     if (!roles) {
       fetchRoles();
     }
@@ -46,6 +59,8 @@ const Roles = () => {
           dir="rtl"
           className="border focus-visible:ring-transparent"
           placeholder="جست و جو"
+          value={searchInputValue}
+          onChange={(e) => setSearchInputValue(e.target.value)}
         />
       </div>
 
@@ -57,12 +72,12 @@ const Roles = () => {
           {isGettingRoles ? (
             <SkeletonLoading count={6} />
           ) : (
-            roles?.map((item) => (
+            filteredItems?.map((item) => (
               <>
                 <div className="flex justify-between items-center hover:bg-gray-50 dark:hover:bg-zinc-900 transition ease-in-out duration-300 p-2 rounded-md">
                   <div className="flex items-center gap-3">
                     <Avatar className=" h-12 w-12 sm:flex">
-                      <AvatarImage src="/avatars/02.png" alt="Avatar" />
+                      <AvatarImage alt="Avatar" />
                       <AvatarFallback>
                         <DramaIcon className="opacity-50" />
                       </AvatarFallback>

@@ -97,11 +97,15 @@ const People = () => {
                   <div className="flex items-center gap-3">
                     <Avatar className=" h-12 w-12 sm:flex">
                       <AvatarImage
-                        src={`${config.fileURL}/${
-                          listMedias?.find(
-                            (image) => image.id === item.avatarImageId
-                          )?.url
-                        }`}
+                        src={
+                          item.avatarImageId
+                            ? `${config.fileURL}/${
+                                listMedias?.find(
+                                  (image) => image.id === item.avatarImageId
+                                )?.url
+                              }`
+                            : ""
+                        }
                         alt="Avatar"
                       />
                       <AvatarFallback>
