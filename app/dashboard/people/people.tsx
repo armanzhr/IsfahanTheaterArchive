@@ -19,7 +19,22 @@ const People = () => {
   const { getPeople, people, isGettingPeople } = usePeopleStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<PeopleType | null>();
-  const { listMedias } = useMediaStore();
+  const { listMedias, getMediasList } = useMediaStore();
+  const [searchInputValue, setSearchInputValue] = useState<string>("");
+  const [filteredItems, setFilteredItems] = useState<PeopleType[] | null>();
+
+  const handleFilterItems = () => {
+    setFilteredItems(
+      people?.filter((item) =>
+        `${item.firstName} ${item.lastName}`.includes(searchInputValue)
+      )
+    );
+  };
+
+  useEffect(() => {
+    handleFilterItems();
+  }, [searchInputValue]);
+
   const fetchPeople = async () => {
     try {
       const res = await getPeople();
@@ -28,6 +43,7 @@ const People = () => {
     }
   };
   useEffect(() => {
+    setFilteredItems(people);
     if (!people) {
       fetchPeople();
     }
@@ -41,6 +57,18 @@ const People = () => {
     setEditValue(item);
     setOpen(true);
   };
+  const fetchMedias = async () => {
+    try {
+      const res = await getMediasList();
+    } catch (error) {
+      toast.error("خطا در دریافت لیست رسانه ها");
+    }
+  };
+  useEffect(() => {
+    if (!listMedias) {
+      fetchMedias();
+    }
+  }, [listMedias]);
 
   return (
     <>
@@ -50,6 +78,8 @@ const People = () => {
           dir="rtl"
           className="border focus-visible:ring-transparent"
           placeholder="جست و جو"
+          value={searchInputValue}
+          onChange={(e) => setSearchInputValue(e.target.value)}
         />
       </div>
 
@@ -61,7 +91,7 @@ const People = () => {
           {isGettingPeople ? (
             <SkeletonLoading count={6} />
           ) : (
-            people?.map((item) => (
+            filteredItems?.map((item) => (
               <>
                 <div className="flex justify-between items-center hover:bg-gray-50 dark:hover:bg-zinc-900 transition ease-in-out duration-300 p-2 rounded-md">
                   <div className="flex items-center gap-3">

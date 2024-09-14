@@ -49,7 +49,7 @@ const UploadPeople = ({
   const firstName = watch("firstName");
   const lastName = watch("lastName");
   const [imageMode, setImageMode] = useState<"avatar" | "gallery">();
-  const { selectedImage, listMedias } = useMediaStore();
+  const { selectedImage, listMedias, setSelectedImage } = useMediaStore();
   // Generate slug when firstName or lastName changes
   useEffect(() => {
     const slug = `${firstName} ${lastName}`.trim().replace(/\s+/g, "-");
@@ -101,6 +101,7 @@ const UploadPeople = ({
         toast.error("خطا در ایجاد کاربر");
       }
     }
+    setSelectedImage(null);
   };
   useEffect(() => {
     console.log(selectedImage);

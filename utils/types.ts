@@ -33,3 +33,28 @@ export interface MediaModel {
   title: string;
   file: File;
 }
+export interface Show {
+  id: number;
+  posterImageId: number;
+  imagesIDs: number[];
+  title: string;
+  slug: string;
+  description: string;
+  metaDescription: string;
+  showTimes: {
+    id?: number;
+    showId?: number;
+    venueId?: number;
+    showDate?: string;
+    showTimeStart?: string;
+    isDeleted?: boolean;
+  }[];
+  showPeopleRoles: {
+    id?: number;
+    showId?: number;
+    personId: number;
+    roleId: number;
+    createdAt?: string;
+    isDeleted?: boolean;
+  }[];
+}

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/drawer";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { useRolesStore } from "@/service/store/useRolesStore";
-import { Media, People, Roles } from "@/utils/types";
+import { Media, People, Roles, Show } from "@/utils/types";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Upload, XIcon } from "lucide-react";
@@ -48,7 +48,7 @@ const UploadShow = ({
 }: {
   open: boolean;
   setOpen: (data: boolean) => void;
-  editValue?: Roles | null;
+  editValue?: Show | null;
 }) => {
   const { handleSubmit, register, watch, setValue, reset } = useForm();
   const [galleryImage, setGalleryImage] = useState<{
@@ -60,7 +60,7 @@ const UploadShow = ({
   const handleCloseMediaModal = () => {
     setIsOpenMediaModal(false);
   };
-  const { createShows } = useShowsStore();
+  const { createShows, updateShows } = useShowsStore();
   const [commandValue, setCommandValue] = useState("");
 
   const title = watch("title");
@@ -73,6 +73,37 @@ const UploadShow = ({
   const { getPeople, people } = usePeopleStore();
   const { getRoles, roles } = useRolesStore();
   const { getVenues, venues } = useVenuesStore();
+  const { listMedias } = useMediaStore();
+
+  useEffect(() => {
+    console.log(editValue);
+    const result: { [key: number]: number[] } = {};
+
+    editValue?.showPeopleRoles.forEach((item) => {
+      if (!result[item.roleId]) {
+        result[item.roleId] = [];
+      }
+      result[item.roleId].push(item.personId);
+    });
+
+    setValue("title", editValue?.title);
+    setValue("slug", editValue?.slug);
+    setDescription(editValue?.description as any);
+    setShowsTimes(editValue?.showTimes);
+    setGalleryImage(
+      (prev) =>
+        ({
+          ...prev,
+          poster: listMedias?.find(
+            (item) => item.id === editValue?.posterImageId
+          ),
+          otherImages: listMedias?.filter((item) =>
+            editValue?.imagesIDs.includes(item.id)
+          ),
+        } as any)
+    );
+    setSelectedPeopleByRole(result);
+  }, [editValue]);
 
   // Generate slug when title changes
   useEffect(() => {
@@ -133,16 +164,25 @@ const UploadShow = ({
       description: description,
       metaDescription: "null",
       showTimes: showTimes,
-      imageIds: galleryImage.otherImages.map((item) => item.id),
+      imageIds: galleryImage.otherImages?.map((item) => item.id),
       showPeopleRoles: result,
     };
-
-    try {
-      await createShows(model);
-      toast.success("نمایش با موفقیت ساخته شد");
-      setOpen(false);
-    } catch (error) {
-      toast.error("خطا در ایجاد نمایش");
+    if (editValue) {
+      try {
+        await updateShows(editValue.id, model);
+        toast.success("نمایش با موفقیت ویرایش شد");
+        setOpen(false);
+      } catch (error) {
+        toast.error("خطا در ویرایش نمایش");
+      }
+    } else {
+      try {
+        await createShows(model);
+        toast.success("نمایش با موفقیت ساخته شد");
+        setOpen(false);
+      } catch (error) {
+        toast.error("خطا در ایجاد نمایش");
+      }
     }
   };
 
@@ -253,7 +293,7 @@ const UploadShow = ({
 
                         <p>آلبوم</p>
                         <div className="grid grid-cols-3 gap-2">
-                          {galleryImage?.otherImages.map((image) => (
+                          {galleryImage?.otherImages?.map((image) => (
                             <Card key={image.id}>
                               <button type="button">
                                 <Image

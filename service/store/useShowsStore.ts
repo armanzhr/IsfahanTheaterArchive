@@ -1,50 +1,14 @@
-import { Roles } from "@/utils/types";
+import { Roles, Show } from "@/utils/types";
 import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
 interface ShowsStateStore {
-  shows:
-    | {
-        posterImageId: number;
-        title: string;
-        slug: string;
-        description: string;
-        metaDescription: string;
-        showTimes: {
-          id: number;
-          showId: number;
-          venueId: number;
-          showDate: string;
-          showTimeStart: string;
-          isDeleted: boolean;
-        }[];
-      }[]
-    | null;
+  shows: Show[] | null;
   isGettingShows: boolean;
   isLoadingShows: boolean;
   getShows: () => Promise<void>;
-  createShows: (model: {
-    posterImageId: number;
-    title: string;
-    slug: string;
-    description: string;
-    metaDescription: string;
-    showTimes: [
-      {
-        venueId: number;
-        showDate: string;
-        showTimeStart: string;
-      }
-    ];
-    showPeopleRoles: [
-      {
-        personId: number;
-        roleId: number;
-      }
-    ];
-    imageIds: [number];
-  }) => Promise<void>;
-  updateShows: (showsID: number, model: { name: string }) => Promise<void>;
+  createShows: (model: Show) => Promise<void>;
+  updateShows: (showsID: number, model: Show) => Promise<void>;
   deleteShows: (peopleID: number) => Promise<void>;
 }
 

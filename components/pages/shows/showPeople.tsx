@@ -45,11 +45,11 @@ const ShowPeople = ({
                     onValueChange={handleChangeValue}
                     defaultValue={{
                       roleId: item.id, // Pass the role's ID
-                      people: selectedPeopleByRole[item.id] || [], // Pass selected people specific to this role
+                      people: selectedPeopleByRole[item?.id] || [], // Pass selected people specific to this role
                     }}
                     value={{
                       roleId: item.id, // Pass the role's ID
-                      people: selectedPeopleByRole[item.id] || [], // Pass selected people specific to this role
+                      people: selectedPeopleByRole[item?.id] || [], // Pass selected people specific to this role
                     }}
                     role={item}
                     placeholder="Select frameworks"
