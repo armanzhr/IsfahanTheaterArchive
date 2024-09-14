@@ -42,6 +42,18 @@ const Venues = () => {
   const [editValue, setEditValue] = useState<VenuesType | null>();
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [selectedVenue, setSelectedVenue] = useState<VenuesType>();
+  const [searchInputValue, setSearchInputValue] = useState<string>("");
+  const [filteredItems, setFilteredItems] = useState<VenuesType[] | null>();
+
+  const handleFilterItems = () => {
+    setFilteredItems(
+      venues?.filter((item) => item.name.includes(searchInputValue))
+    );
+  };
+
+  useEffect(() => {
+    handleFilterItems();
+  }, [searchInputValue]);
 
   const fetchVenues = async () => {
     try {
@@ -51,6 +63,7 @@ const Venues = () => {
     }
   };
   useEffect(() => {
+    setFilteredItems(venues);
     if (!venues) {
       fetchVenues();
     }
@@ -77,6 +90,8 @@ const Venues = () => {
               dir="rtl"
               className="border focus-visible:ring-transparent"
               placeholder="جست و جو"
+              value={searchInputValue}
+              onChange={(e) => setSearchInputValue(e.target.value)}
             />
             <Button onClick={() => handleCreateVenue()}>محل جدید</Button>
           </div>
@@ -90,7 +105,7 @@ const Venues = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {venues?.map((venue) => (
+              {filteredItems?.map((venue) => (
                 <TableRow key={venue.id}>
                   <TableCell className="font-medium">{venue.name}</TableCell>
                   <TableCell>{venue.address}</TableCell>
