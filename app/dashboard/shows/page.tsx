@@ -50,6 +50,19 @@ const Shows = () => {
   const [editValue, setEditValue] = useState<Show | null>();
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [selectedShow, setSelectedShow] = useState<Show>();
+  const [searchInputValue, setSearchInputValue] = useState<string>("");
+  const [filteredItems, setFilteredItems] = useState<Show[] | null>();
+
+  const handleFilterItems = () => {
+    setFilteredItems(
+      shows?.filter((item) => item.title.includes(searchInputValue))
+    );
+  };
+
+  useEffect(() => {
+    handleFilterItems();
+  }, [searchInputValue]);
+
   const fetchShows = async () => {
     try {
       const res = await getShows();
@@ -66,10 +79,12 @@ const Shows = () => {
   };
 
   useEffect(() => {
+    setFilteredItems(shows);
     if (!shows) {
       fetchShows();
     }
   }, [shows]);
+
   useEffect(() => {
     if (!listMedias) {
       fetchMedias();
@@ -98,6 +113,8 @@ const Shows = () => {
               dir="rtl"
               className="border focus-visible:ring-transparent"
               placeholder="جست و جو"
+              value={searchInputValue}
+              onChange={(e) => setSearchInputValue(e.target.value)}
             />
             <Button onClick={() => handleCreateRole()}>نمایش جدید</Button>
           </div>
@@ -113,7 +130,7 @@ const Shows = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {shows?.map((show) => (
+                {filteredItems?.map((show) => (
                   <TableRow key={show.title}>
                     <TableCell className="">
                       <Image

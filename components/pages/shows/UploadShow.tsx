@@ -140,13 +140,19 @@ const UploadShow = ({
     if (!people) {
       fetchPeoples();
     }
-    if (!roles) {
-      fetchRoles();
-    }
+  }, [people]);
+
+  useEffect(() => {
     if (!venues) {
       fetchVenues();
     }
-  }, [people, roles, venues]);
+  }, [venues]);
+
+  useEffect(() => {
+    if (!roles) {
+      fetchRoles();
+    }
+  }, [roles]);
 
   const onSubmit = async (data: any) => {
     const result = [];
