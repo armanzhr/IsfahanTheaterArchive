@@ -15,7 +15,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 const Medias = ({ mode }: { mode: "edit" | "view" }) => {
-  const { getMediasList, media, selectedKey, setSelectedKey, listMedias } =
+  const { getMediasList, selectedKey, setSelectedKey, listMedias } =
     useMediaStore();
   const [selectedImage, setSelectedImage] = useState<Media | null>(null);
   const [isMediumScreen, setIsMediumScreen] = useState(false);
@@ -45,10 +45,10 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
     await getMediasList();
   };
   useEffect(() => {
-    if (media) {
+    if (!listMedias) {
       handleGetMediasList();
     }
-  }, [media]);
+  }, [listMedias]);
 
   const handleSelectMedia = (item: Media) => {
     setSelectedImage(item);
@@ -70,7 +70,7 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
         <div className="h-[calc(100vh-150px)] grid grid-cols-10 gap-3">
           <ScrollArea className="col-span-10 lg:col-span-8 md:col-span-7">
             <Card className=" grid lg:grid-cols-7 grid-cols-3 gap-4 p-3">
-              {listMedias.map((item, index) => (
+              {listMedias?.map((item, index) => (
                 <Card
                   className={cn(
                     selectedImage &&

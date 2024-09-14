@@ -12,12 +12,14 @@ import { usePeopleStore } from "@/service/store/usePeopleStore";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SkeletonLoading from "@/components/pages/people/SkeletonLoading";
 import { toast } from "sonner";
+import config from "@/config";
+import { useMediaStore } from "@/service/store/useMediaStore";
 
 const People = () => {
   const { getPeople, people, isGettingPeople } = usePeopleStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<PeopleType | null>();
-
+  const { listMedias } = useMediaStore();
   const fetchPeople = async () => {
     try {
       const res = await getPeople();
@@ -64,7 +66,14 @@ const People = () => {
                 <div className="flex justify-between items-center hover:bg-gray-50 dark:hover:bg-zinc-900 transition ease-in-out duration-300 p-2 rounded-md">
                   <div className="flex items-center gap-3">
                     <Avatar className=" h-12 w-12 sm:flex">
-                      <AvatarImage src="/avatars/02.png" alt="Avatar" />
+                      <AvatarImage
+                        src={`${config.fileURL}/${
+                          listMedias?.find(
+                            (image) => image.id === item.avatarImageId
+                          )?.url
+                        }`}
+                        alt="Avatar"
+                      />
                       <AvatarFallback>
                         <UserIcon className="opacity-50" />
                       </AvatarFallback>

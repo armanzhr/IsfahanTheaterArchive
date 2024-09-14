@@ -1,5 +1,11 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import {
   Sheet,
@@ -14,11 +20,14 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { usePeopleStore } from "@/service/store/usePeopleStore";
 
-import { People } from "@/utils/types";
-import { PencilIcon } from "lucide-react";
-import React, { useEffect } from "react";
+import { Media, People } from "@/utils/types";
+import { PencilIcon, TrashIcon, UserIcon } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import SelectImageHandler from "../medias/SelectImage";
+import { useMediaStore } from "@/service/store/useMediaStore";
+import config from "@/config";
 
 const UploadPeople = ({
   open,
@@ -31,9 +40,16 @@ const UploadPeople = ({
 }) => {
   const { handleSubmit, register, watch, setValue, reset } = useForm();
   const { isLoadingPeople, createPeople, updatePeople } = usePeopleStore();
+  const [isOpenMediaModal, setIsOpenMediaModal] = useState(false);
+  const [galleryImage, setGalleryImage] = useState<{
+    profile: Media | null;
+    otherImages: Media[];
+  }>({ profile: null, otherImages: [] });
+  const [date, setDate] = useState<string>();
   const firstName = watch("firstName");
   const lastName = watch("lastName");
-
+  const [imageMode, setImageMode] = useState<"avatar" | "gallery">();
+  const { selectedImage, listMedias } = useMediaStore();
   // Generate slug when firstName or lastName changes
   useEffect(() => {
     const slug = `${firstName} ${lastName}`.trim().replace(/\s+/g, "-");
@@ -48,9 +64,24 @@ const UploadPeople = ({
     setValue("lastName", editValue?.lastName);
     setValue("slug", editValue?.slug);
     setValue("biography", editValue?.biography);
+    setDate(editValue?.startYaer?.toString());
+    setGalleryImage(
+      (prev) =>
+        ({
+          ...prev,
+          profile: listMedias?.find(
+            (item) => item.id === editValue?.avatarImageId
+          ),
+        } as any)
+    );
   }, [editValue]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (model: any) => {
+    const data = {
+      ...model,
+      startYear: Number(date),
+      avatarImageId: galleryImage.profile?.id,
+    };
     if (editValue) {
       try {
         await updatePeople(editValue.id, data);
@@ -71,6 +102,21 @@ const UploadPeople = ({
       }
     }
   };
+  useEffect(() => {
+    console.log(selectedImage);
+
+    if (selectedImage) {
+      setIsOpenMediaModal(false);
+      if (imageMode === "avatar") {
+        setGalleryImage((prev) => ({ ...prev, profile: selectedImage }));
+      } else if (imageMode === "gallery") {
+        setGalleryImage((prev) => ({
+          ...prev,
+          otherImages: [...prev?.otherImages, selectedImage],
+        }));
+      }
+    }
+  }, [selectedImage]);
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent side="left">
@@ -111,6 +157,7 @@ const UploadPeople = ({
                 {...register("slug", { required: true })}
               />
             </div>
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="biography" className="text-right">
                 بیوگرافی
@@ -121,11 +168,75 @@ const UploadPeople = ({
                 className="col-span-3 h-32 resize-none"
               />
             </div>
+            <div className="grid grid-cols-2 items-center gap-4">
+              <Label htmlFor="startYear" className="text-right">
+                سال شروع فعالیت
+              </Label>
+              <div dir="ltr" className="col-span-1 flex flex-col gap-2">
+                <InputOTP value={date} onChange={setDate} maxLength={4}>
+                  <InputOTPGroup>
+                    <InputOTPSlot className="w-10 h-10" index={0} />
+                    <InputOTPSlot className="w-10 h-10" index={1} />
+                    <InputOTPSlot className="w-10 h-10" index={2} />
+                    <InputOTPSlot className="w-10 h-10" index={3} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="startYear" className="text-right">
+                پروفایل
+              </Label>
+              <div className="col-span-3 flex items-center gap-2">
+                <Avatar className=" w-16 h-16">
+                  <AvatarImage
+                    src={`${config.fileURL}/${galleryImage.profile?.url}`}
+                    alt="user"
+                  />
+                  <AvatarFallback>
+                    <UserIcon className="opacity-50" />
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <Button
+                    onClick={() => {
+                      setIsOpenMediaModal(true);
+                      setImageMode("avatar");
+                    }}
+                    type="button"
+                    variant="outline"
+                    className="text-sm"
+                  >
+                    انتخاب تصویر جدید
+                  </Button>
+                  {galleryImage.profile && (
+                    <Button
+                      onClick={() =>
+                        setGalleryImage((prev) => ({
+                          ...prev,
+                          profile: null,
+                        }))
+                      }
+                      type="button"
+                      variant="link"
+                      className="text-red-400 text-sm "
+                    >
+                      <TrashIcon className="w-4 h-4 ml-1" />
+                      <p>حذف تصویر</p>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
           <SheetFooter>
             <Button type="submit">{editValue ? "ویرایش" : "ایجاد"}</Button>
           </SheetFooter>
         </form>
+        <SelectImageHandler
+          isOpen={isOpenMediaModal}
+          setOpen={setIsOpenMediaModal}
+        />
       </SheetContent>
     </Sheet>
   );

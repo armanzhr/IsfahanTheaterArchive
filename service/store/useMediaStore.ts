@@ -11,7 +11,7 @@ interface MediaStore {
   setSelectedImage: (selectedImage: Media | null) => void;
   isLoadingMedia: boolean;
   isGettingFile: boolean;
-  listMedias: Media[];
+  listMedias: Media[] | null;
   getMediasList: () => Promise<void>;
   media: Media[] | null;
   getMedia: (id: number) => Promise<void>;
@@ -28,7 +28,7 @@ export const useMediaStore = create<MediaStore>((set) => ({
   setSelectedImage: (selectedImage) => set({ selectedImage }),
   isLoadingMedia: false,
   isGettingFile: false,
-  listMedias: [],
+  listMedias: null,
   getMediasList: async () => {
     set({ isLoadingMedia: true });
     try {

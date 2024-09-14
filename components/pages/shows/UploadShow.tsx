@@ -254,7 +254,7 @@ const UploadShow = ({
                         <p>آلبوم</p>
                         <div className="grid grid-cols-3 gap-2">
                           {galleryImage?.otherImages.map((image) => (
-                            <Card>
+                            <Card key={image.id}>
                               <button type="button">
                                 <Image
                                   alt="show poster"

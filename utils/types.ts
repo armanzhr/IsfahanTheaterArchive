@@ -8,6 +8,7 @@ export interface People {
   isDeleted: boolean;
   imagesIDs: [number];
   avatarImageId: number;
+  startYaer: number;
 }
 export interface Roles {
   id: number;

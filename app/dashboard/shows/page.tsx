@@ -69,6 +69,11 @@ const Shows = () => {
       fetchShows();
     }
   }, [shows]);
+  useEffect(() => {
+    if (!listMedias) {
+      fetchMedias();
+    }
+  }, [listMedias]);
 
   const handleCreateRole = () => {
     setEditValue(null);

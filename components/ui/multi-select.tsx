@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/command";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { People, Roles } from "@/utils/types";
+import config from "@/config";
+import { useMediaStore } from "@/service/store/useMediaStore";
 
 /**
  * Variants for the multi-select component to handle different styles.
@@ -140,7 +142,7 @@ export const MultiSelect = React.forwardRef<
     }>(defaultValue);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
-
+    const { listMedias } = useMediaStore();
     React.useEffect(() => {
       setSelectedValues(defaultValue);
     }, [defaultValue]);
@@ -247,7 +249,14 @@ export const MultiSelect = React.forwardRef<
                         </div>
 
                         <Avatar className=" h-6 w-6 ml-2 sm:flex">
-                          <AvatarImage src="/avatars/02.png" alt="Avatar" />
+                          <AvatarImage
+                            src={`${config.fileURL}/${
+                              listMedias?.find(
+                                (item) => item.id === option.avatarImageId
+                              )?.url
+                            }`}
+                            alt="Avatar"
+                          />
                           <AvatarFallback>
                             <UserIcon className="opacity-50 h-4 w-4" />
                           </AvatarFallback>
@@ -305,7 +314,14 @@ export const MultiSelect = React.forwardRef<
                 >
                   <div className="flex w-full items-center gap-2">
                     <Avatar className=" h-7 w-7 sm:flex">
-                      <AvatarImage src="/avatars/02.png" alt="Avatar" />
+                      <AvatarImage
+                        src={`${config.fileURL}/${
+                          listMedias?.find(
+                            (item) => item.id === option?.avatarImageId
+                          )?.url
+                        }`}
+                        alt="Avatar"
+                      />
                       <AvatarFallback>
                         <UserIcon className="opacity-50 h-5 w-5" />
                       </AvatarFallback>
