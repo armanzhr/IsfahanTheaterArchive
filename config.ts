@@ -8,8 +8,8 @@ const config = {
   features: {
     blog: true,
   },
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
-  fileURL: process.env.NEXT_PUBLIC_FILE_URL,
+  baseURL: "http://api.isfahantheaters.ir/api",
+  fileURL: "http://api.isfahantheaters.ir/",
 };
 
 export default config;

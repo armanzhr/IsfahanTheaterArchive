@@ -1,76 +1,86 @@
-import type { Editor } from '@tiptap/react'
-import React, { useRef, useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
+import type { Editor } from "@tiptap/react";
+import React, { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import SelectImageHandler from "@/components/pages/medias/SelectImage";
+import { useMediaStore } from "@/service/store/useMediaStore";
+import Image from "next/image";
+import config from "@/config";
 
 interface ImageEditBlockProps extends React.HTMLAttributes<HTMLDivElement> {
-  editor: Editor
-  close: () => void
+  editor: Editor;
+  close: () => void;
 }
 
-const ImageEditBlock = ({ editor, className, close, ...props }: ImageEditBlockProps) => {
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [link, setLink] = useState<string>('')
+const ImageEditBlock = ({
+  editor,
+  className,
+  close,
+  ...props
+}: ImageEditBlockProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [link, setLink] = useState<string>("");
+  const [isOpenMediaModal, setIsOpenMediaModal] = useState(false);
+  const { selectedImage, setSelectedImage } = useMediaStore();
 
   const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    fileInputRef.current?.click()
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    editor
+      .chain()
+      .focus()
+      .setImage({ src: `${config.fileURL}/${selectedImage?.url}` })
+      .run();
+    setSelectedImage(null);
+    close();
+  };
 
-  const handleLink = () => {
-    editor.chain().focus().setImage({ src: link }).run()
-    close()
-  }
+  useEffect(() => {
+    console.log(selectedImage);
 
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files) return
-
-    const reader = new FileReader()
-    reader.onload = e => {
-      const src = e.target?.result as string
-      editor.chain().setImage({ src }).focus().run()
+    if (selectedImage) {
+      setIsOpenMediaModal(false);
     }
-
-    reader.readAsDataURL(files[0])
-
-    close()
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    handleLink()
-  }
+  }, [selectedImage]);
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className={cn('space-y-6', className)} {...props}>
+    <>
+      <div className={cn("space-y-6", className)} {...props}>
         <div className="space-y-1">
-          <Label>Attach an image link</Label>
-          <div className="flex">
-            <Input
-              type="url"
-              required
-              placeholder="https://example.com"
-              value={link}
-              className="grow"
-              onChange={e => setLink(e.target.value)}
-            />
-            <Button type="submit" className="ml-2 inline-block">
-              Submit
+          <div className="flex flex-col gap-3">
+            {selectedImage && (
+              <Image
+                alt="image"
+                className="aspect-square w-full rounded-md object-cover"
+                height="84"
+                src={`${config.fileURL}/${selectedImage?.url}`}
+                width="84"
+              />
+            )}
+            <Button
+              onClick={() => {
+                setIsOpenMediaModal(true);
+              }}
+              type="button"
+              variant="outline"
+              className="inline-block"
+            >
+              انتخاب تصویر
             </Button>
           </div>
         </div>
-        <Button className="w-full" onClick={handleClick}>
-          Upload from your computer
+        <Button type="button" className="w-full" onClick={handleClick}>
+          افزودن
         </Button>
-        <input type="file" accept="image/*" ref={fileInputRef} multiple className="hidden" onChange={handleFile} />
       </div>
-    </form>
-  )
-}
+      <SelectImageHandler
+        isOpen={isOpenMediaModal}
+        setOpen={setIsOpenMediaModal}
+      />
+    </>
+  );
+};
 
-export { ImageEditBlock }
+export { ImageEditBlock };

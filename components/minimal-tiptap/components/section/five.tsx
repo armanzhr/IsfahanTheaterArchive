@@ -60,7 +60,7 @@ export const SectionFive: React.FC<SectionFiveProps> = ({
             <CaretDownIcon className="size-5" />
           </>
         }
-        dropdownTooltip="Insert elements"
+        dropdownTooltip="افزودن"
         size={size}
         variant={variant}
       />
