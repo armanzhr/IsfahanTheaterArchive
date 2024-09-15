@@ -7,7 +7,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "تئاتر اصفهان",
 };
-const vazir = Vazirmatn({ subsets: ["arabic"] });
+const vazir = Vazirmatn({
+  subsets: ["arabic"],
+  display: "swap",
+  adjustFontFallback: false,
+});
 export default function RootLayout({
   children,
 }: {

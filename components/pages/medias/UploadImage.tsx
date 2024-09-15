@@ -37,7 +37,6 @@ const UploadImage = () => {
 
   const displayPreview = (file: File) => {
     setSelectedFile(file);
-    console.log(file);
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {

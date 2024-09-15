@@ -177,7 +177,6 @@ export const MultiSelect = React.forwardRef<
 
     const handleTogglePopover = () => {
       setIsPopoverOpen((prev) => !prev);
-      console.log(role);
     };
 
     const clearExtraOptions = () => {

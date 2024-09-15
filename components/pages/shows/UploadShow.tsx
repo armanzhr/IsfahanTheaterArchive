@@ -76,7 +76,6 @@ const UploadShow = ({
   const { listMedias } = useMediaStore();
 
   useEffect(() => {
-    console.log(editValue);
     const result: { [key: number]: number[] } = {};
 
     editValue?.showPeopleRoles.forEach((item) => {
@@ -193,8 +192,6 @@ const UploadShow = ({
   };
 
   useEffect(() => {
-    console.log(selectedImage);
-
     if (selectedImage) {
       setIsOpenMediaModal(false);
       if (imageMode === "avatar") {

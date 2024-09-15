@@ -92,7 +92,6 @@ const ShowTime = ({
   const { venues } = useVenuesStore();
 
   const handleClick = () => {
-    console.log("date :", date, "time : ", time, "venue: ", commandValue);
     const day = date?.substring(6, 8);
     const month = date?.substring(4, 6);
     const year = date?.substring(0, 4);

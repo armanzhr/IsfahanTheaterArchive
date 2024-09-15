@@ -10,9 +10,6 @@ const MediaDetailBody = ({
   selectedImage: Media;
   mode: "view" | "edit";
 }) => {
-  useEffect(() => {
-    console.log(selectedImage);
-  }, [selectedImage]);
   return (
     <>
       <img

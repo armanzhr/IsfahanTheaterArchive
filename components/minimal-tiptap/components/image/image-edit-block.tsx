@@ -38,8 +38,6 @@ const ImageEditBlock = ({
   };
 
   useEffect(() => {
-    console.log(selectedImage);
-
     if (selectedImage) {
       setIsOpenMediaModal(false);
     }

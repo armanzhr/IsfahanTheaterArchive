@@ -104,8 +104,6 @@ const UploadPeople = ({
     setSelectedImage(null);
   };
   useEffect(() => {
-    console.log(selectedImage);
-
     if (selectedImage) {
       setIsOpenMediaModal(false);
       if (imageMode === "avatar") {
