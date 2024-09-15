@@ -88,7 +88,7 @@ const UploadImage = () => {
 
       {previewSrc && (
         <div className="w-full flex flex-col gap-2 items-center justify-center">
-          <Image
+          <img
             alt="Product image"
             className="aspect-square w-full rounded-md object-cover max-w-40 max-h-40 "
             height="300"

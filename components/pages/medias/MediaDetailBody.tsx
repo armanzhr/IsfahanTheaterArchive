@@ -15,11 +15,10 @@ const MediaDetailBody = ({
   }, [selectedImage]);
   return (
     <>
-      <Image
+      <img
         width={300}
         height={300}
         alt={selectedImage?.alt}
-        crossOrigin="anonymous"
         className="object-cover max-h-[300px] rounded-md"
         src={`${config.fileURL}/${selectedImage.url}`}
       />

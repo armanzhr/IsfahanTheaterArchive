@@ -263,11 +263,10 @@ const UploadShow = ({
                             className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed"
                           >
                             {galleryImage?.poster ? (
-                              <Image
+                              <img
                                 alt="Product image"
                                 className="aspect-square w-full rounded-md object-cover"
                                 height="300"
-                                crossOrigin="anonymous"
                                 src={`${config.fileURL}/${galleryImage.poster?.url}`}
                                 width="300"
                               />
@@ -302,7 +301,7 @@ const UploadShow = ({
                           {galleryImage?.otherImages?.map((image) => (
                             <Card key={image.id}>
                               <button type="button">
-                                <Image
+                                <img
                                   alt="show poster"
                                   className="aspect-square w-full rounded-md object-cover"
                                   height="84"

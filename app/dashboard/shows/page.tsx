@@ -133,11 +133,10 @@ const Shows = () => {
                 {filteredItems?.map((show) => (
                   <TableRow key={show.title}>
                     <TableCell className="">
-                      <Image
+                      <img
                         width={80}
                         height={80}
                         alt={show.title}
-                        crossOrigin="anonymous"
                         className="aspect-square rounded-md object-cover"
                         src={`${config.fileURL}/${
                           listMedias?.find(

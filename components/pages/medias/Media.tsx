@@ -70,7 +70,7 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
         <div className="h-[calc(100vh-150px)] grid grid-cols-10 gap-3">
           <ScrollArea className="col-span-10 lg:col-span-8 md:col-span-7">
             <Card className=" grid lg:grid-cols-7 grid-cols-3 gap-4 p-3">
-              {listMedias?.map((item, index) => (
+              {listMedias?.reverse().map((item, index) => (
                 <Card
                   className={cn(
                     selectedImage &&
@@ -81,13 +81,14 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
                   onClick={() => handleSelectMedia(item)}
                 >
                   <CardContent className="overflow-visible p-0">
-                    <Image
+                    <img
                       width={200}
                       height={200}
                       alt={item.title}
-                      crossOrigin="anonymous"
+                      // crossOrigin="anonymous"
                       className="aspect-square w-full rounded-md object-cover"
                       src={`${config.fileURL}/${item.url}`}
+                      // unoptimized
                     />
                   </CardContent>
                 </Card>

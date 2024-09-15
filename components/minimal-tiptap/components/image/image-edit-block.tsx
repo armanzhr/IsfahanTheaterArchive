@@ -51,7 +51,7 @@ const ImageEditBlock = ({
         <div className="space-y-1">
           <div className="flex flex-col gap-3">
             {selectedImage && (
-              <Image
+              <img
                 alt="image"
                 className="aspect-square w-full rounded-md object-cover"
                 height="84"
