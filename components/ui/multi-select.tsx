@@ -113,6 +113,7 @@ interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
    */
   className?: string;
   role: Roles;
+  value?: any;
 }
 
 export const MultiSelect = React.forwardRef<

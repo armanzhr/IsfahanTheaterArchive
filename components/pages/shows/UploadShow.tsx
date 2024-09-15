@@ -69,7 +69,7 @@ const UploadShow = ({
   const [showTimes, setShowsTimes] = useState<
     { venueId: number; showDate: string; showTimeStart: string }[]
   >([]);
-  const [selectedPeopleByRole, setSelectedPeopleByRole] = useState({}); // State for tracking selected people per role
+  const [selectedPeopleByRole, setSelectedPeopleByRole] = useState<any>({}); // State for tracking selected people per role
   const { getPeople, people } = usePeopleStore();
   const { getRoles, roles } = useRolesStore();
   const { getVenues, venues } = useVenuesStore();
@@ -89,7 +89,7 @@ const UploadShow = ({
     setValue("title", editValue?.title);
     setValue("slug", editValue?.slug);
     setDescription(editValue?.description as any);
-    setShowsTimes(editValue?.showTimes);
+    setShowsTimes(editValue?.showTimes as any);
     setGalleryImage(
       (prev) =>
         ({
@@ -155,10 +155,10 @@ const UploadShow = ({
   }, [roles]);
 
   const onSubmit = async (data: any) => {
-    const result = [];
+    const result: any = [];
 
     for (const [roleId, peopleIds] of Object.entries(selectedPeopleByRole)) {
-      peopleIds.forEach((personId) => {
+      (peopleIds as any).forEach((personId: any) => {
         result.push({ roleId: parseInt(roleId), personId });
       });
     }
@@ -175,7 +175,7 @@ const UploadShow = ({
     };
     if (editValue) {
       try {
-        await updateShows(editValue.id, model);
+        await updateShows(editValue.id, model as any);
         toast.success("نمایش با موفقیت ویرایش شد");
         setOpen(false);
       } catch (error) {
@@ -183,7 +183,7 @@ const UploadShow = ({
       }
     } else {
       try {
-        await createShows(model);
+        await createShows(model as any);
         toast.success("نمایش با موفقیت ساخته شد");
         setOpen(false);
       } catch (error) {

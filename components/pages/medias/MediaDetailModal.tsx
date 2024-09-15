@@ -8,19 +8,22 @@ const MediaDetailModal = ({
   onOpenChange,
   selectedImage,
   setOpenDeleteModal,
+  mode,
 }: {
   isOpen: boolean;
   onOpenChange: any;
   selectedImage: Media;
   setOpenDeleteModal: (bool: boolean) => void;
+  mode: "view" | "edit";
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="p-6 max-w-full">
         <>
-          <MediaDetailBody selectedImage={selectedImage} />
+          <MediaDetailBody mode={mode} selectedImage={selectedImage} />
           <DialogFooter>
             <MediaDetailFooter
+              mode={mode}
               selectedImage={selectedImage}
               setOpenDeleteModal={setOpenDeleteModal}
             />

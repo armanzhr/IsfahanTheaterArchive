@@ -9,9 +9,5 @@ const nextConfig = {
     ],
   },
   reactStrictMode: false,
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  // output: "export",
 };
 module.exports = nextConfig;

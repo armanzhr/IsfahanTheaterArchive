@@ -37,7 +37,7 @@ const UploadMediaPopover = ({
       if (selectedImage) {
         //mode === edit
         try {
-          await updateMedia(selectedImage?.id, model);
+          await updateMedia(selectedImage?.id, model as any);
           toast.success("رسانه با موفقیت ویرایش شد");
         } catch (error) {
           toast.error("خطا در ویرایش رسانه");
@@ -79,7 +79,7 @@ const UploadMediaPopover = ({
           <p className="text-small font-bold text-foreground">
             {mode === "edit" ? "ویرایش تصویر" : "آپلود تصویر"}
           </p>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit as any)}>
             <div className="mt-2 flex flex-col gap-2 w-full">
               <div className="grid grid-cols-3 items-center gap-4">
                 <Label htmlFor="firstName" className="text-right">

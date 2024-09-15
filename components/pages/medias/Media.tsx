@@ -121,6 +121,7 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
             </Card>
           ) : (
             <MediaDetailModal
+              mode={mode}
               selectedImage={selectedImage!}
               setOpenDeleteModal={setOpenDeleteModal}
               onOpenChange={onOpenChange}

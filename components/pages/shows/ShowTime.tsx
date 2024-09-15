@@ -107,7 +107,7 @@ const ShowTime = ({
       showDate: showtime,
       showTimeStart: `${hour}:${min}:00`,
     };
-    setShowTimes([...showTimes, model]);
+    setShowTimes([...showTimes, model] as any);
     setIsOpen(false);
   };
 
