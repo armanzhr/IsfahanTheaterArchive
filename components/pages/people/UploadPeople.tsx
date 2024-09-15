@@ -169,11 +169,11 @@ const UploadPeople = ({
                 className="col-span-3 h-32 resize-none"
               />
             </div>
-            <div className="grid grid-cols-2 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="startYear" className="text-right">
                 سال شروع فعالیت
               </Label>
-              <div dir="ltr" className="col-span-1 flex flex-col gap-2">
+              <div dir="ltr" className="col-span-3 flex flex-col gap-2">
                 <InputOTP value={date} onChange={setDate} maxLength={4}>
                   <InputOTPGroup>
                     <InputOTPSlot className="w-10 h-10" index={0} />
@@ -189,7 +189,7 @@ const UploadPeople = ({
                 پروفایل
               </Label>
               <div className="col-span-3 flex items-center gap-2">
-                <Avatar className=" w-16 h-16">
+                <Avatar className=" w-12 h-12">
                   <AvatarImage
                     src={`${config.fileURL}/${galleryImage.profile?.url}`}
                     alt="user"

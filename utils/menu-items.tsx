@@ -34,10 +34,10 @@ export const menuItems = () => {
       pathname: "/dashboard/medias",
       icon: <PhotoIcon className="h-3 w-3" />,
     },
-    {
-      name: "تنظیمات",
-      pathname: "/dashboard/settings",
-      icon: <Settings className="h-3 w-3" />,
-    },
+    // {
+    //   name: "تنظیمات",
+    //   pathname: "/dashboard/settings",
+    //   icon: <Settings className="h-3 w-3" />,
+    // },
   ];
 };
