@@ -69,7 +69,12 @@ const ImageEditBlock = ({
             </Button>
           </div>
         </div>
-        <Button type="button" className="w-full" onClick={handleClick}>
+        <Button
+          type="button"
+          className="w-full"
+          disabled={!selectedImage}
+          onClick={handleClick}
+        >
           افزودن
         </Button>
       </div>
