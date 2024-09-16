@@ -76,11 +76,7 @@ export const useMediaStore = create<MediaStore>((set) => ({
   deleteMedia: async (mediaID) => {
     set({ isLoadingMedia: true });
     try {
-      const data = await axios.delete(
-        config.baseURL + `/Images/${mediaID}`,
-
-        { data: { id: Number(mediaID) } }
-      );
+      const data = await axios.delete(config.baseURL + `/Images/${mediaID}`);
       await useMediaStore.getState().getMediasList();
 
       return data;

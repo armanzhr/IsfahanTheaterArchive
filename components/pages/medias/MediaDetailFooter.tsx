@@ -4,6 +4,7 @@ import React from "react";
 import UploadMediaPopover from "./UploadMediaPopover";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
+import { PencilIcon } from "@heroicons/react/24/outline";
 
 const MediaDetailFooter = ({
   selectedImage,
@@ -19,7 +20,13 @@ const MediaDetailFooter = ({
     setSelectedImage(selectedImage);
   };
   return mode === "edit" ? (
-    <>
+    <div className="flex flex-col w-full gap-3">
+      <UploadMediaPopover mode="edit" selectedImage={selectedImage}>
+        <Button variant="default" className="w-full">
+          ویرایش
+          <PencilIcon className="w-4 h-4 ml-1" />
+        </Button>
+      </UploadMediaPopover>
       <Button
         className="w-full"
         onClick={() => setOpenDeleteModal(true)}
@@ -29,7 +36,7 @@ const MediaDetailFooter = ({
         حذف تصویر
         <Trash className="w-4 h-4 ml-1" />
       </Button>
-    </>
+    </div>
   ) : (
     <>
       <Button

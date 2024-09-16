@@ -5,6 +5,7 @@ import MediaDetailFooter from "@/components/pages/medias/MediaDetailFooter";
 import MediaDetailModal from "@/components/pages/medias/MediaDetailModal";
 import UploadImage from "@/components/pages/medias/UploadImage";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import config from "@/config";
@@ -21,6 +22,18 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
   const [isMediumScreen, setIsMediumScreen] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [searchInputValue, setSearchInputValue] = useState<string>("");
+  const [filteredItems, setFilteredItems] = useState<Media[] | null>();
+
+  const handleFilterItems = () => {
+    setFilteredItems(
+      listMedias?.filter((item) => item.title.includes(searchInputValue))
+    );
+  };
+
+  useEffect(() => {
+    handleFilterItems();
+  }, [searchInputValue]);
 
   const onOpenChange = () => {
     setIsOpen((prev) => !prev);
@@ -45,6 +58,7 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
     await getMediasList();
   };
   useEffect(() => {
+    setFilteredItems(listMedias);
     if (!listMedias) {
       handleGetMediasList();
     }
@@ -66,11 +80,22 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
         <TabsTrigger value="images">تصاویر</TabsTrigger>
         <TabsTrigger value="upload">آپلود تصویر</TabsTrigger>
       </TabsList>
-      <TabsContent value="images" className=" h-full w-full ">
+      <TabsContent value="images" className=" h-full w-full">
         <div className="h-[calc(100vh-150px)] grid grid-cols-10 gap-3">
-          <ScrollArea className="col-span-10 lg:col-span-8 md:col-span-7">
-            <Card className=" grid lg:grid-cols-7 grid-cols-3 gap-4 p-3">
-              {listMedias?.reverse().map((item, index) => (
+          <ScrollArea
+            dir="rtl"
+            className="col-span-10 lg:col-span-8 md:col-span-7"
+          >
+            <Input
+              dir="rtl"
+              className="border focus-visible:ring-transparent w-60"
+              placeholder="جست و جو بر اساس عنوان"
+              value={searchInputValue}
+              onChange={(e) => setSearchInputValue(e.target.value as any)}
+            />
+
+            <div className="grid lg:grid-cols-7 grid-cols-3 gap-4 p-3">
+              {filteredItems?.map((item, index) => (
                 <Card
                   className={cn(
                     selectedImage &&
@@ -93,7 +118,7 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
                   </CardContent>
                 </Card>
               ))}
-            </Card>
+            </div>
           </ScrollArea>
 
           {isMediumScreen ? (
@@ -129,7 +154,11 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
               isOpen={isOpen}
             />
           )}
-          {/* <DeleteMedia></DeleteMedia> */}
+          <DeleteMedia
+            media={selectedImage!}
+            open={openDeleteModal}
+            setOpen={setOpenDeleteModal}
+          ></DeleteMedia>
         </div>
       </TabsContent>
       <TabsContent

@@ -1,3 +1,4 @@
+import { ScrollArea } from "@/components/ui/scroll-area";
 import config from "@/config";
 import { Media } from "@/utils/types";
 import Image from "next/image";
@@ -19,15 +20,18 @@ const MediaDetailBody = ({
         className="object-cover max-h-[300px] rounded-md"
         src={`${config.fileURL}/${selectedImage.url}`}
       />
-      <div dir="rtl" className="flex flex-col mt-3 text-sm max-h-[100px]">
-        <h6>
+      <div
+        dir="rtl"
+        className="flex flex-col mt-3 text-sm max-h-[200px] overflow-auto"
+      >
+        <p className="break-words text-right">
           <strong>عنوان</strong> :{" "}
           {selectedImage.title ? selectedImage.title : "---"}
-        </h6>
-        <p>
+        </p>
+        <p className="break-words text-right">
           {" "}
           <strong>متن جایگزین </strong>:{" "}
-          {selectedImage.alt ? selectedImage.title : "---"}
+          {selectedImage.alt ? selectedImage.alt : "---"}
         </p>
       </div>
     </>

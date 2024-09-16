@@ -28,10 +28,17 @@ const People = () => {
     // منطق فیلترینگ کاربران
   }, 300);
 
-  const handleFilterItems = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInputValue(e.target.value);
-    debouncedFilter(e.target.value);
+  const handleFilterItems = () => {
+    setFilteredItems(
+      people?.filter((item) =>
+        `${item.firstName} ${item.firstName}`.includes(searchInputValue)
+      )
+    );
   };
+
+  useEffect(() => {
+    handleFilterItems();
+  }, [searchInputValue]);
 
   const fetchPeople = async () => {
     try {
@@ -77,7 +84,7 @@ const People = () => {
           className="border focus-visible:ring-transparent"
           placeholder="جست و جو"
           value={searchInputValue}
-          onChange={(e) => handleFilterItems(e.target.value)}
+          onChange={(e) => setSearchInputValue(e.target.value)}
         />
       </div>
 

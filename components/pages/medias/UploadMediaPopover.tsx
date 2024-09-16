@@ -48,8 +48,8 @@ const UploadMediaPopover = ({
       //mode === upload
       const model = new FormData();
 
-      model.append("files[0].Title", " ");
-      model.append("files[0].Alt", " ");
+      model.append("files[0].Title", data.title ?? " ");
+      model.append("files[0].Alt", data.alt ?? " ");
       model.append("files[0].File", selectedFile!);
 
       try {
@@ -68,19 +68,26 @@ const UploadMediaPopover = ({
       setValue("title", selectedImage.title);
     } else if (selectedFile) {
       setIsSelected(true);
+      setValue("title", selectedFile.name);
     }
   }, [selectedImage, selectedFile]);
 
   return (
     <Popover open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <PopoverTrigger>{children}</PopoverTrigger>
-      <PopoverContent className="w-[240px]">
+      <PopoverContent className="w-[340px]">
         <div className="px-1 py-2 w-full">
           <p className="text-small font-bold text-foreground">
             {mode === "edit" ? "ویرایش تصویر" : "آپلود تصویر"}
           </p>
           <form onSubmit={handleSubmit(onSubmit as any)}>
             <div className="mt-2 flex flex-col gap-2 w-full">
+              <div className="grid grid-cols-3 items-center gap-4">
+                <Label htmlFor="firstName" className="text-right">
+                  عنوان
+                </Label>
+                <Input className="col-span-2" {...register("title")} />
+              </div>
               <div className="grid grid-cols-3 items-center gap-4">
                 <Label htmlFor="firstName" className="text-right">
                   متن جایگزین
@@ -90,12 +97,6 @@ const UploadMediaPopover = ({
                   className="col-span-2"
                   {...register("alt")}
                 />
-              </div>
-              <div className="grid grid-cols-3 items-center gap-4">
-                <Label htmlFor="firstName" className="text-right">
-                  عنوان*
-                </Label>
-                <Input className="col-span-2" {...register("title")} />
               </div>
 
               <Button

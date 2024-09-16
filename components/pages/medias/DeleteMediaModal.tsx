@@ -17,8 +17,15 @@ import { TrashIcon } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
-const DeleteMedia = ({ media }: { media: Media }) => {
-  const [open, setOpen] = useState(false);
+const DeleteMedia = ({
+  media,
+  open,
+  setOpen,
+}: {
+  media: Media;
+  open: boolean;
+  setOpen: (status: boolean) => void;
+}) => {
   const { deleteMedia } = useMediaStore();
   const handleDeletePeople = async () => {
     try {
@@ -31,20 +38,10 @@ const DeleteMedia = ({ media }: { media: Media }) => {
   };
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <Button
-          onClick={() => setOpen(true)}
-          variant="outline"
-          className="h-8 w-8"
-          size="icon"
-        >
-          <TrashIcon className="h-4 w-4" />
-        </Button>
-      </AlertDialogTrigger>
       <AlertDialogContent className="w-4/5 lg:w-2/5 rounded">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-start">
-            حذف تصویر {media.title}
+          <AlertDialogTitle className="text-start break-words truncate max-w-[300px]">
+            حذف تصویر {media?.title}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-start">
             آیا از حذف تصویر مورد نظر اطمینان دارید؟

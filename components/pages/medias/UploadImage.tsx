@@ -78,8 +78,8 @@ const UploadImage = () => {
                 <span className="text-primary-500"> یا انتخاب کنید</span>
               </label>
             </h3>
-            <p className="mt-1 text-xs text-gray-500">
-              فرمت میتواند JPG یا PNG باشد
+            <p dir="rtl" className="mt-1 text-xs text-gray-500">
+              فرمت میتواند PNG یا JPG باشد
             </p>
           </div>
         </div>
