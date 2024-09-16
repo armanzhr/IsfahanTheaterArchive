@@ -236,6 +236,7 @@ export const MultiSelect = React.forwardRef<
                         key={option.id}
                         onSelect={() => toggleOption(option.id)}
                         className="cursor-pointer"
+                        value={`${option.lastName}`}
                       >
                         <div
                           className={cn(
@@ -262,9 +263,7 @@ export const MultiSelect = React.forwardRef<
                           </AvatarFallback>
                         </Avatar>
 
-                        <span>
-                          {option.firstName} {option.lastName}
-                        </span>
+                        <span>{`${option.firstName} ${option.lastName}`}</span>
                       </CommandItem>
                     );
                   })}
@@ -326,7 +325,7 @@ export const MultiSelect = React.forwardRef<
                         <UserIcon className="opacity-50 h-5 w-5" />
                       </AvatarFallback>
                     </Avatar>
-                    {option?.firstName} {option?.lastName}
+                    {`${option?.firstName} ${option?.lastName}`}
                     <XCircle
                       className=" h-4 w-4 mx-1 cursor-pointer"
                       onClick={(event) => {
