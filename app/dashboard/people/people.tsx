@@ -14,7 +14,7 @@ import SkeletonLoading from "@/components/pages/people/SkeletonLoading";
 import { toast } from "sonner";
 import config from "@/config";
 import { useMediaStore } from "@/service/store/useMediaStore";
-
+import { debounce } from "@/utils/functions/debounce";
 const People = () => {
   const { getPeople, people, isGettingPeople } = usePeopleStore();
   const [open, setOpen] = useState(false);
@@ -23,17 +23,15 @@ const People = () => {
   const [searchInputValue, setSearchInputValue] = useState<string>("");
   const [filteredItems, setFilteredItems] = useState<PeopleType[] | null>();
 
-  const handleFilterItems = () => {
-    setFilteredItems(
-      people?.filter((item) =>
-        `${item.firstName} ${item.lastName}`.includes(searchInputValue)
-      )
-    );
-  };
+  const debouncedFilter = debounce((input: string) => {
+    console.log("Filtering for:", input);
+    // منطق فیلترینگ کاربران
+  }, 300);
 
-  useEffect(() => {
-    handleFilterItems();
-  }, [searchInputValue]);
+  const handleFilterItems = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInputValue(e.target.value);
+    debouncedFilter(e.target.value);
+  };
 
   const fetchPeople = async () => {
     try {
@@ -79,7 +77,7 @@ const People = () => {
           className="border focus-visible:ring-transparent"
           placeholder="جست و جو"
           value={searchInputValue}
-          onChange={(e) => setSearchInputValue(e.target.value)}
+          onChange={(e) => handleFilterItems(e.target.value)}
         />
       </div>
 
