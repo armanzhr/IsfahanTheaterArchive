@@ -21,13 +21,33 @@ import { Textarea } from "@/components/ui/textarea";
 import { usePeopleStore } from "@/service/store/usePeopleStore";
 
 import { Media, People } from "@/utils/types";
-import { PencilIcon, TrashIcon, UserIcon } from "lucide-react";
+import { CheckIcon, PencilIcon, TrashIcon, UserIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import SelectImageHandler from "../medias/SelectImage";
 import { useMediaStore } from "@/service/store/useMediaStore";
 import config from "@/config";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CaretSortIcon } from "@radix-ui/react-icons";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { cn } from "@/utils/cn";
+
+const years = Array.from(
+  { length: Math.floor((1420 - 1340) / 10) + 1 },
+  (v, i) => 1340 + i * 10
+);
 
 const UploadPeople = ({
   open,
@@ -49,7 +69,10 @@ const UploadPeople = ({
   const firstName = watch("firstName");
   const lastName = watch("lastName");
   const [imageMode, setImageMode] = useState<"avatar" | "gallery">();
+  const [commandOpen, setCommandOpen] = useState(false);
+  const [commandValue, setCommandValue] = useState<string>();
   const { selectedImage, listMedias, setSelectedImage } = useMediaStore();
+
   // Generate slug when firstName or lastName changes
   useEffect(() => {
     const slug = `${firstName} ${lastName}`.trim().replace(/\s+/g, "-");
@@ -64,7 +87,7 @@ const UploadPeople = ({
     setValue("lastName", editValue?.lastName);
     setValue("slug", editValue?.slug);
     setValue("biography", editValue?.biography);
-    setDate(editValue?.startYaer?.toString());
+    setCommandValue(editValue?.startYaer?.toString());
     setGalleryImage(
       (prev) =>
         ({
@@ -79,7 +102,7 @@ const UploadPeople = ({
   const onSubmit = async (model: any) => {
     const data = {
       ...model,
-      startYear: Number(date),
+      startYear: Number(commandValue),
       avatarImageId: galleryImage.profile?.id,
     };
     if (editValue) {
@@ -169,17 +192,59 @@ const UploadPeople = ({
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="startYear" className="text-right">
-                سال شروع فعالیت
+                دهه آغاز فعالیت
               </Label>
               <div dir="ltr" className="col-span-3 flex flex-col gap-2">
-                <InputOTP value={date} onChange={setDate} maxLength={4}>
-                  <InputOTPGroup>
-                    <InputOTPSlot className="w-10 h-10" index={0} />
-                    <InputOTPSlot className="w-10 h-10" index={1} />
-                    <InputOTPSlot className="w-10 h-10" index={2} />
-                    <InputOTPSlot className="w-10 h-10" index={3} />
-                  </InputOTPGroup>
-                </InputOTP>
+                <Popover open={commandOpen} onOpenChange={setCommandOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className="col-span-3 justify-between"
+                    >
+                      {commandValue
+                        ? years?.find(
+                            (item) => item.toString() === commandValue
+                          )
+                        : "انتخاب"}
+                      <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandInput placeholder="جست و جو" className="h-9" />
+                      <CommandList>
+                        <CommandEmpty> یافت نشد</CommandEmpty>
+                        <CommandGroup>
+                          {years?.map((item) => (
+                            <CommandItem
+                              key={item}
+                              value={item.toString()}
+                              onSelect={(currentValue) => {
+                                setCommandValue(
+                                  currentValue === commandValue
+                                    ? ""
+                                    : currentValue
+                                );
+                                setCommandOpen(false);
+                              }}
+                            >
+                              {item}
+                              <CheckIcon
+                                className={cn(
+                                  "ml-auto h-4 w-4",
+                                  commandValue === item.toString()
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -203,7 +268,7 @@ const UploadPeople = ({
                       setImageMode("avatar");
                     }}
                     type="button"
-                    variant="outline"
+                    variant="ghost"
                     className="text-sm"
                   >
                     انتخاب تصویر جدید
