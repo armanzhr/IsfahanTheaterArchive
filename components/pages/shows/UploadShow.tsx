@@ -67,7 +67,12 @@ const UploadShow = ({
   const [description, setDescription] = useState<Content>("");
   const [imageMode, setImageMode] = useState<"avatar" | "gallery">();
   const [showTimes, setShowsTimes] = useState<
-    { venueId: number; showDate: string; showTimeStart: string }[]
+    {
+      venueId: number;
+      startDate: string;
+      endDate: string;
+      showTimeStart: string;
+    }[]
   >([]);
   const [selectedPeopleByRole, setSelectedPeopleByRole] = useState<any>({}); // State for tracking selected people per role
   const { getPeople, people } = usePeopleStore();

@@ -74,36 +74,53 @@ const ShowTime = ({
 }: {
   commandValue: string;
   setCommandValue: (data: string) => void;
-  showTimes: { venueId: number; showDate: string; showTimeStart: string }[];
+  showTimes: {
+    venueId: number;
+    startDate: string;
+    endDate: string;
+    showTimeStart: string;
+  }[];
   setShowTimes: (
     showtime:
       | {
           venueId: number;
-          showDate: string;
+          startDate: string;
+          endDate: string;
           showTimeStart: string;
         }[]
   ) => void;
 }) => {
   const [commandOpen, setCommandOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [date, setDate] = useState<string>();
+  const [startDate, setStartDate] = useState<string>();
+  const [endDate, setEndDate] = useState<string>();
   const [time, setTime] = useState<string>();
   const [editMode, setEditMode] = useState(false);
   const { venues } = useVenuesStore();
 
   const handleClick = () => {
-    const day = date?.substring(6, 8);
-    const month = date?.substring(4, 6);
-    const year = date?.substring(0, 4);
     const hour = time?.substring(0, 2);
     const min = time?.substring(2, 4);
-    const showtime: string = moment(
-      `${year}-${month}-${day}T${hour}:${min}Z`,
+    const startDay = startDate?.substring(6, 8);
+    const startMonth = startDate?.substring(4, 6);
+    const startYear = startDate?.substring(0, 4);
+    const startShowtime: string = moment(
+      `${startYear}-${startMonth}-${startDay}T${hour}:${min}Z`,
       "jYYYY-jMM-jDDTHH:mmZ"
     ).toISOString();
+
+    const endDay = endDate?.substring(6, 8);
+    const endMonth = endDate?.substring(4, 6);
+    const endYear = endDate?.substring(0, 4);
+    const endShowtime: string = moment(
+      `${endYear}-${endMonth}-${endDay}T00:00Z`,
+      "jYYYY-jMM-jDDTHH:mmZ"
+    ).toISOString();
+
     const model = {
       venueId: commandValue,
-      showDate: showtime,
+      startDate: startShowtime,
+      endDate: endShowtime,
       showTimeStart: `${hour}:${min}:00`,
     };
     setShowTimes([...showTimes, model] as any);
@@ -121,7 +138,7 @@ const ShowTime = ({
             <TableHeader>
               <TableRow>
                 <TableHead className="text-start">محل برگزاری</TableHead>
-                <TableHead className="text-start">زمان</TableHead>
+                <TableHead className="text-start">زمان اجرا</TableHead>
                 <TableHead>تنظیمات</TableHead>
               </TableRow>
             </TableHeader>
@@ -136,9 +153,11 @@ const ShowTime = ({
                     }
                   </TableCell>
                   <TableCell>
-                    {moment(showTime.showDate)
-                      .utc()
-                      .format("تاریخ : jYYYY/jMM/jDD ساعت : HH:mm")}
+                    از{" "}
+                    {moment(showTime.startDate).utc().format("jYYYY/jMM/jDD")}{" "}
+                    تا
+                    {moment(showTime.endDate).utc().format("jYYYY/jMM/jDD")}
+                    ساعت {moment(showTime.startDate).utc().format("HH:mm")}
                   </TableCell>
                   <TableCell className="text-end">
                     <DropdownMenu dir="rtl">
@@ -157,11 +176,14 @@ const ShowTime = ({
                           className="gap-2"
                           onClick={() => {
                             setCommandValue(showTime.venueId.toString());
-                            setDate(
-                              moment(showTime.showDate).format("jYYYYjMMjDD")
+                            setStartDate(
+                              moment(showTime.startDate).format("jYYYYjMMjDD")
+                            );
+                            setEndDate(
+                              moment(showTime.endDate).format("jYYYYjMMjDD")
                             );
                             setTime(
-                              moment(showTime.showDate).utc().format("HHmm")
+                              moment(showTime.startDate).utc().format("HHmm")
                             );
                             setEditMode(true);
                             setIsOpen(true);
@@ -195,7 +217,8 @@ const ShowTime = ({
               <Button
                 onClick={() => {
                   setCommandValue("");
-                  setDate("");
+                  setStartDate("");
+                  setEndDate("");
                   setTime("");
                   setEditMode(false);
                 }}
@@ -277,10 +300,43 @@ const ShowTime = ({
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="username" className="text-right">
-                    تاریخ اجرا
+                    تاریخ شروع
                   </Label>
                   <div dir="ltr" className="col-span-3 flex flex-col gap-2">
-                    <InputOTP value={date} onChange={setDate} maxLength={8}>
+                    <InputOTP
+                      value={startDate}
+                      onChange={setStartDate}
+                      maxLength={8}
+                    >
+                      <InputOTPGroup>
+                        <InputOTPSlot className="w-6 h-6" index={0} />
+                        <InputOTPSlot className="w-6 h-6" index={1} />
+                        <InputOTPSlot className="w-6 h-6" index={2} />
+                        <InputOTPSlot className="w-6 h-6" index={3} />
+                      </InputOTPGroup>
+                      /
+                      <InputOTPGroup>
+                        <InputOTPSlot className="w-6 h-6" index={4} />
+                        <InputOTPSlot className="w-6 h-6" index={5} />
+                      </InputOTPGroup>
+                      /
+                      <InputOTPGroup>
+                        <InputOTPSlot className="w-6 h-6" index={6} />
+                        <InputOTPSlot className="w-6 h-6" index={7} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="username" className="text-right">
+                    تاریخ پایان
+                  </Label>
+                  <div dir="ltr" className="col-span-3 flex flex-col gap-2">
+                    <InputOTP
+                      value={startDate}
+                      onChange={setStartDate}
+                      maxLength={8}
+                    >
                       <InputOTPGroup>
                         <InputOTPSlot className="w-6 h-6" index={0} />
                         <InputOTPSlot className="w-6 h-6" index={1} />
@@ -315,7 +371,12 @@ const ShowTime = ({
               <DialogFooter>
                 <Button
                   disabled={
-                    !(commandValue && time?.length === 4 && date?.length === 8)
+                    !(
+                      commandValue &&
+                      time?.length === 4 &&
+                      startDate?.length === 8 &&
+                      endDate?.length === 8
+                    )
                   }
                   onClick={handleClick}
                   type="submit"
