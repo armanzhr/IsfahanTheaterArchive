@@ -87,7 +87,8 @@ const UploadPeople = ({
     setValue("lastName", editValue?.lastName);
     setValue("slug", editValue?.slug);
     setValue("biography", editValue?.biography);
-    setCommandValue(editValue?.startYaer?.toString());
+    setCommandValue(editValue?.startYear?.toString());
+    console.log(editValue?.startYear?.toString());
     setGalleryImage(
       (prev) =>
         ({
