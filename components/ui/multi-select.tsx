@@ -32,6 +32,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { People, Roles } from "@/utils/types";
 import config from "@/config";
 import { useMediaStore } from "@/service/store/useMediaStore";
+import UploadPeopleForm from "../pages/people/UploadPeopleForm";
 
 /**
  * Variants for the multi-select component to handle different styles.
@@ -141,6 +142,7 @@ export const MultiSelect = React.forwardRef<
       roleId: number;
       people: number[];
     }>(defaultValue);
+    const [newOption, setNewOption] = React.useState(false);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
     const { listMedias } = useMediaStore();
@@ -220,14 +222,26 @@ export const MultiSelect = React.forwardRef<
             onEscapeKeyDown={() => setIsPopoverOpen(false)}
           >
             <Command>
-              <CommandInput
-                placeholder="جست و جو"
-                onKeyDown={handleInputKeyDown}
-              />
+              <div className="flex items-center gap-3">
+                <CommandInput
+                  placeholder="جست و جو"
+                  onKeyDown={handleInputKeyDown}
+                />
+                <Popover open={newOption} onOpenChange={setNewOption}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline">
+                      <PlusCircle className="w-4 h-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <UploadPeopleForm open={newOption} setOpen={setNewOption} />
+                  </PopoverContent>
+                </Popover>
+              </div>
               <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
                 <CommandGroup>
-                  {options.map((option) => {
+                  {options?.map((option) => {
                     const isSelected = selectedValues.people.includes(
                       option.id
                     );
