@@ -27,6 +27,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import config from "@/config";
 import { cn } from "@/utils/cn";
 import { useMediaStore } from "@/service/store/useMediaStore";
+import { AxiosError } from "axios";
 
 const years = Array.from(
   { length: Math.floor((1420 - 1340) / 10) + 1 },
@@ -85,23 +86,51 @@ const UploadPeopleForm = ({
       avatarImageId: galleryImage.profile?.id,
     };
     if (editValue) {
-      try {
-        await updatePeople(editValue.id, data);
-        toast.success("کاربر با موفقیت ویرایش شد");
-        reset();
-        setOpen(false);
-      } catch (error) {
-        toast.error("خطا در ویرایش کاربر");
-      }
+      toast.promise(
+        async () => {
+          try {
+            await updatePeople(editValue.id, data);
+            reset();
+            setOpen(false);
+          } catch (error) {
+            throw error;
+          }
+        },
+        {
+          loading: "درحال ویرایش کاربر ...",
+          success: "کاربر با موفقیت ویرایش شد",
+          error: (error: AxiosError | any) => {
+            if (error.response?.data.includes("is Exists")) {
+              return "مشخصات کاربر قبلا ثبت شده";
+            } else {
+              return "خطا در ویرایش کاربر";
+            }
+          },
+        }
+      );
     } else {
-      try {
-        await createPeople(data);
-        toast.success("کاربر با موفقیت اضافه شد");
-        reset();
-        setOpen(false);
-      } catch (error) {
-        toast.error("خطا در ایجاد کاربر");
-      }
+      toast.promise(
+        async () => {
+          try {
+            await createPeople(data);
+            reset();
+            setOpen(false);
+          } catch (error) {
+            throw error;
+          }
+        },
+        {
+          loading: "درحال ایجاد کاربر ...",
+          success: "کاربر با موفقیت ایجاد شد",
+          error: (error: AxiosError | any) => {
+            if (error.response?.data.includes("is Exists")) {
+              return "مشخصات کاربر قبلا ثبت شده";
+            } else {
+              return "خطا در ایجاد کاربر";
+            }
+          },
+        }
+      );
     }
     setSelectedImage(null);
   };

@@ -61,6 +61,10 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
     setFilteredItems(listMedias);
     if (!listMedias) {
       handleGetMediasList();
+    } else {
+      setSelectedImage(
+        (prev) => listMedias?.filter((items) => items.id === prev?.id)[0]
+      );
     }
   }, [listMedias]);
 

@@ -31,10 +31,11 @@ const UploadMediaPopover = ({
   const [isOpen, setIsOpen] = useState(false);
   const onSubmit = async (data: Media) => {
     if (mode === "edit") {
-      const model = {
-        ...data,
-      };
       if (selectedImage) {
+        const model = new FormData();
+
+        model.append("Title", data.title);
+        model.append("Alt", data.alt ?? " ");
         //mode === edit
         try {
           await updateMedia(selectedImage?.id, model as any);
@@ -43,6 +44,7 @@ const UploadMediaPopover = ({
           toast.error("خطا در ویرایش رسانه");
         }
         setIsOpen(false);
+        console.log(data);
       }
     } else {
       //mode === upload

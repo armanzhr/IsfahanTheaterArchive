@@ -33,6 +33,7 @@ import { People, Roles } from "@/utils/types";
 import config from "@/config";
 import { useMediaStore } from "@/service/store/useMediaStore";
 import UploadPeopleForm from "../pages/people/UploadPeopleForm";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 /**
  * Variants for the multi-select component to handle different styles.
@@ -149,7 +150,18 @@ export const MultiSelect = React.forwardRef<
     React.useEffect(() => {
       setSelectedValues(defaultValue);
     }, [defaultValue]);
+    const [displayedUsers, setDisplayedUsers] = React.useState<any>([]);
 
+    const fetchMoreData = () => {
+      console.log("before time");
+      setTimeout(() => {
+        console.log("fetched");
+        setDisplayedUsers(options?.slice(0, displayedUsers?.length! + 50));
+      }, 1000);
+    };
+    React.useEffect(() => {
+      setDisplayedUsers(options?.slice(0, 50));
+    }, [options]);
     const handleInputKeyDown = (
       event: React.KeyboardEvent<HTMLInputElement>
     ) => {
@@ -238,49 +250,58 @@ export const MultiSelect = React.forwardRef<
                   </PopoverContent>
                 </Popover>
               </div>
-              <CommandList>
-                <CommandEmpty>No results found.</CommandEmpty>
+              <CommandList id="list">
+                <CommandEmpty>کاربری یافت نشد</CommandEmpty>
                 <CommandGroup>
-                  {options?.map((option) => {
-                    const isSelected = selectedValues.people.includes(
-                      option.id
-                    );
-                    return (
-                      <CommandItem
-                        key={option.id}
-                        onSelect={() => toggleOption(option.id)}
-                        className="cursor-pointer"
-                        value={`${option.lastName}`}
-                      >
-                        <div
-                          className={cn(
-                            "ml-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                            isSelected
-                              ? "bg-primary text-primary-foreground"
-                              : "opacity-50 [&_svg]:invisible"
-                          )}
+                  <InfiniteScroll
+                    dataLength={displayedUsers?.length}
+                    next={fetchMoreData}
+                    hasMore={displayedUsers?.length! < options?.length!}
+                    loader={<p>در حال بارگذاری</p>}
+                    scrollableTarget="list"
+                    initialScrollY={100}
+                  >
+                    {options?.map((option) => {
+                      const isSelected = selectedValues.people.includes(
+                        option.id
+                      );
+                      return (
+                        <CommandItem
+                          key={option.id}
+                          onSelect={() => toggleOption(option.id)}
+                          className="cursor-pointer"
+                          value={option.firstName + " " + option.lastName}
                         >
-                          <CheckIcon className="h-4 w-4" />
-                        </div>
+                          <div
+                            className={cn(
+                              "ml-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                              isSelected
+                                ? "bg-primary text-primary-foreground"
+                                : "opacity-50 [&_svg]:invisible"
+                            )}
+                          >
+                            <CheckIcon className="h-4 w-4" />
+                          </div>
 
-                        <Avatar className=" h-6 w-6 ml-2 sm:flex">
-                          <AvatarImage
-                            src={`${config.fileURL}/${
-                              listMedias?.find(
-                                (item) => item.id === option.avatarImageId
-                              )?.url
-                            }`}
-                            alt="Avatar"
-                          />
-                          <AvatarFallback>
-                            <UserIcon className="opacity-50 h-4 w-4" />
-                          </AvatarFallback>
-                        </Avatar>
+                          <Avatar className=" h-6 w-6 ml-2 sm:flex">
+                            <AvatarImage
+                              src={`${config.fileURL}/${
+                                listMedias?.find(
+                                  (item) => item.id === option.avatarImageId
+                                )?.url
+                              }`}
+                              alt="Avatar"
+                            />
+                            <AvatarFallback>
+                              <UserIcon className="opacity-50 h-4 w-4" />
+                            </AvatarFallback>
+                          </Avatar>
 
-                        <span>{`${option.firstName} ${option.lastName}`}</span>
-                      </CommandItem>
-                    );
-                  })}
+                          <span>{`${option.firstName} ${option.lastName}`}</span>
+                        </CommandItem>
+                      );
+                    })}
+                  </InfiniteScroll>
                 </CommandGroup>
                 <CommandSeparator />
                 <CommandGroup>
@@ -313,7 +334,7 @@ export const MultiSelect = React.forwardRef<
         </Popover>
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-wrap items-center">
-            {selectedValues.people.slice(0, maxCount).map((value) => {
+            {selectedValues.people.map((value) => {
               const option = options.find((o) => o.id === value);
 
               return (
@@ -351,7 +372,7 @@ export const MultiSelect = React.forwardRef<
                 </Badge>
               );
             })}
-            {selectedValues.people.length > maxCount && (
+            {/* {selectedValues.people.length > maxCount && (
               <Badge
                 className={cn(
                   "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
@@ -369,7 +390,7 @@ export const MultiSelect = React.forwardRef<
                   }}
                 />
               </Badge>
-            )}
+            )} */}
           </div>
         </div>
       </div>

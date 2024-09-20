@@ -76,3 +76,9 @@
     @apply bg-background text-foreground;
   }
 }
+.calendar .item {
+  height: 240px;
+}
+.calendar {
+  height: 320px !important;
+}

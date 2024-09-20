@@ -381,6 +381,7 @@ const ShowTime = ({
                               }))
                             }
                             weekends={[6]}
+                            className="calendar"
                           />
                         </CalendarProvider>
                       </PopoverContent>
@@ -426,6 +427,7 @@ const ShowTime = ({
                               showDate.startDate ??
                               new Date()
                             }
+                            className="calendar"
                             onChange={({ value }) =>
                               setShowDate((prev) => ({
                                 ...prev,
