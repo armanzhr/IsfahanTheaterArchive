@@ -62,8 +62,9 @@ import {
   PlusCircle,
   TrashIcon,
 } from "lucide-react";
-import React, { useState } from "react";
-import { CalendarProvider, Calendar } from "zaman";
+import React, { useEffect, useState } from "react";
+import { CalendarProvider, Calendar, DatePicker } from "zaman";
+import { onRangeDatePickerChangePayload } from "zaman/dist/types";
 var moment = require("moment-jalaali");
 
 const ShowTime = ({
@@ -92,38 +93,27 @@ const ShowTime = ({
 }) => {
   const [commandOpen, setCommandOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [startDate, setStartDate] = useState<string>();
-  const [endDate, setEndDate] = useState<string>();
+  const [showDate, setShowDate] =
+    useState<onRangeDatePickerChangePayload | null>();
   const [time, setTime] = useState<string>();
   const [editMode, setEditMode] = useState(false);
   const { venues } = useVenuesStore();
+  useEffect(() => {
+    console.log(showDate);
+  }, [showDate]);
 
   const handleClick = () => {
     const hour = time?.substring(0, 2);
     const min = time?.substring(2, 4);
-    const startDay = startDate?.substring(6, 8);
-    const startMonth = startDate?.substring(4, 6);
-    const startYear = startDate?.substring(0, 4);
-    const startShowtime: string = moment(
-      `${startYear}-${startMonth}-${startDay}T${hour}:${min}Z`,
-      "jYYYY-jMM-jDDTHH:mmZ"
-    ).toISOString();
-
-    const endDay = endDate?.substring(6, 8);
-    const endMonth = endDate?.substring(4, 6);
-    const endYear = endDate?.substring(0, 4);
-    const endShowtime: string = moment(
-      `${endYear}-${endMonth}-${endDay}T00:00Z`,
-      "jYYYY-jMM-jDDTHH:mmZ"
-    ).toISOString();
 
     const model = {
       venueId: commandValue,
-      startDate: startShowtime,
-      endDate: endShowtime,
-      showTimeStart: `${hour}:${min}:00`,
+      startDate: showDate?.from.toISOString(),
+      endDate: showDate?.to.toISOString(),
+      showTimeStart: `${hour}:${min}`,
     };
-    setShowTimes([...showTimes, model] as any);
+    console.log(model);
+    setShowTimes([...(showTimes ?? []), model] as any);
     setIsOpen(false);
   };
 
@@ -153,11 +143,10 @@ const ShowTime = ({
                     }
                   </TableCell>
                   <TableCell>
-                    از{" "}
-                    {moment(showTime.startDate).utc().format("jYYYY/jMM/jDD")}{" "}
+                    از {moment(showTime.startDate).format("jYYYY/jMM/jDD")}
                     تا
-                    {moment(showTime.endDate).utc().format("jYYYY/jMM/jDD")}
-                    ساعت {moment(showTime.startDate).utc().format("HH:mm")}
+                    {moment(showTime.endDate).format("jYYYY/jMM/jDD")}
+                    ساعت {showTime.showTimeStart}
                   </TableCell>
                   <TableCell className="text-end">
                     <DropdownMenu dir="rtl">
@@ -175,16 +164,7 @@ const ShowTime = ({
                         <DropdownMenuItem
                           className="gap-2"
                           onClick={() => {
-                            setCommandValue(showTime.venueId.toString());
-                            setStartDate(
-                              moment(showTime.startDate).format("jYYYYjMMjDD")
-                            );
-                            setEndDate(
-                              moment(showTime.endDate).format("jYYYYjMMjDD")
-                            );
-                            setTime(
-                              moment(showTime.startDate).utc().format("HHmm")
-                            );
+                            setTime(showTime.showTimeStart.replace(":", ""));
                             setEditMode(true);
                             setIsOpen(true);
                           }}
@@ -217,8 +197,7 @@ const ShowTime = ({
               <Button
                 onClick={() => {
                   setCommandValue("");
-                  setStartDate("");
-                  setEndDate("");
+                  setShowDate(null);
                   setTime("");
                   setEditMode(false);
                 }}
@@ -300,69 +279,65 @@ const ShowTime = ({
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="username" className="text-right">
-                    تاریخ شروع
+                    بازه اجرا
                   </Label>
-                  <div dir="ltr" className="col-span-3 flex flex-col gap-2">
-                    <InputOTP
-                      value={startDate}
-                      onChange={setStartDate}
-                      maxLength={8}
-                    >
-                      <InputOTPGroup>
-                        <InputOTPSlot className="w-6 h-6" index={0} />
-                        <InputOTPSlot className="w-6 h-6" index={1} />
-                        <InputOTPSlot className="w-6 h-6" index={2} />
-                        <InputOTPSlot className="w-6 h-6" index={3} />
-                      </InputOTPGroup>
-                      /
-                      <InputOTPGroup>
-                        <InputOTPSlot className="w-6 h-6" index={4} />
-                        <InputOTPSlot className="w-6 h-6" index={5} />
-                      </InputOTPGroup>
-                      /
-                      <InputOTPGroup>
-                        <InputOTPSlot className="w-6 h-6" index={6} />
-                        <InputOTPSlot className="w-6 h-6" index={7} />
-                      </InputOTPGroup>
-                    </InputOTP>
+                  <div
+                    dir="rtl"
+                    className="col-span-3 flex flex-col gap-2 datepicker"
+                  >
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            " justify-start text-left font-normal",
+                            !showDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {showDate ? (
+                            <span>
+                              از {moment(showDate.from).format("jYYYY/jMM/jDD")}
+                              تا {moment(showDate.to).format("jYYYY/jMM/jDD")}
+                            </span>
+                          ) : (
+                            <span>بازه را انتخاب کنید</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <CalendarProvider
+                          locale="fa"
+                          round="x4"
+                          accentColor="#6374ae"
+                        >
+                          <Calendar
+                            defaultValue={new Date()}
+                            onChange={(e) => setShowDate(e)}
+                            weekends={[6]}
+                            from={moment()}
+                            to={moment().add(3, "days")}
+                            range
+                          />
+                        </CalendarProvider>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="username" className="text-right">
-                    تاریخ پایان
+                    زمان اجرا
                   </Label>
                   <div dir="ltr" className="col-span-3 flex flex-col gap-2">
-                    <InputOTP
-                      value={startDate}
-                      onChange={setStartDate}
-                      maxLength={8}
-                    >
-                      <InputOTPGroup>
-                        <InputOTPSlot className="w-6 h-6" index={0} />
-                        <InputOTPSlot className="w-6 h-6" index={1} />
-                        <InputOTPSlot className="w-6 h-6" index={2} />
-                        <InputOTPSlot className="w-6 h-6" index={3} />
-                      </InputOTPGroup>
-                      /
-                      <InputOTPGroup>
-                        <InputOTPSlot className="w-6 h-6" index={4} />
-                        <InputOTPSlot className="w-6 h-6" index={5} />
-                      </InputOTPGroup>
-                      /
-                      <InputOTPGroup>
-                        <InputOTPSlot className="w-6 h-6" index={6} />
-                        <InputOTPSlot className="w-6 h-6" index={7} />
-                      </InputOTPGroup>
-                    </InputOTP>
                     <InputOTP value={time} onChange={setTime} maxLength={4}>
                       <InputOTPGroup>
-                        <InputOTPSlot className="w-6 h-6" index={0} />
-                        <InputOTPSlot className="w-6 h-6" index={1} />
+                        <InputOTPSlot className="w-8 h-8" index={0} />
+                        <InputOTPSlot className="w-8 h-8" index={1} />
                       </InputOTPGroup>
                       :
                       <InputOTPGroup>
-                        <InputOTPSlot className="w-6 h-6" index={2} />
-                        <InputOTPSlot className="w-6 h-6" index={3} />
+                        <InputOTPSlot className="w-8 h-8" index={2} />
+                        <InputOTPSlot className="w-8 h-8" index={3} />
                       </InputOTPGroup>
                     </InputOTP>
                   </div>
@@ -370,14 +345,7 @@ const ShowTime = ({
               </div>
               <DialogFooter>
                 <Button
-                  disabled={
-                    !(
-                      commandValue &&
-                      time?.length === 4 &&
-                      startDate?.length === 8 &&
-                      endDate?.length === 8
-                    )
-                  }
+                  disabled={!(commandValue && time?.length === 4 && showDate)}
                   onClick={handleClick}
                   type="submit"
                 >

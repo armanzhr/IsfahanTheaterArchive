@@ -77,7 +77,7 @@ const People = () => {
     }
   }, [listMedias]);
 
-  const [displayedUsers, setDisplayedUsers] = useState(filteredItems);
+  const [displayedUsers, setDisplayedUsers] = useState<any>([]);
 
   const fetchMoreData = () => {
     console.log("before time");
@@ -114,7 +114,7 @@ const People = () => {
           loader={<p>درحال بارگذرای...</p>}
           className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2"
         >
-          {displayedUsers?.map((item) => (
+          {displayedUsers?.map((item: PeopleType) => (
             <>
               <div className="flex justify-between items-center hover:bg-gray-50 dark:hover:bg-zinc-900 transition ease-in-out duration-300 p-2 rounded-md">
                 <div className="flex items-center gap-3">

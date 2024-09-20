@@ -24,30 +24,11 @@ import { Media, People } from "@/utils/types";
 import { CheckIcon, PencilIcon, TrashIcon, UserIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import SelectImageHandler from "../medias/SelectImage";
-import { useMediaStore } from "@/service/store/useMediaStore";
-import config from "@/config";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CaretSortIcon } from "@radix-ui/react-icons";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { cn } from "@/utils/cn";
 
-const years = Array.from(
-  { length: Math.floor((1420 - 1340) / 10) + 1 },
-  (v, i) => 1340 + i * 10
-);
+import { cn } from "@/utils/cn";
+import UploadPeopleForm from "./UploadPeopleForm";
+import { useMediaStore } from "@/service/store/useMediaStore";
+import { toast } from "sonner";
 
 const UploadPeople = ({
   open,
@@ -147,160 +128,7 @@ const UploadPeople = ({
             {editValue ? "ویرایش کاربر" : "ایجاد کاربر جدید"}
           </SheetTitle>
         </SheetHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="firstName" className="text-right">
-                *نام
-              </Label>
-              <Input
-                id="firstName"
-                className="col-span-3"
-                {...register("firstName", { required: true })}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                *نام خانوادگی
-              </Label>
-              <Input
-                id="lastName"
-                className="col-span-3"
-                {...register("lastName", { required: true })}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                *نامک
-              </Label>
-              <Input
-                id="lastName"
-                className="col-span-3"
-                {...register("slug", { required: true })}
-              />
-            </div>
-
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="biography" className="text-right">
-                بیوگرافی
-              </Label>
-              <Textarea
-                {...register("biography")}
-                id="biography"
-                className="col-span-3 h-32 resize-none"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="startYear" className="text-right">
-                دهه آغاز فعالیت
-              </Label>
-              <div dir="ltr" className="col-span-3 flex flex-col gap-2">
-                <Popover open={commandOpen} onOpenChange={setCommandOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className="col-span-3 justify-between"
-                    >
-                      {commandValue
-                        ? years?.find(
-                            (item) => item.toString() === commandValue
-                          )
-                        : "انتخاب"}
-                      <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[200px] p-0">
-                    <Command>
-                      <CommandInput placeholder="جست و جو" className="h-9" />
-                      <CommandList>
-                        <CommandEmpty> یافت نشد</CommandEmpty>
-                        <CommandGroup>
-                          {years?.map((item) => (
-                            <CommandItem
-                              key={item}
-                              value={item.toString()}
-                              onSelect={(currentValue) => {
-                                setCommandValue(
-                                  currentValue === commandValue
-                                    ? ""
-                                    : currentValue
-                                );
-                                setCommandOpen(false);
-                              }}
-                            >
-                              {item}
-                              <CheckIcon
-                                className={cn(
-                                  "ml-auto h-4 w-4",
-                                  commandValue === item.toString()
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="startYear" className="text-right">
-                پروفایل
-              </Label>
-              <div className="col-span-3 flex items-center gap-2">
-                <Avatar className=" w-12 h-12">
-                  <AvatarImage
-                    src={`${config.fileURL}/${galleryImage.profile?.url}`}
-                    alt="user"
-                  />
-                  <AvatarFallback>
-                    <UserIcon className="opacity-50" />
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <Button
-                    onClick={() => {
-                      setIsOpenMediaModal(true);
-                      setImageMode("avatar");
-                    }}
-                    type="button"
-                    variant="ghost"
-                    className="text-sm"
-                  >
-                    انتخاب تصویر جدید
-                  </Button>
-                  {galleryImage.profile && (
-                    <Button
-                      onClick={() =>
-                        setGalleryImage((prev) => ({
-                          ...prev,
-                          profile: null,
-                        }))
-                      }
-                      type="button"
-                      variant="link"
-                      className="text-red-400 text-sm "
-                    >
-                      <TrashIcon className="w-4 h-4 ml-1" />
-                      <p>حذف تصویر</p>
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-          <SheetFooter>
-            <Button type="submit">{editValue ? "ویرایش" : "ایجاد"}</Button>
-          </SheetFooter>
-        </form>
-        <SelectImageHandler
-          isOpen={isOpenMediaModal}
-          setOpen={setIsOpenMediaModal}
-        />
+        <UploadPeopleForm editValue={editValue} open={open} setOpen={setOpen} />
       </SheetContent>
     </Sheet>
   );
