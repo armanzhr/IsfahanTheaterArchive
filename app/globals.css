@@ -67,6 +67,7 @@
   height: 45px;
   border: 1px solid #dedede;
 }
+
 @layer base {
   * {
     @apply border-border;

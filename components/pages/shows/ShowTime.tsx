@@ -93,8 +93,10 @@ const ShowTime = ({
 }) => {
   const [commandOpen, setCommandOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [showDate, setShowDate] =
-    useState<onRangeDatePickerChangePayload | null>();
+  const [showDate, setShowDate] = useState<{
+    startDate: Date | null;
+    endDate: Date | null;
+  }>({ startDate: null, endDate: null });
   const [time, setTime] = useState<string>();
   const [editMode, setEditMode] = useState(false);
   const { venues } = useVenuesStore();
@@ -108,8 +110,8 @@ const ShowTime = ({
 
     const model = {
       venueId: commandValue,
-      startDate: showDate?.from.toISOString(),
-      endDate: showDate?.to.toISOString(),
+      startDate: showDate?.startDate?.toISOString(),
+      endDate: showDate?.endDate?.toISOString(),
       showTimeStart: `${hour}:${min}`,
     };
     console.log(model);
@@ -197,7 +199,7 @@ const ShowTime = ({
               <Button
                 onClick={() => {
                   setCommandValue("");
-                  setShowDate(null);
+                  setShowDate({ startDate: null, endDate: null });
                   setTime("");
                   setEditMode(false);
                 }}
@@ -279,7 +281,7 @@ const ShowTime = ({
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="username" className="text-right">
-                    بازه اجرا
+                    تاریخ شروع
                   </Label>
                   <div
                     dir="rtl"
@@ -295,29 +297,36 @@ const ShowTime = ({
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {showDate ? (
+                          {showDate.startDate ? (
                             <span>
-                              از {moment(showDate.from).format("jYYYY/jMM/jDD")}
-                              تا {moment(showDate.to).format("jYYYY/jMM/jDD")}
+                              {moment(showDate.startDate).format(
+                                "jYYYY/jMM/jDD"
+                              )}
                             </span>
                           ) : (
-                            <span>بازه را انتخاب کنید</span>
+                            <span>تاریخ شروع را انتخاب کنید</span>
                           )}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
                         <CalendarProvider
                           locale="fa"
-                          round="x4"
-                          accentColor="#6374ae"
+                          round="x2"
+                          accentColor="#000000"
                         >
                           <Calendar
-                            defaultValue={new Date()}
-                            onChange={(e) => setShowDate(e)}
+                            defaultValue={
+                              showDate.startDate ??
+                              showDate.endDate ??
+                              new Date()
+                            }
+                            onChange={({ value }) =>
+                              setShowDate((prev) => ({
+                                ...prev,
+                                startDate: value,
+                              }))
+                            }
                             weekends={[6]}
-                            from={moment()}
-                            to={moment().add(3, "days")}
-                            range
                           />
                         </CalendarProvider>
                       </PopoverContent>
@@ -326,7 +335,59 @@ const ShowTime = ({
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="username" className="text-right">
-                    زمان اجرا
+                    تاریخ پایان
+                  </Label>
+                  <div
+                    dir="rtl"
+                    className="col-span-3 flex flex-col gap-2 datepicker"
+                  >
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            " justify-start text-left font-normal",
+                            !showDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {showDate.endDate ? (
+                            <span>
+                              {moment(showDate.endDate).format("jYYYY/jMM/jDD")}
+                            </span>
+                          ) : (
+                            <span>تاریخ پایان را انتخاب کنید</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <CalendarProvider
+                          locale="fa"
+                          round="x2"
+                          accentColor="#000000"
+                        >
+                          <Calendar
+                            defaultValue={
+                              showDate.endDate ??
+                              showDate.startDate ??
+                              new Date()
+                            }
+                            onChange={({ value }) =>
+                              setShowDate((prev) => ({
+                                ...prev,
+                                endDate: value,
+                              }))
+                            }
+                            weekends={[6]}
+                          />
+                        </CalendarProvider>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="username" className="text-right">
+                    ساعت اجرا
                   </Label>
                   <div dir="ltr" className="col-span-3 flex flex-col gap-2">
                     <InputOTP value={time} onChange={setTime} maxLength={4}>
