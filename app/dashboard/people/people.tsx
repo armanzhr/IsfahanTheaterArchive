@@ -15,6 +15,8 @@ import { toast } from "sonner";
 import config from "@/config";
 import { useMediaStore } from "@/service/store/useMediaStore";
 import { debounce } from "@/utils/functions/debounce";
+import InfiniteScroll from "react-infinite-scroll-component";
+
 const People = () => {
   const { getPeople, people, isGettingPeople } = usePeopleStore();
   const [open, setOpen] = useState(false);
@@ -75,6 +77,23 @@ const People = () => {
     }
   }, [listMedias]);
 
+  const [displayedUsers, setDisplayedUsers] = useState(filteredItems);
+
+  const fetchMoreData = () => {
+    console.log("before time");
+    setTimeout(() => {
+      console.log("fetched");
+      setDisplayedUsers(filteredItems?.slice(0, displayedUsers?.length! + 50));
+    }, 1000);
+  };
+
+  useEffect(() => {
+    console.log(displayedUsers);
+  }, [displayedUsers]);
+
+  useEffect(() => {
+    setDisplayedUsers(filteredItems?.slice(0, 50));
+  }, [filteredItems]);
   return (
     <>
       <div className="flex gap-3">
@@ -87,59 +106,58 @@ const People = () => {
           onChange={(e) => setSearchInputValue(e.target.value)}
         />
       </div>
-
-      <ScrollArea className="h-[calc(100dvh-220px)] px-4 mt-4">
-        <div
-          dir="rtl"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2"
+      <div dir="rtl">
+        <InfiniteScroll
+          dataLength={displayedUsers?.length!}
+          next={fetchMoreData}
+          hasMore={displayedUsers?.length! < filteredItems?.length!}
+          loader={<p>درحال بارگذرای...</p>}
+          className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2"
         >
-          {isGettingPeople ? (
-            <SkeletonLoading count={6} />
-          ) : (
-            filteredItems?.map((item) => (
-              <>
-                <div className="flex justify-between items-center hover:bg-gray-50 dark:hover:bg-zinc-900 transition ease-in-out duration-300 p-2 rounded-md">
-                  <div className="flex items-center gap-3">
-                    <Avatar className=" h-12 w-12 sm:flex">
-                      <AvatarImage
-                        src={
-                          item.avatarImageId
-                            ? `${config.fileURL}/${
-                                listMedias?.find(
-                                  (image) => image.id === item.avatarImageId
-                                )?.url
-                              }`
-                            : ""
-                        }
-                        alt="Avatar"
-                      />
-                      <AvatarFallback>
-                        <UserIcon className="opacity-50" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="grid gap-1">
-                      <p className="text-sm font-medium leading-none">
-                        {item.firstName} {item.lastName}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() => handleEditPeople(item)}
-                      variant="outline"
-                      className="h-8 w-8"
-                      size="icon"
-                    >
-                      <PencilIcon className="h-4 w-4" />
-                    </Button>
-                    <DeletePeople people={item} />
+          {displayedUsers?.map((item) => (
+            <>
+              <div className="flex justify-between items-center hover:bg-gray-50 dark:hover:bg-zinc-900 transition ease-in-out duration-300 p-2 rounded-md">
+                <div className="flex items-center gap-3">
+                  <Avatar className=" h-12 w-12 sm:flex">
+                    <AvatarImage
+                      src={
+                        item.avatarImageId
+                          ? `${config.fileURL}/${
+                              listMedias?.find(
+                                (image) => image.id === item.avatarImageId
+                              )?.url
+                            }`
+                          : ""
+                      }
+                      alt="Avatar"
+                    />
+                    <AvatarFallback>
+                      <UserIcon className="opacity-50" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid gap-1">
+                    <p className="text-sm font-medium leading-none">
+                      {item.firstName} {item.lastName}
+                    </p>
                   </div>
                 </div>
-              </>
-            ))
-          )}
-        </div>
-      </ScrollArea>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => handleEditPeople(item)}
+                    variant="outline"
+                    className="h-8 w-8"
+                    size="icon"
+                  >
+                    <PencilIcon className="h-4 w-4" />
+                  </Button>
+                  <DeletePeople people={item} />
+                </div>
+              </div>
+            </>
+          ))}
+        </InfiniteScroll>
+      </div>
+
       <UploadPeople editValue={editValue} setOpen={setOpen} open={open} />
     </>
   );
