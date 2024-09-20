@@ -273,8 +273,11 @@ const UploadPeopleForm = ({
             </div>
           </div>
         </div>
-        <div>
-          <Button type="submit">{editValue ? "ویرایش" : "ایجاد"}</Button>
+        <div className="grid grid-cols-4">
+          <div></div>
+          <Button className="col-span-3" type="submit">
+            {editValue ? "ویرایش" : "ایجاد"}
+          </Button>
         </div>
       </form>
       <SelectImageHandler

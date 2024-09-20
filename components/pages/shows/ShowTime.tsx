@@ -65,6 +65,8 @@ import {
 import React, { useEffect, useState } from "react";
 import { CalendarProvider, Calendar, DatePicker } from "zaman";
 import { onRangeDatePickerChangePayload } from "zaman/dist/types";
+import UploadVenueForm from "../venues/UploadVenueForm";
+import { Venues } from "@/utils/types";
 var moment = require("moment-jalaali");
 
 const ShowTime = ({
@@ -73,9 +75,10 @@ const ShowTime = ({
   showTimes,
   setShowTimes,
 }: {
-  commandValue: string;
-  setCommandValue: (data: string) => void;
+  commandValue: Venues | null | undefined;
+  setCommandValue: (data: Venues | null | undefined) => void;
   showTimes: {
+    id: number;
     venueId: number;
     startDate: string;
     endDate: string;
@@ -84,6 +87,7 @@ const ShowTime = ({
   setShowTimes: (
     showtime:
       | {
+          id: number;
           venueId: number;
           startDate: string;
           endDate: string;
@@ -92,31 +96,51 @@ const ShowTime = ({
   ) => void;
 }) => {
   const [commandOpen, setCommandOpen] = useState(false);
+  const [newOption, setNewOption] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
   const [showDate, setShowDate] = useState<{
     startDate: Date | null;
     endDate: Date | null;
   }>({ startDate: null, endDate: null });
   const [time, setTime] = useState<string>();
-  const [editMode, setEditMode] = useState(false);
+  const [editModeValue, setEditModeValue] = useState<{
+    id: number;
+    venueId: number;
+    startDate: string;
+    endDate: string;
+    showTimeStart: string;
+  } | null>();
   const { venues } = useVenuesStore();
   useEffect(() => {
-    console.log(showDate);
-  }, [showDate]);
+    console.log(editModeValue);
+  }, [editModeValue]);
 
   const handleClick = () => {
     const hour = time?.substring(0, 2);
     const min = time?.substring(2, 4);
 
     const model = {
-      venueId: commandValue,
+      venueId: commandValue?.id,
       startDate: showDate?.startDate?.toISOString(),
       endDate: showDate?.endDate?.toISOString(),
       showTimeStart: `${hour}:${min}`,
     };
     console.log(model);
-    setShowTimes([...(showTimes ?? []), model] as any);
-    setIsOpen(false);
+    if (editModeValue) {
+      setShowTimes(
+        showTimes.map((item) =>
+          item.id === editModeValue.id ? { ...item, ...model } : item
+        ) as any
+      );
+      setIsOpen(false);
+    } else {
+      setShowTimes([
+        ...(showTimes ?? []),
+        { ...model, id: showTimes ? showTimes.length + 1 : 1 },
+      ] as any);
+      setIsOpen(false);
+    }
   };
 
   return (
@@ -126,82 +150,95 @@ const ShowTime = ({
           <CardTitle className="text-lg">زمان و محل اجرا</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-start">محل برگزاری</TableHead>
-                <TableHead className="text-start">زمان اجرا</TableHead>
-                <TableHead>تنظیمات</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {showTimes?.map((showTime, index) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">
-                    {
-                      venues?.filter(
-                        (venue) => venue.id === Number(showTime.venueId)
-                      )[0]?.name
-                    }
-                  </TableCell>
-                  <TableCell>
-                    از {moment(showTime.startDate).format("jYYYY/jMM/jDD")}
-                    تا
-                    {moment(showTime.endDate).format("jYYYY/jMM/jDD")}
-                    ساعت {showTime.showTimeStart}
-                  </TableCell>
-                  <TableCell className="text-end">
-                    <DropdownMenu dir="rtl">
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          aria-haspopup="true"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuLabel>تنظیمات</DropdownMenuLabel>
-                        <DropdownMenuItem
-                          className="gap-2"
-                          onClick={() => {
-                            setTime(showTime.showTimeStart.replace(":", ""));
-                            setEditMode(true);
-                            setIsOpen(true);
-                          }}
-                        >
-                          <PencilIcon className="w-3 h-3" />
-                          <p>ویرایش</p>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            setShowTimes(
-                              showTimes.filter((item) => item !== showTime)
-                            )
-                          }
-                          className="gap-2"
-                        >
-                          <TrashIcon className="w-3 h-3" />
-                          <p>حذف</p>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+          {showTimes ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-start">محل برگزاری</TableHead>
+                  <TableHead className="text-start">زمان اجرا</TableHead>
+                  <TableHead>تنظیمات</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {showTimes.map((showTime, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">
+                      {
+                        venues?.filter(
+                          (venue) => venue.id === Number(showTime.venueId)
+                        )[0]?.name
+                      }
+                    </TableCell>
+                    <TableCell>
+                      از {moment(showTime.startDate).format("jYYYY/jMM/jDD")}
+                      تا
+                      {moment(showTime.endDate).format("jYYYY/jMM/jDD")}
+                      ساعت {showTime.showTimeStart}
+                    </TableCell>
+                    <TableCell className="text-end">
+                      <DropdownMenu dir="rtl">
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            aria-haspopup="true"
+                            size="icon"
+                            variant="ghost"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuLabel>تنظیمات</DropdownMenuLabel>
+                          <DropdownMenuItem
+                            className="gap-2"
+                            onClick={() => {
+                              setTime(showTime.showTimeStart.replace(":", ""));
+                              setShowDate({
+                                startDate: moment(showTime.startDate),
+                                endDate: moment(showTime.endDate),
+                              });
+                              setCommandValue(
+                                venues?.filter(
+                                  (item) => item.id === Number(showTime.venueId)
+                                )[0]
+                              );
+                              setEditModeValue(showTime);
+                              setIsOpen(true);
+                            }}
+                          >
+                            <PencilIcon className="w-3 h-3" />
+                            <p>ویرایش</p>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              setShowTimes(
+                                showTimes.filter((item) => item !== showTime)
+                              )
+                            }
+                            className="gap-2"
+                          >
+                            <TrashIcon className="w-3 h-3" />
+                            <p>حذف</p>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <p>اجرایی وجود ندارد</p>
+          )}
         </CardContent>
         <CardFooter className="justify-center border-t">
           <Dialog open={isOpen} onOpenChange={() => setIsOpen((prev) => !prev)}>
             <DialogTrigger asChild>
               <Button
                 onClick={() => {
-                  setCommandValue("");
+                  setCommandValue(null);
                   setShowDate({ startDate: null, endDate: null });
                   setTime("");
-                  setEditMode(false);
+                  setEditModeValue(null);
                 }}
                 size="sm"
                 variant="ghost"
@@ -214,7 +251,7 @@ const ShowTime = ({
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader className="items-center">
                 <DialogTitle>
-                  {editMode ? "ویرایش سانس" : " افزودن سانس"}
+                  {editModeValue ? "ویرایش سانس" : " افزودن سانس"}
                 </DialogTitle>
                 <DialogDescription>
                   زمان و محل برگزاری نمایش را وارد نمایید
@@ -233,31 +270,48 @@ const ShowTime = ({
                         className="col-span-3 justify-between"
                       >
                         {commandValue
-                          ? venues?.find(
-                              (item) => item.id.toString() === commandValue
-                            )?.name
+                          ? venues?.find((item) => item.id === commandValue?.id)
+                              ?.name
                           : "انتخاب محل برگزاری"}
                         <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[200px] p-0">
                       <Command>
-                        <CommandInput
-                          placeholder="جست و جوی محل برگزاری"
-                          className="h-9"
-                        />
+                        <div className="flex items-center gap-3">
+                          <CommandInput
+                            placeholder="جست و جوی محل برگزاری"
+                            className="h-9"
+                          />
+                          <Popover open={newOption} onOpenChange={setNewOption}>
+                            <PopoverTrigger asChild>
+                              <Button variant="outline">
+                                <PlusCircle className="w-4 h-4" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80">
+                              <UploadVenueForm
+                                open={newOption}
+                                setOpen={setNewOption}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
                         <CommandList>
                           <CommandEmpty>محل اجرایی یافت نشد</CommandEmpty>
                           <CommandGroup>
                             {venues?.map((venue) => (
                               <CommandItem
                                 key={venue.id}
-                                value={venue.id.toString()}
+                                value={venue.name}
                                 onSelect={(currentValue) => {
+                                  console.log(currentValue);
                                   setCommandValue(
-                                    currentValue === commandValue
-                                      ? ""
-                                      : currentValue
+                                    currentValue === commandValue?.name
+                                      ? null
+                                      : venues.filter(
+                                          (venue) => venue.name === currentValue
+                                        )[0]
                                   );
                                   setCommandOpen(false);
                                 }}
@@ -266,7 +320,7 @@ const ShowTime = ({
                                 <CheckIcon
                                   className={cn(
                                     "ml-auto h-4 w-4",
-                                    commandValue === venue.id.toString()
+                                    commandValue === venue
                                       ? "opacity-100"
                                       : "opacity-0"
                                   )}
@@ -410,7 +464,7 @@ const ShowTime = ({
                   onClick={handleClick}
                   type="submit"
                 >
-                  {editMode ? "ویرایش " : " افزودن "}
+                  {editModeValue ? "ویرایش " : " افزودن "}
                 </Button>
               </DialogFooter>
             </DialogContent>

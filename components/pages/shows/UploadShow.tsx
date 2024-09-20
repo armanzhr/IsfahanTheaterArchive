@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/drawer";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { useRolesStore } from "@/service/store/useRolesStore";
-import { Media, People, Roles, Show } from "@/utils/types";
+import { Media, People, Roles, Show, Venues } from "@/utils/types";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Upload, XIcon } from "lucide-react";
@@ -61,13 +61,14 @@ const UploadShow = ({
     setIsOpenMediaModal(false);
   };
   const { createShows, updateShows } = useShowsStore();
-  const [commandValue, setCommandValue] = useState("");
+  const [commandValue, setCommandValue] = useState<Venues | null>();
 
   const title = watch("title");
   const [description, setDescription] = useState<Content>("");
   const [imageMode, setImageMode] = useState<"avatar" | "gallery">();
   const [showTimes, setShowsTimes] = useState<
     {
+      id: number;
       venueId: number;
       startDate: string;
       endDate: string;
@@ -221,17 +222,15 @@ const UploadShow = ({
           </DrawerHeader>
           <main className="grid overflow-y-auto flex-1 items-start gap-4 sm:px-6 sm:py-0 md:gap-8">
             <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                id="show-form"
-                className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8"
-              >
+              <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
                 <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-                  <ShowDetail
-                    description={description}
-                    setDescription={setDescription}
-                    register={register}
-                  />
+                  <form onSubmit={handleSubmit(onSubmit)} id="show-form">
+                    <ShowDetail
+                      description={description}
+                      setDescription={setDescription}
+                      register={register}
+                    />
+                  </form>
                   <ShowTime
                     showTimes={showTimes}
                     setShowTimes={setShowsTimes}
@@ -254,7 +253,6 @@ const UploadShow = ({
                     <CardContent>
                       <div className="grid gap-2">
                         <p>پوستر نمایش</p>
-
                         <Card>
                           <button
                             type="button"
@@ -352,7 +350,7 @@ const UploadShow = ({
                     </CardContent>
                   </Card>
                 </div>
-              </form>
+              </div>
 
               <DrawerFooter className="mb-2 p-0">
                 <Button type="submit" form="show-form">
