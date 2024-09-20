@@ -25,15 +25,10 @@ const People = () => {
   const [searchInputValue, setSearchInputValue] = useState<string>("");
   const [filteredItems, setFilteredItems] = useState<PeopleType[] | null>();
 
-  const debouncedFilter = debounce((input: string) => {
-    console.log("Filtering for:", input);
-    // منطق فیلترینگ کاربران
-  }, 300);
-
   const handleFilterItems = () => {
     setFilteredItems(
       people?.filter((item) =>
-        `${item.firstName} ${item.firstName}`.includes(searchInputValue)
+        (item.firstName + " " + item.lastName).includes(searchInputValue)
       )
     );
   };
