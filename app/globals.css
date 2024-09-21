@@ -77,8 +77,12 @@
   }
 }
 .calendar .item {
-  height: 240px;
+  height: 260px;
+  gap: 0;
 }
 .calendar {
-  height: 320px !important;
+  height: 340px !important;
+}
+.calendar .zm-Header {
+  height: 40px;
 }

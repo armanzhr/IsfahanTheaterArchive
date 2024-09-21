@@ -179,21 +179,39 @@ const UploadShow = ({
       showPeopleRoles: result,
     };
     if (editValue) {
-      try {
-        await updateShows(editValue.id, model as any);
-        toast.success("نمایش با موفقیت ویرایش شد");
-        setOpen(false);
-      } catch (error) {
-        toast.error("خطا در ویرایش نمایش");
-      }
+      toast.promise(
+        async () => {
+          try {
+            await updateShows(editValue.id, model as any);
+
+            setOpen(false);
+          } catch (error) {
+            throw error;
+          }
+        },
+        {
+          loading: "در حال ویرایش نمایش ...",
+          success: "نمایش با موفقیت ویرایش شد",
+          error: "خطا در ویرایش نمایش",
+        }
+      );
     } else {
-      try {
-        await createShows(model as any);
-        toast.success("نمایش با موفقیت ساخته شد");
-        setOpen(false);
-      } catch (error) {
-        toast.error("خطا در ایجاد نمایش");
-      }
+      toast.promise(
+        async () => {
+          try {
+            await createShows(model as any);
+
+            setOpen(false);
+          } catch (error) {
+            throw error;
+          }
+        },
+        {
+          loading: "در حال ایجاد نمایش ...",
+          success: "نمایش با موفقیت ایجاد شد",
+          error: "خطا در ایجاد نمایش",
+        }
+      );
     }
   };
 

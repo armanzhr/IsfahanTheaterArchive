@@ -142,7 +142,14 @@ const ShowTime = ({
       setIsOpen(false);
     }
   };
-
+  function formatTime(inputTime: string) {
+    // اگر ورودی به شکل "HH:MM:SS" است، فقط "HH:MM" را برگردان
+    if (inputTime.length === 8) {
+      return inputTime.slice(0, 5);
+    }
+    // اگر ورودی به شکل "HH:MM" است، همان را برگردان
+    return inputTime;
+  }
   return (
     <>
       <Card x-chunk="dashboard-07-chunk-1">
@@ -173,7 +180,7 @@ const ShowTime = ({
                       از {moment(showTime.startDate).format("jYYYY/jMM/jDD")}
                       تا
                       {moment(showTime.endDate).format("jYYYY/jMM/jDD")}
-                      ساعت {showTime.showTimeStart}
+                      ساعت {formatTime(showTime.showTimeStart)}
                     </TableCell>
                     <TableCell className="text-end">
                       <DropdownMenu dir="rtl">
@@ -191,7 +198,12 @@ const ShowTime = ({
                           <DropdownMenuItem
                             className="gap-2"
                             onClick={() => {
-                              setTime(showTime.showTimeStart.replace(":", ""));
+                              setTime(
+                                formatTime(showTime.showTimeStart).replace(
+                                  ":",
+                                  ""
+                                )
+                              );
                               setShowDate({
                                 startDate: moment(showTime.startDate),
                                 endDate: moment(showTime.endDate),

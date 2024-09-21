@@ -54,7 +54,9 @@ const UploadPeopleForm = ({
 
   // Generate slug when firstName or lastName changes
   useEffect(() => {
-    const slug = `${firstName} ${lastName}`.trim().replace(/\s+/g, "-");
+    const slug = `${firstName ?? ""} ${lastName ?? ""}`
+      .trim()
+      .replace(/\s+/g, "-");
     if (!firstName && !lastName) {
       setValue("slug", null);
     } else {
