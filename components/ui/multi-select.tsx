@@ -34,6 +34,8 @@ import config from "@/config";
 import { useMediaStore } from "@/service/store/useMediaStore";
 import UploadPeopleForm from "../pages/people/UploadPeopleForm";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { usePeopleStore } from "@/service/store/usePeopleStore";
+import { toast } from "sonner";
 
 /**
  * Variants for the multi-select component to handle different styles.
@@ -153,11 +155,7 @@ export const MultiSelect = React.forwardRef<
     const [displayedUsers, setDisplayedUsers] = React.useState<any>([]);
 
     const fetchMoreData = () => {
-      console.log("before time");
-      setTimeout(() => {
-        console.log("fetched");
-        setDisplayedUsers(options?.slice(0, displayedUsers?.length! + 50));
-      }, 1000);
+      setPage((prevPage) => prevPage + 1);
     };
     React.useEffect(() => {
       setDisplayedUsers(options?.slice(0, 50));
@@ -193,21 +191,44 @@ export const MultiSelect = React.forwardRef<
       setIsPopoverOpen((prev) => !prev);
     };
 
-    const clearExtraOptions = () => {
-      const newSelectedValues = selectedValues.people.slice(0, maxCount);
-      setSelectedValues({ roleId: role.id, people: newSelectedValues });
-      onValueChange({ roleId: role.id, people: newSelectedValues });
-    };
+    const [page, setPage] = React.useState(1);
+    const [hasMore, setHasMore] = React.useState(true);
+    const [searchKey, setSearchKey] = React.useState<string>();
+    const [filteredItems, setFilteredItems] = React.useState<People[] | null>(
+      []
+    );
 
-    const toggleAll = () => {
-      if (selectedValues.people.length === options.length) {
-        handleClear();
-      } else {
-        const allValues = options.map((option) => option.id);
-        setSelectedValues({ roleId: role.id, people: allValues });
-        onValueChange({ roleId: role.id, people: allValues });
+    const { getPeople } = usePeopleStore();
+    const fetchPeople = async () => {
+      try {
+        const res = await getPeople(page, 40);
+        const newItems = res;
+        setFilteredItems((prev) => [...(prev ?? []), ...newItems]);
+        if (newItems.length === 0 || newItems.length < 40) {
+          setHasMore(false);
+        }
+      } catch (error) {
+        toast.error("خطا در دریافت لیست عوامل");
       }
     };
+    const searchPeople = async () => {
+      try {
+        const res = await getPeople(undefined, undefined, searchKey);
+        const newItems = res;
+        setFilteredItems(res);
+      } catch (error) {
+        toast.error("خطا در دریافت لیست عوامل");
+      }
+    };
+    React.useEffect(() => {
+      fetchPeople();
+    }, [page]);
+
+    React.useEffect(() => {
+      if ((searchKey && searchKey?.length > 2) || !searchKey) {
+        searchPeople();
+      }
+    }, [searchKey]);
 
     return (
       <div className="flex items-start">
@@ -250,61 +271,9 @@ export const MultiSelect = React.forwardRef<
                   </PopoverContent>
                 </Popover>
               </div>
-              <CommandList id="list">
+              <CommandList className="overflow-hidden">
                 <CommandEmpty>کاربری یافت نشد</CommandEmpty>
-                <CommandGroup>
-                  <InfiniteScroll
-                    dataLength={displayedUsers?.length}
-                    next={fetchMoreData}
-                    hasMore={displayedUsers?.length! < options?.length!}
-                    loader={<p>در حال بارگذاری</p>}
-                    scrollableTarget="list"
-                    initialScrollY={100}
-                  >
-                    {options?.map((option) => {
-                      const isSelected = selectedValues.people.includes(
-                        option.id
-                      );
-                      return (
-                        <CommandItem
-                          key={option.id}
-                          onSelect={() => toggleOption(option.id)}
-                          className="cursor-pointer"
-                          value={option.firstName + " " + option.lastName}
-                        >
-                          <div
-                            className={cn(
-                              "ml-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                              isSelected
-                                ? "bg-primary text-primary-foreground"
-                                : "opacity-50 [&_svg]:invisible"
-                            )}
-                          >
-                            <CheckIcon className="h-4 w-4" />
-                          </div>
-
-                          <Avatar className=" h-6 w-6 ml-2 sm:flex">
-                            <AvatarImage
-                              src={`${config.fileURL}/${
-                                listMedias?.find(
-                                  (item) => item.id === option.avatarImageId
-                                )?.url
-                              }`}
-                              alt="Avatar"
-                            />
-                            <AvatarFallback>
-                              <UserIcon className="opacity-50 h-4 w-4" />
-                            </AvatarFallback>
-                          </Avatar>
-
-                          <span>{`${option.firstName} ${option.lastName}`}</span>
-                        </CommandItem>
-                      );
-                    })}
-                  </InfiniteScroll>
-                </CommandGroup>
-                <CommandSeparator />
-                <CommandGroup>
+                {/* <CommandGroup>
                   <div className="flex items-center justify-between">
                     {selectedValues.people.length > 0 && (
                       <>
@@ -328,6 +297,57 @@ export const MultiSelect = React.forwardRef<
                     </CommandItem>
                   </div>
                 </CommandGroup>
+                <CommandSeparator /> */}
+
+                <div className="overflow-auto h-[300px]" id="scrollableDiv">
+                  <InfiniteScroll
+                    dataLength={filteredItems?.length!}
+                    next={fetchMoreData}
+                    hasMore={hasMore}
+                    loader={<p>در حال بارگذاری</p>}
+                    scrollableTarget="scrollableDiv"
+                  >
+                    {filteredItems?.map((option) => {
+                      const isSelected = selectedValues.people.includes(
+                        option.id
+                      );
+                      return (
+                        <CommandItem
+                          key={option.id}
+                          onSelect={() => toggleOption(option.id)}
+                          className="cursor-pointer"
+                          value={option.firstName + " " + option.lastName}
+                        >
+                          <div
+                            className={cn(
+                              "ml-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                              isSelected
+                                ? "bg-primary text-primary-foreground"
+                                : "opacity-50 [&_svg]:invisible"
+                            )}
+                          >
+                            <CheckIcon className="h-4 w-4" />
+                          </div>
+                          <Avatar className=" h-6 w-6 ml-2 sm:flex">
+                            <AvatarImage
+                              src={`${config.fileURL}/${
+                                listMedias?.find(
+                                  (item) => item.id === option.avatarImageId
+                                )?.url
+                              }`}
+                              alt="Avatar"
+                            />
+                            <AvatarFallback>
+                              <UserIcon className="opacity-50 h-4 w-4" />
+                            </AvatarFallback>
+                          </Avatar>
+
+                          <span>{`${option.firstName} ${option.lastName}`}</span>
+                        </CommandItem>
+                      );
+                    })}
+                  </InfiniteScroll>
+                </div>
               </CommandList>
             </Command>
           </PopoverContent>

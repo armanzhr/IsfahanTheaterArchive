@@ -6,7 +6,11 @@ interface PeopleStateProps {
   people: People[] | null;
   isGettingPeople: boolean;
   isLoadingPeople: boolean;
-  getPeople: () => Promise<void>;
+  getPeople: (
+    page?: number,
+    pageSize?: number,
+    searchKey?: string
+  ) => Promise<People[]>;
   createPeople: (model: {
     firstName: string;
     lastName: string;
@@ -33,11 +37,14 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
   people: null,
   isGettingPeople: false,
   isLoadingPeople: false,
-  getPeople: async () => {
+  getPeople: async (page = 1, pageSize = 40, searchKey) => {
     set({ isGettingPeople: true });
     try {
-      const { data } = await axios.get(config.baseURL + "/People");
+      const { data } = await axios.get(config.baseURL + `/People`, {
+        params: { page, pageSize, searchKey },
+      });
       set({ people: data });
+      return data;
     } catch (error) {
       throw error;
     } finally {
