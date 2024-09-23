@@ -26,36 +26,47 @@ const People = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [searchKey, setSearchKey] = useState<string>();
+  const [query, setQuery] = useState<string>("");
 
-  const fetchPeople = async () => {
+  const fetchUsers = async () => {
     try {
-      const res = await getPeople(page, 40);
-      const newItems = res;
-      setFilteredItems((prev) => [...(prev ?? []), ...newItems]);
-      if (newItems.length === 0 || newItems.length < 40) {
+      const params: { page: number; search?: string } = { page: page };
+
+      // اگر query طولش بیشتر از 3 کاراکتر باشد، به عنوان search اضافه می‌شود
+      if (query.length > 2) {
+        params.search = query;
+      }
+      const response = await getPeople(page, 40, params.search);
+      const newUsers = response;
+
+      // چک کردن اگر داده‌ای برنگشت
+      if (newUsers.length === 0) {
         setHasMore(false);
+      } else {
+        setFilteredItems([...(filteredItems ?? []), ...newUsers]);
+        setPage(page + 1); // صفحه بعدی را برای بارگذاری تنظیم می‌کنیم
       }
     } catch (error) {
-      toast.error("خطا در دریافت لیست عوامل");
+      console.error("Error fetching users:", error);
     }
   };
-  const searchPeople = async () => {
-    try {
-      const res = await getPeople(undefined, undefined, searchKey);
-      const newItems = res;
-      setFilteredItems(res);
-    } catch (error) {
-      toast.error("خطا در دریافت لیست عوامل");
+
+  // تابع برای ارسال فرم جستجو
+  const handleSearchSubmit = () => {
+    if (searchKey?.length! > 2 || searchKey?.length === 0) {
+      setFilteredItems([]); // پاک کردن لیست کاربران
+      setPage(1); // بازگشت به صفحه 1
+      setHasMore(true); // فعال کردن دوباره بارگذاری
+      setQuery(searchKey!); // مقدار جستجو را در query ذخیره می‌کنیم تا API فراخوانی شود
     }
   };
-  useEffect(() => {
-    fetchPeople();
-  }, [page]);
 
   useEffect(() => {
-    if ((searchKey && searchKey?.length > 2) || !searchKey) {
-      searchPeople();
-    }
+    fetchUsers(); // بارگذاری کاربران زمانی که query تغییر کند (برای جستجو)
+  }, [query]);
+
+  useEffect(() => {
+    handleSearchSubmit();
   }, [searchKey]);
 
   const handleCreatePeople = () => {
@@ -79,10 +90,6 @@ const People = () => {
     }
   }, [listMedias]);
 
-  const fetchMoreData = () => {
-    setPage((prevPage) => prevPage + 1);
-  };
-
   return (
     <>
       <div className="flex gap-3">
@@ -103,7 +110,7 @@ const People = () => {
       >
         <InfiniteScroll
           dataLength={filteredItems?.length!}
-          next={fetchMoreData}
+          next={fetchUsers}
           hasMore={hasMore}
           loader={<p>درحال بارگذرای...</p>}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 overflow-hidden"
