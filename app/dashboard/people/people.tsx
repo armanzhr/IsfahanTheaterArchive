@@ -18,14 +18,15 @@ import { debounce } from "@/utils/functions/debounce";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const People = () => {
-  const { getPeople, people, isGettingPeople } = usePeopleStore();
+  const { getPeople, people, isGettingPeople, searchKey, setSearchKey } =
+    usePeopleStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<PeopleType | null>();
   const { listMedias, getMediasList } = useMediaStore();
   const [filteredItems, setFilteredItems] = useState<PeopleType[] | null>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [searchKey, setSearchKey] = useState<string>();
+
   const [query, setQuery] = useState<string>("");
 
   const fetchUsers = async () => {

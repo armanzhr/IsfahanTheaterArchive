@@ -5,6 +5,8 @@ import config from "@/config";
 interface PeopleStateProps {
   people: People[] | null;
   allPeople: People[] | null;
+  searchKey: string;
+  setSearchKey: (searchKey: string) => void;
   setAllPeople: (people: People[]) => void;
   isGettingPeople: boolean;
   isLoadingPeople: boolean;
@@ -38,6 +40,8 @@ interface PeopleStateProps {
 export const usePeopleStore = create<PeopleStateProps>((set) => ({
   people: null,
   allPeople: null,
+  searchKey: "",
+  setSearchKey: (searchKey) => set({ searchKey }),
   setAllPeople: (people) => set({ allPeople: people }),
   isGettingPeople: false,
   isLoadingPeople: false,
@@ -59,7 +63,8 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
     set({ isLoadingPeople: true });
     try {
       const { data } = await axios.post(config.baseURL + "/People", model);
-      await usePeopleStore.getState().getPeople();
+      const res = await usePeopleStore.getState().getPeople(1, 10000);
+      set({ allPeople: res });
     } catch (error) {
       throw error;
     } finally {
@@ -87,6 +92,7 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
         config.baseURL + "/People/" + peopleID
       );
       await usePeopleStore.getState().getPeople();
+      set({ searchKey: "" });
     } catch (error) {
       throw error;
     } finally {

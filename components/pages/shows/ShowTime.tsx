@@ -317,7 +317,6 @@ const ShowTime = ({
                                 key={venue.id}
                                 value={venue.name}
                                 onSelect={(currentValue) => {
-                                  console.log(currentValue);
                                   setCommandValue(
                                     currentValue === commandValue?.name
                                       ? null
