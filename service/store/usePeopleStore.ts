@@ -4,6 +4,8 @@ import axios, { AxiosPromise } from "axios";
 import config from "@/config";
 interface PeopleStateProps {
   people: People[] | null;
+  allPeople: People[] | null;
+  setAllPeople: (people: People[]) => void;
   isGettingPeople: boolean;
   isLoadingPeople: boolean;
   getPeople: (
@@ -35,6 +37,8 @@ interface PeopleStateProps {
 
 export const usePeopleStore = create<PeopleStateProps>((set) => ({
   people: null,
+  allPeople: null,
+  setAllPeople: (people) => set({ allPeople: people }),
   isGettingPeople: false,
   isLoadingPeople: false,
   getPeople: async (page = 1, pageSize = 40, searchKey) => {

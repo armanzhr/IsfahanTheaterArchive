@@ -12,7 +12,7 @@ const ShowPeople = ({
   selectedPeopleByRole: any;
   setSelectedPeopleByRole: any;
 }) => {
-  const { people } = usePeopleStore();
+  const { people, allPeople } = usePeopleStore();
   const { roles } = useRolesStore();
   const handleChangeValue = ({
     roleId,
@@ -41,7 +41,7 @@ const ShowPeople = ({
                   <p className="text-sm font-semibold">{item.name}</p>
 
                   <MultiSelect
-                    options={people!}
+                    options={allPeople!}
                     onValueChange={handleChangeValue}
                     defaultValue={{
                       roleId: item.id, // Pass the role's ID

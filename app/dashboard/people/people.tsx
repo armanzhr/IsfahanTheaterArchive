@@ -112,7 +112,7 @@ const People = () => {
           dataLength={filteredItems?.length!}
           next={fetchUsers}
           hasMore={hasMore}
-          loader={<p>درحال بارگذرای...</p>}
+          loader={<p className="overflow-hidden">درحال بارگذرای...</p>}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 overflow-hidden"
           scrollableTarget="scrollableDiv"
         >

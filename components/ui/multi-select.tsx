@@ -36,6 +36,7 @@ import UploadPeopleForm from "../pages/people/UploadPeopleForm";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { usePeopleStore } from "@/service/store/usePeopleStore";
 import { toast } from "sonner";
+import { Input } from "./input";
 
 /**
  * Variants for the multi-select component to handle different styles.
@@ -154,25 +155,6 @@ export const MultiSelect = React.forwardRef<
     }, [defaultValue]);
     const [displayedUsers, setDisplayedUsers] = React.useState<any>([]);
 
-    const fetchMoreData = () => {
-      setPage((prevPage) => prevPage + 1);
-    };
-    React.useEffect(() => {
-      setDisplayedUsers(options?.slice(0, 50));
-    }, [options]);
-    const handleInputKeyDown = (
-      event: React.KeyboardEvent<HTMLInputElement>
-    ) => {
-      if (event.key === "Enter") {
-        setIsPopoverOpen(true);
-      } else if (event.key === "Backspace" && !event.currentTarget.value) {
-        const newSelectedValues = [...selectedValues.people];
-        newSelectedValues.pop();
-        setSelectedValues({ roleId: role.id, people: newSelectedValues });
-        onValueChange({ roleId: role.id, people: newSelectedValues });
-      }
-    };
-
     const toggleOption = (value: number) => {
       const newSelectedValues = selectedValues.people.includes(value)
         ? selectedValues.people.filter((v) => v !== value)
@@ -194,40 +176,52 @@ export const MultiSelect = React.forwardRef<
     const [page, setPage] = React.useState(1);
     const [hasMore, setHasMore] = React.useState(true);
     const [searchKey, setSearchKey] = React.useState<string>();
+    const [query, setQuery] = React.useState<string>("");
     const [filteredItems, setFilteredItems] = React.useState<People[] | null>(
       []
     );
 
-    const { getPeople } = usePeopleStore();
-    const fetchPeople = async () => {
+    const { getPeople, allPeople } = usePeopleStore();
+
+    const fetchUsers = async () => {
       try {
-        const res = await getPeople(page, 40);
-        const newItems = res;
-        setFilteredItems((prev) => [...(prev ?? []), ...newItems]);
-        if (newItems.length === 0 || newItems.length < 40) {
+        const params: { page: number; search?: string } = { page: page };
+
+        // اگر query طولش بیشتر از 3 کاراکتر باشد، به عنوان search اضافه می‌شود
+        if (query.length > 2) {
+          params.search = query;
+        }
+        const response = await getPeople(page, 40, params.search);
+        const newUsers = response;
+
+        // چک کردن اگر داده‌ای برنگشت
+        if (newUsers.length === 0) {
           setHasMore(false);
+        } else {
+          setFilteredItems([...(filteredItems ?? []), ...newUsers]);
+          setPage(page + 1); // صفحه بعدی را برای بارگذاری تنظیم می‌کنیم
         }
       } catch (error) {
-        toast.error("خطا در دریافت لیست عوامل");
+        console.error("Error fetching users:", error);
       }
     };
-    const searchPeople = async () => {
-      try {
-        const res = await getPeople(undefined, undefined, searchKey);
-        const newItems = res;
-        setFilteredItems(res);
-      } catch (error) {
-        toast.error("خطا در دریافت لیست عوامل");
+
+    // تابع برای ارسال فرم جستجو
+    const handleSearchSubmit = () => {
+      if (searchKey?.length! > 2 || searchKey?.length === 0) {
+        setFilteredItems([]); // پاک کردن لیست کاربران
+        setPage(1); // بازگشت به صفحه 1
+        setHasMore(true); // فعال کردن دوباره بارگذاری
+        setQuery(searchKey!); // مقدار جستجو را در query ذخیره می‌کنیم تا API فراخوانی شود
       }
     };
-    React.useEffect(() => {
-      fetchPeople();
-    }, [page]);
 
     React.useEffect(() => {
-      if ((searchKey && searchKey?.length > 2) || !searchKey) {
-        searchPeople();
-      }
+      fetchUsers(); // بارگذاری کاربران زمانی که query تغییر کند (برای جستجو)
+    }, [query]);
+
+    React.useEffect(() => {
+      handleSearchSubmit();
     }, [searchKey]);
 
     return (
@@ -255,10 +249,11 @@ export const MultiSelect = React.forwardRef<
             onEscapeKeyDown={() => setIsPopoverOpen(false)}
           >
             <Command>
-              <div className="flex items-center gap-3">
-                <CommandInput
+              <div className="flex items-center gap-3 m-3">
+                <Input
                   placeholder="جست و جو"
-                  onKeyDown={handleInputKeyDown}
+                  value={searchKey}
+                  onChange={(e) => setSearchKey(e.target.value)}
                 />
                 <Popover open={newOption} onOpenChange={setNewOption}>
                   <PopoverTrigger asChild>
@@ -302,9 +297,9 @@ export const MultiSelect = React.forwardRef<
                 <div className="overflow-auto h-[300px]" id="scrollableDiv">
                   <InfiniteScroll
                     dataLength={filteredItems?.length!}
-                    next={fetchMoreData}
+                    next={fetchUsers}
                     hasMore={hasMore}
-                    loader={<p>در حال بارگذاری</p>}
+                    loader={<p className="overflow-hidden">در حال بارگذاری</p>}
                     scrollableTarget="scrollableDiv"
                   >
                     {filteredItems?.map((option) => {
@@ -392,25 +387,6 @@ export const MultiSelect = React.forwardRef<
                 </Badge>
               );
             })}
-            {/* {selectedValues.people.length > maxCount && (
-              <Badge
-                className={cn(
-                  "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
-                  isAnimating ? "animate-bounce" : "",
-                  multiSelectVariants({ variant })
-                )}
-                style={{ animationDuration: `${animation}s` }}
-              >
-                {`+ ${selectedValues.people.length - maxCount} more`}
-                <XCircle
-                  className="ml-2 h-4 w-4 cursor-pointer"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    clearExtraOptions();
-                  }}
-                />
-              </Badge>
-            )} */}
           </div>
         </div>
       </div>

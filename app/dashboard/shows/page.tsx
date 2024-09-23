@@ -52,7 +52,7 @@ const Shows = () => {
   const [selectedShow, setSelectedShow] = useState<Show>();
   const [searchInputValue, setSearchInputValue] = useState<string>("");
   const [filteredItems, setFilteredItems] = useState<Show[] | null>();
-
+  const { getPeople, setAllPeople } = usePeopleStore();
   const handleFilterItems = () => {
     setFilteredItems(
       shows?.filter((item) => item.title.includes(searchInputValue))
@@ -103,6 +103,17 @@ const Shows = () => {
     setSelectedShow(item);
     setOpenDeleteModal(true);
   };
+  const fetchAllPeople = async () => {
+    try {
+      const res = await getPeople(1, 10000);
+      setAllPeople(res);
+    } catch (error) {
+      toast.error("خطا در دریافت عوامل");
+    }
+  };
+  useEffect(() => {
+    fetchAllPeople();
+  }, []);
 
   return (
     <main className="flex flex-col gap-4 p-1 lg:gap-6">
