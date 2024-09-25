@@ -14,6 +14,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
+import { PencilIcon, TrashIcon } from "lucide-react";
+import UploadMediaModal from "./UploadMediaModal";
 
 interface FileObject {
   title: string;
@@ -25,11 +27,17 @@ interface FileObject {
 const UploadImage = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [previewSrc, setPreviewSrc] = useState<SetStateAction<any>>("");
-  const [selectedFile, setSelectedFile] = useState<File | null>();
+  const [selectedFile, setSelectedFile] = useState<{
+    title?: string;
+    alt?: string;
+    file: File;
+    previewSrc: string;
+  }>();
   const { isLoadingMedia, createMedia } = useMediaStore();
   const [selectedFiles, setSelectedFiles] = useState<
     { title?: string; alt?: string; file: File; previewSrc: string }[] | null
   >();
+  const [isOpen, setIsOpen] = useState(false);
 
   const convertFileListToObjects = (fileList: FileList) => {
     const readFileAsDataURL = (
@@ -75,7 +83,6 @@ const UploadImage = () => {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
-    displayPreview(file);
   };
 
   const handleFileChange = (e: any) => {
@@ -84,24 +91,18 @@ const UploadImage = () => {
     if (fileList) {
       convertFileListToObjects(fileList);
     }
-    displayPreview(file);
   };
 
   useEffect(() => {
     console.log(selectedFiles);
   }, [selectedFiles]);
 
-  const displayPreview = (file: File) => {
-    setSelectedFile(file);
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      setPreviewSrc(reader?.result);
-    };
-  };
-
   const handleCancelUpload = () => {
     setSelectedFiles(null);
+  };
+  const handleSelectMedia = (item) => {
+    setSelectedFile(item);
+    setIsOpen(true);
   };
   return (
     <div
@@ -149,9 +150,25 @@ const UploadImage = () => {
             <CarouselContent>
               {selectedFiles.map((item, index) => (
                 <CarouselItem key={index}>
-                  <p className="w-full text-right">{`فایل ${index + 1} از ${
-                    selectedFiles.length
-                  }`}</p>
+                  <div className="flex w-full items-center justify-between mb-2">
+                    <div className="flex gap-1">
+                      <Button className="h-8 w-8" variant="outline" size="icon">
+                        <TrashIcon className="h-4 w-4" />
+                      </Button>
+
+                      <Button
+                        onClick={() => handleSelectMedia(item)}
+                        className="h-8 w-8"
+                        variant="outline"
+                        size="icon"
+                      >
+                        <PencilIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <p className=" text-right">{`فایل ${index + 1} از ${
+                      selectedFiles.length
+                    }`}</p>
+                  </div>
                   <Card>
                     <CardContent className="flex aspect-square items-center justify-center p-0">
                       <img
@@ -170,15 +187,18 @@ const UploadImage = () => {
             <CarouselNext />
           </Carousel>
           <div className="flex gap-2">
-            <UploadMediaPopover mode="upload" selectedFile={selectedFile!}>
-              <Button disabled={isLoadingMedia}>آپلود</Button>
-            </UploadMediaPopover>
+            <Button disabled={isLoadingMedia}>آپلود</Button>
             <Button variant="outline" onClick={handleCancelUpload}>
               لغو
             </Button>
           </div>
         </div>
       )}
+      <UploadMediaModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        selectedFile={selectedFile}
+      />
     </div>
   );
 };
