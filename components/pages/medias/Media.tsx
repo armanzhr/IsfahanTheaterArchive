@@ -4,7 +4,9 @@ import MediaDetailBody from "@/components/pages/medias/MediaDetailBody";
 import MediaDetailFooter from "@/components/pages/medias/MediaDetailFooter";
 import MediaDetailModal from "@/components/pages/medias/MediaDetailModal";
 import UploadImage from "@/components/pages/medias/UploadImage";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,6 +14,7 @@ import config from "@/config";
 import { useMediaStore } from "@/service/store/useMediaStore";
 import { cn } from "@/utils/cn";
 import { Media } from "@/utils/types";
+import { Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
@@ -24,6 +27,8 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState<string>("");
   const [filteredItems, setFilteredItems] = useState<Media[] | null>();
+  const [selectedFilesID, setSelectedFilesID] = useState<number[]>([]);
+  const [multiFileSelectMode, setMultiFileSelectMode] = useState(false);
 
   const handleFilterItems = () => {
     setFilteredItems(
@@ -72,6 +77,22 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
     setSelectedImage(item);
     onOpenChange();
   };
+  const handleCheckboxChange = (imageId: number) => {
+    setSelectedFilesID((prevSelected) => {
+      if (prevSelected.includes(imageId)) {
+        // اگر چک‌باکس قبلاً انتخاب شده بود، آن را از لیست حذف کن
+        return prevSelected.filter((id) => id !== imageId);
+      } else {
+        // اگر چک‌باکس انتخاب نشده بود، آن را به لیست اضافه کن
+        return [...prevSelected, imageId];
+      }
+    });
+  };
+
+  const handleMultiFileSelectMode = () => {
+    setMultiFileSelectMode((prev) => !prev);
+    setSelectedFilesID([]);
+  };
 
   return (
     <Tabs
@@ -81,8 +102,8 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
       onValueChange={setSelectedKey}
     >
       <TabsList>
-        <TabsTrigger value="images">تصاویر</TabsTrigger>
-        <TabsTrigger value="upload">آپلود تصویر</TabsTrigger>
+        <TabsTrigger value="images">رسانه ها</TabsTrigger>
+        <TabsTrigger value="upload">آپلود رسانه</TabsTrigger>
       </TabsList>
       <TabsContent value="images" className=" h-full w-full">
         <div className="h-[calc(100vh-150px)] grid grid-cols-10 gap-3">
@@ -90,26 +111,42 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
             dir="rtl"
             className="col-span-10 lg:col-span-8 md:col-span-7"
           >
-            <Input
-              dir="rtl"
-              className="border focus-visible:ring-transparent w-60"
-              placeholder="جست و جو بر اساس عنوان"
-              value={searchInputValue}
-              onChange={(e) => setSearchInputValue(e.target.value as any)}
-            />
-
+            <div className="flex gap-3 items-center">
+              <Input
+                dir="rtl"
+                className="border focus-visible:ring-transparent w-full lg:w-60"
+                placeholder="جست و جو بر اساس عنوان"
+                value={searchInputValue}
+                onChange={(e) => setSearchInputValue(e.target.value as any)}
+              />
+              <Button onClick={handleMultiFileSelectMode} variant="outline">
+                {multiFileSelectMode ? "لغو انتخاب" : "انتخاب گروهی"}
+              </Button>
+              {multiFileSelectMode && selectedFilesID.length > 0 && (
+                <Button>
+                  {" "}
+                  <Trash2Icon className="h-4 w-4 ml-2" /> حذف{" "}
+                  {selectedFilesID.length} رسانه{" "}
+                </Button>
+              )}
+            </div>
             <div className="grid lg:grid-cols-7 grid-cols-3 gap-4 p-3">
               {filteredItems?.map((item, index) => (
                 <Card
                   className={cn(
-                    selectedImage &&
-                      (item === selectedImage ? "opacity-100" : "opacity-50"),
+                    multiFileSelectMode
+                      ? selectedFilesID.includes(item.id)
+                        ? "opacity-100"
+                        : "opacity-50"
+                      : selectedImage &&
+                          (item === selectedImage
+                            ? "opacity-100"
+                            : "opacity-50"),
                     "ease-out duration-300 cursor-pointer hover:opacity-100"
                   )}
                   key={index}
-                  onClick={() => handleSelectMedia(item)}
                 >
-                  <CardContent className="overflow-visible p-0">
+                  <CardContent className="overflow-visible p-0 relative">
                     <img
                       width={200}
                       height={200}
@@ -117,8 +154,18 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
                       // crossOrigin="anonymous"
                       className="aspect-square w-full rounded-md object-cover"
                       src={`${config.fileURL}/${item.url}`}
+                      onClick={() => handleSelectMedia(item)}
                       // unoptimized
                     />
+                    {multiFileSelectMode && (
+                      <div className="absolute inset-x-0 bottom-0 m-2 flex justify-start">
+                        <Checkbox
+                          className="w-6 h-6 border-2 border-white"
+                          checked={selectedFilesID.includes(item.id)}
+                          onCheckedChange={() => handleCheckboxChange(item.id)}
+                        />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))}
