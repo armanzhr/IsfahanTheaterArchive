@@ -1,4 +1,4 @@
-import { Media, MediaModel } from "@/utils/types";
+import { Media, MediaModel, SelectedFile } from "@/utils/types";
 import { AxiosResponse } from "axios";
 import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
@@ -18,6 +18,8 @@ interface MediaStore {
   updateMedia: (mediaID: number, model: MediaModel) => Promise<AxiosResponse>;
   createMedia: (model: FormData) => Promise<AxiosResponse>;
   deleteMedia: (mediaID: number) => Promise<AxiosResponse>;
+  selectedFiles: SelectedFile[] | null | undefined;
+  setSelectedFiles: (selectedFiles: SelectedFile[] | null | undefined) => void;
 }
 export const useMediaStore = create<MediaStore>((set) => ({
   selectedKey: "images",
@@ -103,4 +105,6 @@ export const useMediaStore = create<MediaStore>((set) => ({
       set({ isLoadingMedia: false });
     }
   },
+  selectedFiles: null,
+  setSelectedFiles: (selectedFile) => set({ selectedFiles: selectedFile }),
 }));

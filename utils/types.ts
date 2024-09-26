@@ -58,3 +58,10 @@ export interface Show {
     isDeleted?: boolean;
   }[];
 }
+export interface SelectedFile {
+  id: number;
+  title?: string;
+  alt?: string;
+  file: File;
+  previewSrc: string;
+}
