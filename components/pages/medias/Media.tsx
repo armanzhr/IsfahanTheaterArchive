@@ -17,6 +17,7 @@ import { Media } from "@/utils/types";
 import { Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import DeleteMultiMedia from "./DeleteMultiMediaModal";
 
 const Medias = ({ mode }: { mode: "edit" | "view" }) => {
   const { getMediasList, selectedKey, setSelectedKey, listMedias } =
@@ -25,10 +26,11 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
   const [isMediumScreen, setIsMediumScreen] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenMultiDelete, setIsOpenMultiDelete] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState<string>("");
   const [filteredItems, setFilteredItems] = useState<Media[] | null>();
-  const [selectedFilesID, setSelectedFilesID] = useState<number[]>([]);
-  const [multiFileSelectMode, setMultiFileSelectMode] = useState(false);
+  const [selectedMediasID, setSelectedMediasID] = useState<number[]>([]);
+  const [multiMediaSelectMode, setMultiMediaSelectMode] = useState(false);
 
   const handleFilterItems = () => {
     setFilteredItems(
@@ -78,7 +80,7 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
     onOpenChange();
   };
   const handleCheckboxChange = (imageId: number) => {
-    setSelectedFilesID((prevSelected) => {
+    setSelectedMediasID((prevSelected) => {
       if (prevSelected.includes(imageId)) {
         // اگر چک‌باکس قبلاً انتخاب شده بود، آن را از لیست حذف کن
         return prevSelected.filter((id) => id !== imageId);
@@ -89,9 +91,10 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
     });
   };
 
-  const handleMultiFileSelectMode = () => {
-    setMultiFileSelectMode((prev) => !prev);
-    setSelectedFilesID([]);
+  const handleMultiMediaSelectMode = () => {
+    setMultiMediaSelectMode((prev) => !prev);
+    setSelectedMediasID([]);
+    setSelectedImage(null);
   };
 
   return (
@@ -119,14 +122,14 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
                 value={searchInputValue}
                 onChange={(e) => setSearchInputValue(e.target.value as any)}
               />
-              <Button onClick={handleMultiFileSelectMode} variant="outline">
-                {multiFileSelectMode ? "لغو انتخاب" : "انتخاب گروهی"}
+              <Button onClick={handleMultiMediaSelectMode} variant="outline">
+                {multiMediaSelectMode ? "لغو انتخاب" : "انتخاب گروهی"}
               </Button>
-              {multiFileSelectMode && selectedFilesID.length > 0 && (
-                <Button>
+              {multiMediaSelectMode && selectedMediasID.length > 0 && (
+                <Button onClick={() => setIsOpenMultiDelete(true)}>
                   {" "}
                   <Trash2Icon className="h-4 w-4 ml-2" /> حذف{" "}
-                  {selectedFilesID.length} رسانه{" "}
+                  {selectedMediasID.length} رسانه{" "}
                 </Button>
               )}
             </div>
@@ -134,8 +137,8 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
               {filteredItems?.map((item, index) => (
                 <Card
                   className={cn(
-                    multiFileSelectMode
-                      ? selectedFilesID.includes(item.id)
+                    multiMediaSelectMode
+                      ? selectedMediasID.includes(item.id)
                         ? "opacity-100"
                         : "opacity-50"
                       : selectedImage &&
@@ -157,11 +160,11 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
                       onClick={() => handleSelectMedia(item)}
                       // unoptimized
                     />
-                    {multiFileSelectMode && (
+                    {multiMediaSelectMode && (
                       <div className="absolute inset-x-0 bottom-0 m-2 flex justify-start">
                         <Checkbox
                           className="w-6 h-6 border-2 border-white"
-                          checked={selectedFilesID.includes(item.id)}
+                          checked={selectedMediasID.includes(item.id)}
                           onCheckedChange={() => handleCheckboxChange(item.id)}
                         />
                       </div>
@@ -210,6 +213,13 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
             open={openDeleteModal}
             setOpen={setOpenDeleteModal}
           ></DeleteMedia>
+          <DeleteMultiMedia
+            open={isOpenMultiDelete}
+            setOpen={setIsOpenMultiDelete}
+            selectedMediasID={selectedMediasID}
+            setSelectedMediasID={setSelectedMediasID}
+            setMultiMediaSelectMode={setMultiMediaSelectMode}
+          />
         </div>
       </TabsContent>
       <TabsContent
