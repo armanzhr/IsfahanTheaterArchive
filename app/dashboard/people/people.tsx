@@ -16,9 +16,9 @@ import config from "@/config";
 import { useMediaStore } from "@/service/store/useMediaStore";
 import { debounce } from "@/utils/functions/debounce";
 import InfiniteScroll from "react-infinite-scroll-component";
-
+import * as XLSX from "xlsx";
 const People = () => {
-  const { getPeople, people, isGettingPeople, searchKey, setSearchKey } =
+  const { getPeople, allPeople, setAllPeople, searchKey, setSearchKey } =
     usePeopleStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<PeopleType | null>();
@@ -85,6 +85,39 @@ const People = () => {
       toast.error("خطا در دریافت لیست رسانه ها");
     }
   };
+
+  const handleDownloadExcel = () => {
+    const data = allPeople?.map((item) => ({
+      "کد کاربر ": item.id,
+      نام: item.firstName,
+      " نام خانوادگی ": item.lastName,
+      " دهه شروع فعالیت ": item.startYear,
+    }));
+    // تبدیل لیست کاربران به فرمت صفحه‌گسترده اکسل
+    const worksheet = XLSX.utils.json_to_sheet(data as any);
+    worksheet["!cols"] = [
+      { wpx: 50 },
+      { wpx: 100 },
+      { wpx: 100 },
+      { wpx: 100 },
+    ];
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
+
+    // تبدیل صفحه‌گسترده به باینری و دانلود آن
+    XLSX.writeFile(workbook, "لیست عوامل.xlsx");
+  };
+  const fetchAllPeople = async () => {
+    try {
+      const res = await getPeople();
+      setAllPeople(res);
+    } catch (error) {
+      toast.error("خطا در دریافت لیست کاربران");
+    }
+  };
+  useEffect(() => {
+    fetchAllPeople();
+  }, []);
   useEffect(() => {
     if (!listMedias) {
       fetchMedias();
@@ -95,7 +128,7 @@ const People = () => {
     <>
       <div className="flex gap-3">
         <Button onClick={() => handleCreatePeople()}>کاربر جدید</Button>
-        <Button size="icon" variant="gooeyRight">
+        <Button size="icon" variant="gooeyRight" onClick={handleDownloadExcel}>
           <FileSpreadsheet className="w-4 h-4" />
         </Button>
         <Input
