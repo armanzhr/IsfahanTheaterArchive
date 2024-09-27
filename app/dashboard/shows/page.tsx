@@ -105,7 +105,7 @@ const Shows = () => {
   };
   const fetchAllPeople = async () => {
     try {
-      const res = await getPeople(1, 10000);
+      const res = await getPeople();
       setAllPeople(res);
     } catch (error) {
       toast.error("خطا در دریافت عوامل");

@@ -37,6 +37,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { usePeopleStore } from "@/service/store/usePeopleStore";
 import { toast } from "sonner";
 import { Input } from "./input";
+import { Dialog, DialogContent, DialogTrigger } from "./dialog";
+import { Sheet, SheetContent, SheetTrigger } from "./sheet";
 
 /**
  * Variants for the multi-select component to handle different styles.
@@ -156,12 +158,14 @@ export const MultiSelect = React.forwardRef<
     const [displayedUsers, setDisplayedUsers] = React.useState<any>([]);
 
     const toggleOption = (value: number) => {
-      const newSelectedValues = selectedValues.people.includes(value)
-        ? selectedValues.people.filter((v) => v !== value)
-        : [...selectedValues.people, value];
+      if (!newOption) {
+        const newSelectedValues = selectedValues.people.includes(value)
+          ? selectedValues.people.filter((v) => v !== value)
+          : [...selectedValues.people, value];
 
-      setSelectedValues({ roleId: role.id, people: newSelectedValues });
-      onValueChange({ roleId: role.id, people: newSelectedValues });
+        setSelectedValues({ roleId: role.id, people: newSelectedValues });
+        onValueChange({ roleId: role.id, people: newSelectedValues });
+      }
     };
 
     const handleClear = () => {
@@ -217,8 +221,10 @@ export const MultiSelect = React.forwardRef<
     };
 
     React.useEffect(() => {
-      fetchUsers(); // بارگذاری کاربران زمانی که query تغییر کند (برای جستجو)
-    }, [query]);
+      if (isPopoverOpen) {
+        fetchUsers();
+      } // بارگذاری کاربران زمانی که query تغییر کند (برای جستجو)
+    }, [query, isPopoverOpen]);
 
     React.useEffect(() => {
       handleSearchSubmit();
@@ -255,16 +261,16 @@ export const MultiSelect = React.forwardRef<
                   value={searchKey}
                   onChange={(e) => setSearchKey(e.target.value)}
                 />
-                <Popover open={newOption} onOpenChange={setNewOption}>
-                  <PopoverTrigger asChild>
+                <Sheet open={newOption} onOpenChange={setNewOption}>
+                  <SheetTrigger asChild>
                     <Button variant="outline">
                       <PlusCircle className="w-4 h-4" />
                     </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
+                  </SheetTrigger>
+                  <SheetContent side="left" className="w-80">
                     <UploadPeopleForm open={newOption} setOpen={setNewOption} />
-                  </PopoverContent>
-                </Popover>
+                  </SheetContent>
+                </Sheet>
               </div>
               <CommandList className="overflow-hidden">
                 <CommandEmpty>کاربری یافت نشد</CommandEmpty>
@@ -323,6 +329,7 @@ export const MultiSelect = React.forwardRef<
                           >
                             <CheckIcon className="h-4 w-4" />
                           </div>
+
                           <Avatar className=" h-6 w-6 ml-2 sm:flex">
                             <AvatarImage
                               src={`${config.fileURL}/${
@@ -338,6 +345,12 @@ export const MultiSelect = React.forwardRef<
                           </Avatar>
 
                           <span>{`${option.firstName} ${option.lastName}`}</span>
+
+                          {option.startYear && (
+                            <p className="mr-2 text-gray-500 text-xs">
+                              دهه {option.startYear?.toString().slice(-2)}{" "}
+                            </p>
+                          )}
                         </CommandItem>
                       );
                     })}
@@ -376,6 +389,11 @@ export const MultiSelect = React.forwardRef<
                       </AvatarFallback>
                     </Avatar>
                     {`${option?.firstName} ${option?.lastName}`}
+                    {option?.startYear && (
+                      <p className=" text-gray-500 text-xs">
+                        {option?.startYear?.toString().slice(-2)}{" "}
+                      </p>
+                    )}
                     <XCircle
                       className=" h-4 w-4 mx-1 cursor-pointer"
                       onClick={(event) => {

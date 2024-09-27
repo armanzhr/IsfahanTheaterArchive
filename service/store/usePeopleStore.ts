@@ -45,7 +45,7 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
   setAllPeople: (people) => set({ allPeople: people }),
   isGettingPeople: false,
   isLoadingPeople: false,
-  getPeople: async (page = 1, pageSize = 40, searchKey) => {
+  getPeople: async (page, pageSize, searchKey) => {
     set({ isGettingPeople: true });
     try {
       const { data } = await axios.get(config.baseURL + `/People`, {
