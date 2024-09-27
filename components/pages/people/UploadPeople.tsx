@@ -34,10 +34,12 @@ const UploadPeople = ({
   open,
   setOpen,
   editValue,
+  resetGetPeople,
 }: {
   open: boolean;
   setOpen: (data: boolean) => void;
   editValue?: People | null;
+  resetGetPeople: () => Promise<void>;
 }) => {
   const { handleSubmit, register, watch, setValue, reset } = useForm();
   const { isLoadingPeople, createPeople, updatePeople } = usePeopleStore();
@@ -128,7 +130,12 @@ const UploadPeople = ({
             {editValue ? "ویرایش کاربر" : "ایجاد کاربر جدید"}
           </SheetTitle>
         </SheetHeader>
-        <UploadPeopleForm editValue={editValue} open={open} setOpen={setOpen} />
+        <UploadPeopleForm
+          resetGetPeople={resetGetPeople}
+          editValue={editValue}
+          open={open}
+          setOpen={setOpen}
+        />
       </SheetContent>
     </Sheet>
   );

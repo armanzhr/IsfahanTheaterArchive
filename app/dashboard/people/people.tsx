@@ -31,7 +31,9 @@ const People = () => {
 
   const fetchUsers = async () => {
     try {
-      const params: { page: number; search?: string } = { page: page };
+      const params: { page: number; search?: string } = {
+        page: page,
+      };
 
       // اگر query طولش بیشتر از 3 کاراکتر باشد، به عنوان search اضافه می‌شود
       if (query.length > 2) {
@@ -55,16 +57,24 @@ const People = () => {
   // تابع برای ارسال فرم جستجو
   const handleSearchSubmit = () => {
     if (searchKey?.length! > 2 || searchKey?.length === 0) {
-      setFilteredItems([]); // پاک کردن لیست کاربران
-      setPage(1); // بازگشت به صفحه 1
-      setHasMore(true); // فعال کردن دوباره بارگذاری
-      setQuery(searchKey!); // مقدار جستجو را در query ذخیره می‌کنیم تا API فراخوانی شود
+      handleResetGetPeople();
+      setQuery(searchKey);
     }
   };
 
+  const handleResetGetPeople = async () => {
+    setFilteredItems([]); // پاک کردن لیست کاربران
+    setPage(1); // بازگشت به صفحه 1
+    setHasMore(true); // فعال کردن دوباره بارگذاری
+    // مقدار جستجو را در query ذخیره می‌کنیم تا API فراخوانی شود
+  };
+
   useEffect(() => {
-    fetchUsers(); // بارگذاری کاربران زمانی که query تغییر کند (برای جستجو)
-  }, [query]);
+    // بارگذاری کاربران زمانی که query تغییر کند (برای جستجو)
+    if (filteredItems?.length === 0) {
+      fetchUsers();
+    }
+  }, [query, filteredItems]);
 
   useEffect(() => {
     handleSearchSubmit();
@@ -179,6 +189,11 @@ const People = () => {
                       {item.firstName} {item.lastName}
                     </p>
                   </div>
+                  {item.startYear && (
+                    <p className="mr-2 text-gray-500 text-xs">
+                      دهه {item.startYear?.toString().slice(-2)}{" "}
+                    </p>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -189,7 +204,10 @@ const People = () => {
                   >
                     <PencilIcon className="h-4 w-4" />
                   </Button>
-                  <DeletePeople people={item} />
+                  <DeletePeople
+                    resetGetPeople={handleResetGetPeople}
+                    people={item}
+                  />
                 </div>
               </div>
             </>
@@ -197,7 +215,12 @@ const People = () => {
         </InfiniteScroll>
       </div>
 
-      <UploadPeople editValue={editValue} setOpen={setOpen} open={open} />
+      <UploadPeople
+        resetGetPeople={handleResetGetPeople}
+        editValue={editValue}
+        setOpen={setOpen}
+        open={open}
+      />
     </>
   );
 };

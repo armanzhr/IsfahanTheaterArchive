@@ -63,8 +63,6 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
     set({ isLoadingPeople: true });
     try {
       const { data } = await axios.post(config.baseURL + "/People", model);
-      const res = await usePeopleStore.getState().getPeople(1, 10000);
-      set({ allPeople: res });
     } catch (error) {
       throw error;
     } finally {
@@ -78,7 +76,6 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
         config.baseURL + "/People/" + peopleID,
         model
       );
-      await usePeopleStore.getState().getPeople();
     } catch (error) {
       throw error;
     } finally {

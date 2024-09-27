@@ -16,13 +16,20 @@ import { TrashIcon } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
-const DeletePeople = ({ people }: { people: People }) => {
+const DeletePeople = ({
+  people,
+  resetGetPeople,
+}: {
+  people: People;
+  resetGetPeople: () => Promise<void>;
+}) => {
   const [open, setOpen] = useState(false);
   const { deletePeople } = usePeopleStore();
   const handleDeletePeople = async () => {
     try {
       await deletePeople(people.id);
       toast.error("کاربر با موفقیت حذف شد");
+      await resetGetPeople();
       setOpen(false);
     } catch (error) {
       toast.error("خطا در حذف کاربر");

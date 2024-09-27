@@ -38,10 +38,12 @@ const UploadPeopleForm = ({
   open,
   setOpen,
   editValue,
+  resetGetPeople,
 }: {
   editValue?: People | null;
   open: boolean;
   setOpen: (data: boolean) => void;
+  resetGetPeople: () => Promise<void>;
 }) => {
   const { handleSubmit, register, watch, setValue, reset } = useForm();
   const { isLoadingPeople, createPeople, updatePeople } = usePeopleStore();
@@ -94,6 +96,7 @@ const UploadPeopleForm = ({
             await updatePeople(editValue.id, data);
             reset();
             setOpen(false);
+            await resetGetPeople();
           } catch (error) {
             throw error;
           }
@@ -117,6 +120,7 @@ const UploadPeopleForm = ({
             await createPeople(data);
             reset();
             setOpen(false);
+            await resetGetPeople();
           } catch (error) {
             throw error;
           }
@@ -205,7 +209,7 @@ const UploadPeopleForm = ({
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="startYear" className="text-right">
-              دهه آغاز فعالیت
+              * دهه آغاز فعالیت
             </Label>
             <div dir="ltr" className="col-span-3 flex flex-col gap-2">
               <Popover open={commandOpen} onOpenChange={setCommandOpen}>
@@ -306,7 +310,7 @@ const UploadPeopleForm = ({
         </div>
         <div className="grid grid-cols-4">
           <div></div>
-          <Button className="col-span-3" type="submit">
+          <Button disabled={!commandValue} className="col-span-3" type="submit">
             {editValue ? "ویرایش" : "ایجاد"}
           </Button>
         </div>
