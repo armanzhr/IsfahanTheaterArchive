@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import React, { useEffect, useState } from "react";
 import { items } from "./test";
-import { PencilIcon, TrashIcon, UserIcon } from "lucide-react";
+import { FileSpreadsheet, PencilIcon, TrashIcon, UserIcon } from "lucide-react";
 
 import UploadPeople from "@/components/pages/people/UploadPeople";
 import { People as PeopleType } from "@/utils/types";
@@ -95,6 +95,9 @@ const People = () => {
     <>
       <div className="flex gap-3">
         <Button onClick={() => handleCreatePeople()}>کاربر جدید</Button>
+        <Button size="icon" variant="gooeyRight">
+          <FileSpreadsheet className="w-4 h-4" />
+        </Button>
         <Input
           dir="rtl"
           className="border focus-visible:ring-transparent"
@@ -113,7 +116,7 @@ const People = () => {
           dataLength={filteredItems?.length!}
           next={fetchUsers}
           hasMore={hasMore}
-          loader={<p className="overflow-hidden">درحال بارگذرای...</p>}
+          loader={<p className="overflow-hidden">درحال بارگذاری...</p>}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 overflow-hidden"
           scrollableTarget="scrollableDiv"
         >
