@@ -122,9 +122,11 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
                 value={searchInputValue}
                 onChange={(e) => setSearchInputValue(e.target.value as any)}
               />
-              <Button onClick={handleMultiMediaSelectMode} variant="outline">
-                {multiMediaSelectMode ? "لغو انتخاب" : "انتخاب گروهی"}
-              </Button>
+              {mode === "edit" && (
+                <Button onClick={handleMultiMediaSelectMode} variant="outline">
+                  {multiMediaSelectMode ? "لغو انتخاب" : "انتخاب گروهی"}
+                </Button>
+              )}
               {multiMediaSelectMode && selectedMediasID.length > 0 && (
                 <Button onClick={() => setIsOpenMultiDelete(true)}>
                   {" "}
