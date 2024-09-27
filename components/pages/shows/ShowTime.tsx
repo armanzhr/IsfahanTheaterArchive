@@ -157,7 +157,7 @@ const ShowTime = ({
           <CardTitle className="text-lg">زمان و محل اجرا</CardTitle>
         </CardHeader>
         <CardContent>
-          {showTimes ? (
+          {showTimes?.length ? (
             <Table>
               <TableHeader>
                 <TableRow>

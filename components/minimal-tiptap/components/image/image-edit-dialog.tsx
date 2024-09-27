@@ -37,6 +37,9 @@ const ImageEditDialog = ({ editor, size, variant }: ImageEditDialogProps) => {
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>افزودن تصویر</DialogTitle>
+          <DialogDescription>
+            تصویر مورد نظر را برای افزودن به توضیحات نمایش انتخاب نمایید
+          </DialogDescription>
         </DialogHeader>
         <ImageEditBlock editor={editor} close={() => setOpen(false)} />
       </DialogContent>

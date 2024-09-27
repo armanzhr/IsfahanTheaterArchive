@@ -56,7 +56,7 @@ const UploadShow = ({
     otherImages: Media[];
   }>({ poster: null, otherImages: [] });
   const [isOpenMediaModal, setIsOpenMediaModal] = useState(false);
-  const { selectedImage, getMedia, media } = useMediaStore();
+  const { selectedImage, setSelectedImage, getMedia, media } = useMediaStore();
   const handleCloseMediaModal = () => {
     setIsOpenMediaModal(false);
   };
@@ -83,7 +83,7 @@ const UploadShow = ({
 
   useEffect(() => {
     const result: { [key: number]: number[] } = {};
-
+    console.log(editValue?.description);
     editValue?.showPeopleRoles.forEach((item) => {
       if (!result[item.roleId]) {
         result[item.roleId] = [];
@@ -183,7 +183,7 @@ const UploadShow = ({
         async () => {
           try {
             await updateShows(editValue.id, model as any);
-
+            resetFields();
             setOpen(false);
           } catch (error) {
             throw error;
@@ -200,7 +200,7 @@ const UploadShow = ({
         async () => {
           try {
             await createShows(model as any);
-
+            resetFields();
             setOpen(false);
           } catch (error) {
             throw error;
@@ -228,6 +228,20 @@ const UploadShow = ({
       }
     }
   }, [selectedImage]);
+
+  useEffect(() => {
+    setSelectedImage(null);
+    setImageMode(undefined);
+  }, [galleryImage]);
+
+  const resetFields = () => {
+    reset();
+    setDescription("");
+    setShowsTimes([]);
+    setSelectedPeopleByRole({});
+    setGalleryImage({ poster: null, otherImages: [] });
+  };
+
   return (
     <>
       <Drawer open={open} onOpenChange={setOpen}>

@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import React from "react";
 import Medias from "./Media";
 import { Drawer, DrawerContent, DrawerHeader } from "@/components/ui/drawer";
@@ -14,7 +20,12 @@ const SelectImageHandler = ({
     <Drawer open={isOpen} onOpenChange={setOpen}>
       <DrawerContent className="m-0 p-3">
         <DrawerHeader className="text-center">
-          <p className=" text-center font-bold">انتخاب فایل</p>
+          <DialogTitle className=" text-center font-bold">
+            انتخاب فایل
+          </DialogTitle>
+          <DialogDescription className="text-center">
+            رسانه مورد مظر خود را انتخاب نمایید
+          </DialogDescription>
         </DrawerHeader>
 
         <Medias mode="view" />

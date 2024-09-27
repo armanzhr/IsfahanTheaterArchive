@@ -8,6 +8,7 @@ import SelectImageHandler from "@/components/pages/medias/SelectImage";
 import { useMediaStore } from "@/service/store/useMediaStore";
 import Image from "next/image";
 import config from "@/config";
+import { Media } from "@/utils/types";
 
 interface ImageEditBlockProps extends React.HTMLAttributes<HTMLDivElement> {
   editor: Editor;
@@ -24,7 +25,7 @@ const ImageEditBlock = ({
   const [link, setLink] = useState<string>("");
   const [isOpenMediaModal, setIsOpenMediaModal] = useState(false);
   const { selectedImage, setSelectedImage } = useMediaStore();
-
+  const [image, setImage] = useState<Media>();
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
