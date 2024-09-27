@@ -25,6 +25,7 @@ const UploadMediaModal = ({
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors, isValid },
   } = useForm({ mode: "onChange" });
   const { isLoadingMedia, selectedFiles, setSelectedFiles } = useMediaStore();
@@ -40,6 +41,7 @@ const UploadMediaModal = ({
     setIsOpen(false);
   };
   useEffect(() => {
+    reset();
     console.log(selectedFile);
     setValue("alt", selectedFile?.alt);
     setValue("title", selectedFile?.title);

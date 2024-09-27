@@ -23,73 +23,74 @@ const UploadMediaPopover = ({
   mode: "upload" | "edit";
   selectedFile?: File;
 }) => {
-  const { register, handleSubmit, setValue } = useForm();
-  const [isSelected, setIsSelected] = useState(false);
-  const { isLoadingMedia, updateMedia, getMediasList, createMedia } =
-    useMediaStore();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors, isValid },
+  } = useForm({ mode: "onChange" });
+  const { isLoadingMedia, updateMedia } = useMediaStore();
   const { setSelectedKey } = useMediaStore();
   const [isOpen, setIsOpen] = useState(false);
   const onSubmit = async (data: Media) => {
-    if (mode === "edit") {
-      if (selectedImage) {
-        const model = new FormData();
-
-        model.append("Title", data.title);
-        model.append("Alt", data.alt ?? " ");
-        //mode === edit
-        try {
-          await updateMedia(selectedImage?.id, model as any);
-          toast.success("رسانه با موفقیت ویرایش شد");
-        } catch (error) {
-          toast.error("خطا در ویرایش رسانه");
-        }
-        setIsOpen(false);
-        console.log(data);
-      }
-    } else {
-      //mode === upload
+    if (selectedImage) {
       const model = new FormData();
 
-      model.append("files[0].Title", data.title ?? " ");
-      model.append("files[0].Alt", data.alt ?? " ");
-      model.append("files[0].File", selectedFile!);
+      model.append("Title", data.title);
+      model.append("Alt", data.alt ?? " ");
+      //mode === edit
+      toast.promise(
+        async () => {
+          try {
+            await updateMedia(selectedImage?.id, model as any);
 
-      try {
-        await createMedia(model);
-        toast.success("رسانه با موفقیت آپلود شد");
-        setSelectedKey("images");
-      } catch (error) {
-        toast.error("خطا در آپلود رسانه");
-      }
-      setIsOpen(false);
+            setIsOpen(false);
+          } catch (error) {
+            throw error;
+          }
+        },
+        {
+          loading: "درحال ویرایش رسانه",
+          success: "رسانه با موفقیت ویرایش شد",
+          error: "خطا در حذف رسانه",
+        }
+      );
     }
   };
   useEffect(() => {
+    reset();
     if (selectedImage) {
       setValue("alt", selectedImage.alt);
       setValue("title", selectedImage.title);
-    } else if (selectedFile) {
-      setIsSelected(true);
-      setValue("title", selectedFile.name);
     }
-  }, [selectedImage, selectedFile]);
+  }, [selectedImage]);
 
   return (
     <Popover open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <PopoverTrigger>{children}</PopoverTrigger>
       <PopoverContent className="w-[340px]">
         <div className="px-1 py-2 w-full">
-          <p className="text-small font-bold text-foreground">
-            {mode === "edit" ? "ویرایش تصویر" : "آپلود تصویر"}
-          </p>
+          <p className="text-small font-bold text-foreground">ویرایش تصویر</p>
           <form onSubmit={handleSubmit(onSubmit as any)}>
             <div className="mt-2 flex flex-col gap-2 w-full">
               <div className="grid grid-cols-3 items-center gap-4">
                 <Label htmlFor="firstName" className="text-right">
                   عنوان
                 </Label>
-                <Input className="col-span-2" {...register("title")} />
+                <Input
+                  className="col-span-2"
+                  {...register("title", {
+                    maxLength: {
+                      message: "طول عنوان نمی تواند بیشتر از 100 کاراکتر باشد",
+                      value: 100,
+                    },
+                  })}
+                />
               </div>
+              <p className="text-xs text-red-400">
+                {errors?.title?.message?.toString()}
+              </p>
               <div className="grid grid-cols-3 items-center gap-4">
                 <Label htmlFor="firstName" className="text-right">
                   متن جایگزین
@@ -97,12 +98,20 @@ const UploadMediaPopover = ({
                 <Input
                   defaultValue={""}
                   className="col-span-2"
-                  {...register("alt")}
+                  {...register("alt", {
+                    maxLength: {
+                      value: 100,
+                      message:
+                        "طول متن جایگزین نمی تواند بیشتر از 100 کاراکتر باشد",
+                    },
+                  })}
                 />
               </div>
-
+              <p className="text-xs text-red-400">
+                {errors?.alt?.message?.toString()}
+              </p>
               <Button
-                disabled={isLoadingMedia}
+                disabled={isLoadingMedia || !isValid}
                 type="submit"
                 color="primary"
                 className="w-full"
