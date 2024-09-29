@@ -7,7 +7,7 @@ interface ShowsStateStore {
   isGettingShows: boolean;
   isLoadingShows: boolean;
   getShows: () => Promise<void>;
-  createShows: (model: Show) => Promise<void>;
+  createShows: (model: Show) => Promise<Show>;
   updateShows: (showsID: number, model: Show) => Promise<void>;
   deleteShows: (peopleID: number) => Promise<void>;
 }
@@ -34,6 +34,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
     try {
       const { data } = await axios.post(config.baseURL + "/Shows", model);
       await useShowsStore.getState().getShows();
+      return data;
     } catch (error) {
       throw error;
     } finally {
