@@ -33,6 +33,7 @@ import { useShowsStore } from "@/service/store/useShowsStore";
 
 import { Roles as RolesType, Show } from "@/utils/types";
 import {
+  ClipboardIcon,
   DramaIcon,
   MoreHorizontal,
   PencilIcon,
@@ -44,7 +45,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const Shows = () => {
-  const { getShows, shows } = useShowsStore();
+  const { getShows, shows, createShows } = useShowsStore();
   const { getMediasList, listMedias } = useMediaStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<Show | null>();
@@ -115,6 +116,30 @@ const Shows = () => {
     fetchAllPeople();
   }, []);
 
+  const handleDuplicateShow = async (item: Show) => {
+    const model: Show = {
+      ...item,
+      title: `کپی ${item.title}`,
+      slug: `کپی-${item.slug}`,
+    };
+    toast.promise(
+      async () => {
+        try {
+          const data = await createShows(model);
+          setEditValue(data);
+          setOpen(true);
+        } catch (error) {
+          throw error;
+        }
+      },
+      {
+        loading: "در حال کپی نمایش ...",
+        success: "نمایش با موفقیت کپی شد",
+        error: "خطا در کپی نمایش",
+      }
+    );
+  };
+
   return (
     <main className="flex flex-col gap-4 p-1 lg:gap-6">
       <Card>
@@ -176,6 +201,13 @@ const Shows = () => {
                           >
                             <PencilIcon className="w-3 h-3" />
                             <p>ویرایش</p>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="gap-2"
+                            onClick={() => handleDuplicateShow(show)}
+                          >
+                            <ClipboardIcon className="w-3 h-3" />
+                            <p>کپی</p>
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleDeleteShow(show)}
