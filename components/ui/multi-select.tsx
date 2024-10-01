@@ -213,11 +213,15 @@ export const MultiSelect = React.forwardRef<
     // تابع برای ارسال فرم جستجو
     const handleSearchSubmit = () => {
       if (searchKey?.length! > 2 || searchKey?.length === 0) {
-        setFilteredItems([]); // پاک کردن لیست کاربران
-        setPage(1); // بازگشت به صفحه 1
-        setHasMore(true); // فعال کردن دوباره بارگذاری
+        handleResetGetPeople();
         setQuery(searchKey!); // مقدار جستجو را در query ذخیره می‌کنیم تا API فراخوانی شود
       }
+    };
+    const handleResetGetPeople = async () => {
+      setFilteredItems([]); // پاک کردن لیست کاربران
+      setPage(1); // بازگشت به صفحه 1
+      setHasMore(true); // فعال کردن دوباره بارگذاری
+      // مقدار جستجو را در query ذخیره می‌کنیم تا API فراخوانی شود
     };
 
     React.useEffect(() => {
@@ -268,7 +272,11 @@ export const MultiSelect = React.forwardRef<
                     </Button>
                   </SheetTrigger>
                   <SheetContent side="left" className="w-80">
-                    <UploadPeopleForm open={newOption} setOpen={setNewOption} />
+                    <UploadPeopleForm
+                      resetGetPeople={handleResetGetPeople}
+                      open={newOption}
+                      setOpen={setNewOption}
+                    />
                   </SheetContent>
                 </Sheet>
               </div>
