@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/popover";
 import { useMediaStore } from "@/service/store/useMediaStore";
 import { Media } from "@/utils/types";
+import { UploadIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -106,6 +107,20 @@ const UploadMediaPopover = ({
                     },
                   })}
                 />
+              </div>
+              <div>
+                <input
+                  type="file"
+                  multiple
+                  className="absolute inset-0 w-full h-full opacity-0 z-50 cursor-pointer"
+                  onChange={() => console.log("test")}
+                  accept="image/*"
+                  id="file-upload"
+                />
+                <Button className="w-full" variant="secondary">
+                  <p>تغییر تصویر </p>
+                  <UploadIcon className="h-5 w-5 mr-3" />
+                </Button>
               </div>
               <p className="text-xs text-red-400">
                 {errors?.alt?.message?.toString()}

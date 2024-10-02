@@ -225,10 +225,10 @@ export const MultiSelect = React.forwardRef<
     };
 
     React.useEffect(() => {
-      if (isPopoverOpen) {
+      if (isPopoverOpen && filteredItems?.length === 0) {
         fetchUsers();
       } // بارگذاری کاربران زمانی که query تغییر کند (برای جستجو)
-    }, [query, isPopoverOpen]);
+    }, [query, isPopoverOpen, filteredItems]);
 
     React.useEffect(() => {
       handleSearchSubmit();
