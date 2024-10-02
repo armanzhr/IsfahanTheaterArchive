@@ -14,8 +14,8 @@ const Login = () => {
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
-            <h1 className="text-3xl font-bold">ورود</h1>
-            <p className="text-balance text-muted-foreground">
+            <h1 className="text-xl font-bold">ورود به پنل کاربری</h1>
+            <p className="text-balance text-sm text-muted-foreground">
               لطفا نام کاربری و کلمه عبور خود را وارد نمایید
             </p>
           </div>
@@ -25,7 +25,7 @@ const Login = () => {
               <Input
                 id="username"
                 type="username"
-                placeholder="example@gmail.com"
+                placeholder="نام کاربری خود را وارد نمایید"
                 required
               />
             </div>
@@ -33,22 +33,33 @@ const Login = () => {
               <div className="flex items-center">
                 <Label htmlFor="password">کلمه عبور</Label>
               </div>
-              <Input id="password" type="password" required />
+              <Input
+                placeholder="کلمه عبور خود را وارد نمایید"
+                id="password"
+                type="password"
+                required
+              />
             </div>
-            <Button type="submit" className="w-full">
+            <Button variant="ringHover" type="submit" className="w-full">
               ورود
             </Button>
           </div>
         </div>
       </div>
-      <div className="hidden bg-muted lg:block">
-        <Image
-          src="/placeholder.svg"
+      <div className="hidden relative bg-muted lg:block">
+        <img
+          src="/theater.jpg"
           alt="Image"
-          width="1920"
-          height="1080"
-          className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          className="h-full w-full object-cover max-h-[100dvh] aspect-square dark:brightness-[0.2] dark:grayscale"
         />
+        <div className="absolute bottom-5 w-full text-white text-right p-3">
+          <p className="text-2xl font-semibold">جلوه‌گاه هنر تئاتر اصفهان</p>
+          <p>
+            {" "}
+            هدف ما تلاش برای زنده نگه داشتن نام و یاد کسانی است که تئاتر اصفهان
+            را زنده نگه داشته‌اند.
+          </p>
+        </div>
       </div>
     </div>
   );
