@@ -16,13 +16,9 @@ import { toast } from "sonner";
 const UploadMediaPopover = ({
   children,
   selectedImage,
-  mode,
-  selectedFile,
 }: {
   children: React.ReactNode;
   selectedImage?: Media;
-  mode: "upload" | "edit";
-  selectedFile?: File;
 }) => {
   const {
     register,
@@ -32,7 +28,6 @@ const UploadMediaPopover = ({
     formState: { errors, isValid },
   } = useForm({ mode: "onChange" });
   const { isLoadingMedia, updateMedia } = useMediaStore();
-  const { setSelectedKey } = useMediaStore();
   const [isOpen, setIsOpen] = useState(false);
   const onSubmit = async (data: Media) => {
     if (selectedImage) {
@@ -109,18 +104,21 @@ const UploadMediaPopover = ({
                 />
               </div>
               <div>
-                <input
-                  type="file"
-                  multiple
-                  className="absolute inset-0 w-full h-full opacity-0 z-50 cursor-pointer"
-                  onChange={() => console.log("test")}
-                  accept="image/*"
-                  id="file-upload"
-                />
-                <Button className="w-full" variant="secondary">
+                <Label
+                  role="button"
+                  className="w-full flex items-center justify-center h-10 rounded-md bg-secondary"
+                >
+                  <input
+                    type="file"
+                    hidden
+                    className="absolute inset-0 w-full h-full opacity-0 z-50 cursor-pointer"
+                    onChange={() => console.log("test")}
+                    accept="image/*"
+                    id="file-upload"
+                  />
                   <p>تغییر تصویر </p>
                   <UploadIcon className="h-5 w-5 mr-3" />
-                </Button>
+                </Label>
               </div>
               <p className="text-xs text-red-400">
                 {errors?.alt?.message?.toString()}

@@ -42,13 +42,13 @@ export const manageItems = () => {
   return [
     {
       name: "مدیریت کاربران",
-      pathname: "/dashboard/settings",
+      pathname: "/dashboard/admin/users",
       icon: <UserCog className="h-3 w-3" />,
       row: "second",
     },
     {
       name: "مدیریت تغییرات",
-      pathname: "/dashboard/settings",
+      pathname: "/dashboard/admin/changes",
       icon: <Replace className="h-3 w-3" />,
       row: "second",
     },
