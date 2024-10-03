@@ -27,8 +27,6 @@ interface FileObject {
 
 const UploadImage = () => {
   const [isDragging, setIsDragging] = useState(false);
-  const [previewSrc, setPreviewSrc] = useState<SetStateAction<any>>("");
-
   const [selectedFile, setSelectedFile] = useState<SelectedFile>();
   const {
     isLoadingMedia,
@@ -83,20 +81,14 @@ const UploadImage = () => {
   const handleDrop = (e: any) => {
     e.preventDefault();
     setIsDragging(false);
-    const file = e.dataTransfer.files[0];
   };
 
   const handleFileChange = (e: any) => {
-    const file = e.target.files[0];
     const fileList = e.target.files;
     if (fileList) {
       convertFileListToObjects(fileList);
     }
   };
-
-  useEffect(() => {
-    console.log(selectedFiles);
-  }, [selectedFiles]);
 
   const handleCancelUpload = () => {
     setSelectedFiles(null);

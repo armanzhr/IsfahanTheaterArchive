@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Card, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -8,8 +9,8 @@ import {
 } from "@/components/ui/popover";
 import { useMediaStore } from "@/service/store/useMediaStore";
 import { Media } from "@/utils/types";
-import { UploadIcon } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { UploadIcon, XIcon } from "lucide-react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -29,12 +30,17 @@ const UploadMediaPopover = ({
   } = useForm({ mode: "onChange" });
   const { isLoadingMedia, updateMedia } = useMediaStore();
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedNewImage, setSelectedNewImage] = useState<File | null>(null);
+  const [previewSrc, setPreviewSrc] = useState<SetStateAction<any>>();
   const onSubmit = async (data: Media) => {
     if (selectedImage) {
       const model = new FormData();
 
       model.append("Title", data.title);
       model.append("Alt", data.alt ?? " ");
+      if (selectedNewImage) {
+        model.append("File", selectedNewImage);
+      }
       //mode === edit
       toast.promise(
         async () => {
@@ -62,6 +68,22 @@ const UploadMediaPopover = ({
     }
   }, [selectedImage]);
 
+  const handleFileChange = (e: any) => {
+    const file = e.target.files[0];
+    displayPreview(file);
+  };
+
+  const displayPreview = (file: File) => {
+    setSelectedNewImage(file);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      setPreviewSrc(reader?.result);
+    };
+  };
+  const handleDeselectImage = () => {
+    setSelectedNewImage(null);
+  };
   return (
     <Popover open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <PopoverTrigger>{children}</PopoverTrigger>
@@ -103,6 +125,9 @@ const UploadMediaPopover = ({
                   })}
                 />
               </div>
+              <p className="text-xs text-red-400">
+                {errors?.alt?.message?.toString()}
+              </p>
               <div>
                 <Label
                   role="button"
@@ -112,7 +137,7 @@ const UploadMediaPopover = ({
                     type="file"
                     hidden
                     className="absolute inset-0 w-full h-full opacity-0 z-50 cursor-pointer"
-                    onChange={() => console.log("test")}
+                    onChange={handleFileChange}
                     accept="image/*"
                     id="file-upload"
                   />
@@ -120,9 +145,32 @@ const UploadMediaPopover = ({
                   <UploadIcon className="h-5 w-5 mr-3" />
                 </Label>
               </div>
-              <p className="text-xs text-red-400">
-                {errors?.alt?.message?.toString()}
-              </p>
+
+              {selectedNewImage && (
+                <div className="grid grid-cols-3 items-center gap-4">
+                  <Label>تصویر جدید : </Label>
+                  <Card className="relative col-span-2">
+                    <img
+                      alt="تصویر جدید"
+                      className="aspect-square rounded-md object-cover "
+                      height="300"
+                      src={previewSrc}
+                      width="300"
+                    />
+
+                    <CardFooter className="p-0 text-center w-full justify-start absolute bottom-0">
+                      <Button
+                        onClick={handleDeselectImage}
+                        className="h-6 w-6"
+                        size="icon"
+                        type="button"
+                      >
+                        <XIcon className="h-5 w-5" />
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </div>
+              )}
               <Button
                 disabled={isLoadingMedia || !isValid}
                 type="submit"

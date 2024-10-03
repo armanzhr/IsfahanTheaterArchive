@@ -21,8 +21,8 @@ const MediaDetailFooter = ({
   };
   return mode === "edit" ? (
     <div className="flex flex-col w-full gap-3">
-      <UploadMediaPopover mode="edit" selectedImage={selectedImage}>
-        <Button variant="default" className="w-full">
+      <UploadMediaPopover selectedImage={selectedImage}>
+        <Button variant={"outline"} className="w-full">
           ویرایش
           <PencilIcon className="w-4 h-4 ml-1" />
         </Button>
