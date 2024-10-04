@@ -96,53 +96,55 @@ const Venues = () => {
             <Button onClick={() => handleCreateVenue()}>محل جدید</Button>
           </div>
 
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-start">نام</TableHead>
-                <TableHead className="text-start">محل</TableHead>
-                <TableHead>تنظیمات</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredItems?.map((venue) => (
-                <TableRow key={venue.id}>
-                  <TableCell className="font-medium">{venue.name}</TableCell>
-                  <TableCell>{venue.address}</TableCell>
-                  <TableCell className="text-end">
-                    <DropdownMenu dir="rtl">
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          aria-haspopup="true"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuLabel>تنظیمات</DropdownMenuLabel>
-                        <DropdownMenuItem
-                          className="gap-2"
-                          onClick={() => handleEditVenue(venue)}
-                        >
-                          <PencilIcon className="w-3 h-3" />
-                          <p>ویرایش</p>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleDeleteVenue(venue)}
-                          className="gap-2"
-                        >
-                          <TrashIcon className="w-3 h-3" />
-                          <p>حذف</p>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+          <ScrollArea dir="rtl" className="h-[calc(100dvh-170px)] px-4 mt-4">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-start">نام</TableHead>
+                  <TableHead className="text-start">محل</TableHead>
+                  <TableHead>تنظیمات</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredItems?.map((venue) => (
+                  <TableRow key={venue.id}>
+                    <TableCell className="font-medium">{venue.name}</TableCell>
+                    <TableCell>{venue.address}</TableCell>
+                    <TableCell className="text-end">
+                      <DropdownMenu dir="rtl">
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            aria-haspopup="true"
+                            size="icon"
+                            variant="ghost"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuLabel>تنظیمات</DropdownMenuLabel>
+                          <DropdownMenuItem
+                            className="gap-2"
+                            onClick={() => handleEditVenue(venue)}
+                          >
+                            <PencilIcon className="w-3 h-3" />
+                            <p>ویرایش</p>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteVenue(venue)}
+                            className="gap-2"
+                          >
+                            <TrashIcon className="w-3 h-3" />
+                            <p>حذف</p>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </ScrollArea>
         </CardContent>
       </Card>
       <UploadVenues editValue={editValue} setOpen={setOpen} open={open} />
