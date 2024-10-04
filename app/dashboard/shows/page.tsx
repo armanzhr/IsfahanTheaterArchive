@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -166,61 +167,75 @@ const Shows = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredItems?.map((show) => (
-                  <TableRow key={show.title}>
-                    <TableCell className="">
-                      <img
-                        width={80}
-                        height={80}
-                        alt={show.title}
-                        className="aspect-square rounded-md object-cover"
-                        src={`${config.fileURL}/${
-                          listMedias?.find(
-                            (item) => item.id === show.posterImageId
-                          )?.url
-                        }`}
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">{show.title}</TableCell>
-                    <TableCell className="text-end">
-                      <DropdownMenu dir="rtl">
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuLabel>تنظیمات</DropdownMenuLabel>
-                          <DropdownMenuItem
-                            className="gap-2"
-                            onClick={() => handleEditRole(show)}
-                          >
-                            <PencilIcon className="w-3 h-3" />
-                            <p>ویرایش</p>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="gap-2"
-                            onClick={() => handleDuplicateShow(show)}
-                          >
-                            <ClipboardIcon className="w-3 h-3" />
-                            <p>کپی</p>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDeleteShow(show)}
-                            className="gap-2"
-                          >
-                            <TrashIcon className="w-3 h-3" />
-                            <p>حذف</p>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {filteredItems
+                  ? filteredItems?.map((show) => (
+                      <TableRow key={show.title}>
+                        <TableCell className="">
+                          <img
+                            width={80}
+                            height={80}
+                            alt={show.title}
+                            className="aspect-square rounded-md object-cover"
+                            src={`${config.fileURL}/${
+                              listMedias?.find(
+                                (item) => item.id === show.posterImageId
+                              )?.url
+                            }`}
+                          />
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {show.title}
+                        </TableCell>
+                        <TableCell className="text-end">
+                          <DropdownMenu dir="rtl">
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                aria-haspopup="true"
+                                size="icon"
+                                variant="ghost"
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuLabel>تنظیمات</DropdownMenuLabel>
+                              <DropdownMenuItem
+                                className="gap-2"
+                                onClick={() => handleEditRole(show)}
+                              >
+                                <PencilIcon className="w-3 h-3" />
+                                <p>ویرایش</p>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="gap-2"
+                                onClick={() => handleDuplicateShow(show)}
+                              >
+                                <ClipboardIcon className="w-3 h-3" />
+                                <p>کپی</p>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleDeleteShow(show)}
+                                className="gap-2"
+                              >
+                                <TrashIcon className="w-3 h-3" />
+                                <p>حذف</p>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  : Array.from({ length: 5 }).map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="">
+                          <Skeleton className={`h-[80px] w-[80px]`} />
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          <Skeleton className="h-4 w-[100px]" />
+                        </TableCell>
+                        <TableCell className="text-end"></TableCell>
+                      </TableRow>
+                    ))}
               </TableBody>
             </Table>
           </ScrollArea>
