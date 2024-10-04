@@ -1,14 +1,8 @@
-import Image from "next/image";
-import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export const description =
-  "A login page with two columns. The first column has the login form with email and password. There's a Forgot your passwork link and a link to sign up if you do not have an account. The second column has a cover image.";
-
-const Login = () => {
+const page = () => {
   return (
     <div className="w-full lg:grid h-[100dvh] lg:grid-cols-2">
       <div className="flex items-center justify-center py-12">
@@ -64,4 +58,4 @@ const Login = () => {
     </div>
   );
 };
-export default Login;
+export default page;
