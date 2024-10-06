@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import Login from "./login";
 
 const page = () => {
   return (
@@ -13,31 +15,7 @@ const page = () => {
               لطفا نام کاربری و کلمه عبور خود را وارد نمایید
             </p>
           </div>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="username">نام کاربری</Label>
-              <Input
-                id="username"
-                type="username"
-                placeholder="نام کاربری خود را وارد نمایید"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">کلمه عبور</Label>
-              </div>
-              <Input
-                placeholder="کلمه عبور خود را وارد نمایید"
-                id="password"
-                type="password"
-                required
-              />
-            </div>
-            <Button variant="ringHover" type="submit" className="w-full">
-              ورود
-            </Button>
-          </div>
+          <Login />
         </div>
       </div>
       <div className="hidden relative bg-muted lg:block">

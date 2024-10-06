@@ -99,7 +99,7 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
 
   return (
     <Tabs
-      className="flex flex-col items-end h-[calc(100vh-100px)]"
+      className="flex flex-col items-end h-[calc(100dvh-100px)]"
       defaultValue="images"
       value={selectedKey}
       onValueChange={setSelectedKey}
@@ -109,7 +109,7 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
         <TabsTrigger value="upload">آپلود رسانه</TabsTrigger>
       </TabsList>
       <TabsContent value="images" className=" h-full w-full">
-        <div className="h-[calc(100vh-150px)] grid grid-cols-10 gap-3">
+        <div className="h-[calc(100dvh-150px)] grid grid-cols-10 gap-3">
           <ScrollArea
             dir="rtl"
             className="col-span-10 lg:col-span-8 md:col-span-7"

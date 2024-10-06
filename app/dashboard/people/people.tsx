@@ -152,7 +152,7 @@ const People = () => {
 
       <div
         dir="rtl"
-        className="h-[calc(100vh-200px)] overflow-auto"
+        className="h-[calc(100dvh-200px)] overflow-auto"
         id="scrollableDiv"
       >
         <InfiniteScroll
