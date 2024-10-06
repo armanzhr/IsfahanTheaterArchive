@@ -1,11 +1,9 @@
-import { Media, MediaModel, SelectedFile } from "@/utils/types";
+import { Media, MediaModel, SelectedFile, Users } from "@/utils/types";
 import { AxiosResponse } from "axios";
 import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
 import { getCookie } from "cookies-next";
-
-const token = getCookie("auth_token");
 
 interface AuthStore {
   authLoading: boolean;
@@ -25,6 +23,9 @@ interface AuthStore {
     roles: string[];
   } | null;
   getUserInfo: () => Promise<void>;
+  isGettingUsers: Boolean;
+  users: Users[] | null;
+  getUsers: () => Promise<void>;
 }
 export const useAuthStore = create<AuthStore>((set) => ({
   authLoading: false,
@@ -45,6 +46,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   userInfo: null,
   getUserInfo: async () => {
     try {
+      const token = getCookie("auth_token");
       const { data } = await axios.get(config.baseURL + "/Auth/me", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -53,6 +55,24 @@ export const useAuthStore = create<AuthStore>((set) => ({
       set({ userInfo: data });
     } catch (error) {
       throw error;
+    }
+  },
+  isGettingUsers: false,
+  users: null,
+  getUsers: async () => {
+    set({ isGettingUsers: true });
+    try {
+      const token = getCookie("auth_token");
+      const { data } = await axios.get(config.baseURL + "/Auth/users", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      set({ users: data });
+    } catch (error) {
+      throw error;
+    } finally {
+      set({ isGettingUsers: false });
     }
   },
 }));

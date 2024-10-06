@@ -65,3 +65,10 @@ export interface SelectedFile {
   file: File;
   previewSrc: string;
 }
+export interface Users {
+  id: number;
+  userName: string;
+  firstName: string;
+  lastName: string;
+  roles: ("Admin" | "User" | "Support")[];
+}
