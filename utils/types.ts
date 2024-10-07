@@ -70,5 +70,6 @@ export interface Users {
   userName: string;
   firstName: string;
   lastName: string;
+  isActive: boolean;
   roles: ("Admin" | "User" | "Support")[];
 }

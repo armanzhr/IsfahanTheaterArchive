@@ -26,6 +26,13 @@ interface AuthStore {
   isGettingUsers: Boolean;
   users: Users[] | null;
   getUsers: () => Promise<void>;
+  createUser: (model: {
+    username: string;
+    password: string;
+    roles: string[];
+    firstName: string;
+    lastName: string;
+  }) => Promise<void>;
 }
 export const useAuthStore = create<AuthStore>((set) => ({
   authLoading: false,
@@ -73,6 +80,17 @@ export const useAuthStore = create<AuthStore>((set) => ({
       throw error;
     } finally {
       set({ isGettingUsers: false });
+    }
+  },
+  createUser: async (model) => {
+    try {
+      const { data } = await axios.post(
+        config.baseURL + "/Auth/register",
+        model
+      );
+      await useAuthStore.getState().getUsers();
+    } catch (error) {
+      throw error;
     }
   },
 }));
