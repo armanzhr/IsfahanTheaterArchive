@@ -33,6 +33,14 @@ interface AuthStore {
     firstName: string;
     lastName: string;
   }) => Promise<void>;
+  updateUser: (
+    userID: number,
+    model: {
+      firstName: string;
+      lastName: string;
+      newPassword: string;
+    }
+  ) => void;
 }
 export const useAuthStore = create<AuthStore>((set) => ({
   authLoading: false,
@@ -84,9 +92,32 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
   createUser: async (model) => {
     try {
+      const token = getCookie("auth_token");
       const { data } = await axios.post(
         config.baseURL + "/Auth/register",
-        model
+        model,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      await useAuthStore.getState().getUsers();
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateUser: async (userID, model) => {
+    try {
+      const token = getCookie("auth_token");
+      const { data } = await axios.put(
+        config.baseURL + "/Auth/update/" + userID,
+        model,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       await useAuthStore.getState().getUsers();
     } catch (error) {

@@ -34,7 +34,7 @@ const UploadUser = ({
     formState: { isValid, errors },
   } = useForm({ mode: "onChange" });
   const [showPassword, setShowPassword] = useState(true);
-  const { createUser } = useAuthStore();
+  const { createUser, updateUser } = useAuthStore();
 
   useEffect(() => {
     reset();
@@ -47,7 +47,10 @@ const UploadUser = ({
       toast.promise(
         async () => {
           try {
+            await updateUser(editValue.id, data);
+
             reset();
+
             setOpen(false);
           } catch (error) {
             throw error;
@@ -64,7 +67,6 @@ const UploadUser = ({
         async () => {
           try {
             const model = { ...data, roles: ["Support"] };
-            console.log(model);
             await createUser(model);
             reset();
             setOpen(false);
