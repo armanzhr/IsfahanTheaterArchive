@@ -26,9 +26,7 @@ export const useChangesStore = create<ChangesStore>((set) => ({
   getChangesList: async () => {
     set({ isGettingChanges: true });
     try {
-      const { data } = await axiosInstance.get(
-        config.baseURL + "/ChangeRequest"
-      );
+      const { data } = await axiosInstance.get("/ChangeRequest");
       set({ changesList: data });
     } catch (error) {
       throw error;
@@ -39,9 +37,7 @@ export const useChangesStore = create<ChangesStore>((set) => ({
   showChanges: null,
   getShowChanges: async (showID) => {
     try {
-      const { data } = await axiosInstance.get(
-        config.baseURL + "/ChangeRequest" + showID
-      );
+      const { data } = await axiosInstance.get("/ChangeRequest" + showID);
       set({ changesList: data });
     } catch (error) {
       throw error;
@@ -50,7 +46,7 @@ export const useChangesStore = create<ChangesStore>((set) => ({
   approveChange: async (showID) => {
     try {
       const { data } = await axiosInstance.post(
-        config.baseURL + "/ChangeRequest/Approve/" + showID,
+        "/ChangeRequest/Approve/" + showID,
         null
       );
       await useChangesStore.getState().getChangesList();
@@ -61,7 +57,7 @@ export const useChangesStore = create<ChangesStore>((set) => ({
   declineChange: async (showID) => {
     try {
       const { data } = await axiosInstance.post(
-        config.baseURL + "/ChangeRequest/Decline/" + showID,
+        "/ChangeRequest/Decline/" + showID,
         null
       );
       await useChangesStore.getState().getChangesList();

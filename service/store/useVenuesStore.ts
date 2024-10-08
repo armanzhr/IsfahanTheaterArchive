@@ -2,6 +2,7 @@ import { Roles, Venues } from "@/utils/types";
 import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
+import axiosInstance from "../axiosInstance";
 interface VenuesStateStore {
   venues: Venues[] | null;
   isGettingVenues: boolean;
@@ -22,7 +23,7 @@ export const useVenuesStore = create<VenuesStateStore>((set) => ({
   getVenues: async () => {
     set({ isGettingVenues: true });
     try {
-      const { data } = await axios.get(config.baseURL + "/Venues");
+      const { data } = await axiosInstance.get("/Venues");
       set({ venues: data });
     } catch (error) {
       throw error;
@@ -33,7 +34,7 @@ export const useVenuesStore = create<VenuesStateStore>((set) => ({
   createVenues: async (model) => {
     set({ isLoadingVenues: true });
     try {
-      const { data } = await axios.post(config.baseURL + "/Venues", model);
+      const { data } = await axiosInstance.post("/Venues", model);
       await useVenuesStore.getState().getVenues();
     } catch (error) {
       throw error;
@@ -44,10 +45,7 @@ export const useVenuesStore = create<VenuesStateStore>((set) => ({
   updateVenues: async (venuesID, model) => {
     set({ isLoadingVenues: true });
     try {
-      const { data } = await axios.put(
-        config.baseURL + "/Venues/" + venuesID,
-        model
-      );
+      const { data } = await axiosInstance.put("/Venues/" + venuesID, model);
       await useVenuesStore.getState().getVenues();
     } catch (error) {
       throw error;
@@ -58,9 +56,7 @@ export const useVenuesStore = create<VenuesStateStore>((set) => ({
   deleteVenues: async (venuesID) => {
     set({ isLoadingVenues: true });
     try {
-      const { data } = await axios.delete(
-        config.baseURL + "/Venues/" + venuesID
-      );
+      const { data } = await axiosInstance.delete("/Venues/" + venuesID);
       await useVenuesStore.getState().getVenues();
     } catch (error) {
       throw error;

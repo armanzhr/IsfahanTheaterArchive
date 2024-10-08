@@ -35,7 +35,7 @@ export const useMediaStore = create<MediaStore>((set) => ({
   getMediasList: async () => {
     set({ isLoadingMedia: true });
     try {
-      const { data } = await axiosInstance.get(config.baseURL + "/Images");
+      const { data } = await axiosInstance.get("/Images");
       set({ listMedias: data });
 
       return data;
@@ -50,7 +50,7 @@ export const useMediaStore = create<MediaStore>((set) => ({
     set({ isLoadingMedia: true });
     try {
       const { data } = await axiosInstance.get(
-        config.baseURL + "/Images/" + IdleDeadline.toString()
+        "/Images/" + IdleDeadline.toString()
       );
       set({ media: data });
 
@@ -64,10 +64,7 @@ export const useMediaStore = create<MediaStore>((set) => ({
   updateMedia: async (mediaID, model) => {
     set({ isLoadingMedia: true });
     try {
-      const { data } = await axiosInstance.put(
-        config.baseURL + `/Images/${mediaID}`,
-        model
-      );
+      const { data } = await axiosInstance.put(`/Images/${mediaID}`, model);
       await useMediaStore.getState().getMediasList();
       return data;
     } catch (error) {
@@ -79,9 +76,7 @@ export const useMediaStore = create<MediaStore>((set) => ({
   deleteMedia: async (mediaID) => {
     set({ isLoadingMedia: true });
     try {
-      const data = await axiosInstance.delete(
-        config.baseURL + `/Images/${mediaID}`
-      );
+      const data = await axiosInstance.delete(`/Images/${mediaID}`);
       await useMediaStore.getState().getMediasList();
 
       return data;
@@ -95,7 +90,7 @@ export const useMediaStore = create<MediaStore>((set) => ({
     set({ isLoadingMedia: true });
     try {
       const data = await axiosInstance.post(
-        config.baseURL + `/Images`,
+        `/Images`,
 
         model
       );

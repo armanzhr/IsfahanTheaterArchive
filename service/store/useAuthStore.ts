@@ -50,10 +50,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   loginUser: async (user) => {
     set({ authLoading: true });
     try {
-      const { data } = await axiosInstance.post(
-        config.baseURL + "/Auth/Login",
-        user
-      );
+      const { data } = await axiosInstance.post("/Auth/Login", user);
       set({ authLoading: false });
 
       return data;
@@ -67,7 +64,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   userInfo: null,
   getUserInfo: async () => {
     try {
-      const { data } = await axiosInstance.get(config.baseURL + "/Auth/me");
+      const { data } = await axiosInstance.get("/Auth/me");
       set({ userInfo: data });
     } catch (error) {
       throw error;
@@ -78,7 +75,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   getUsers: async () => {
     set({ isGettingUsers: true });
     try {
-      const { data } = await axiosInstance.get(config.baseURL + "/Auth/users");
+      const { data } = await axiosInstance.get("/Auth/users");
       set({ users: data });
     } catch (error) {
       throw error;
@@ -88,10 +85,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
   createUser: async (model) => {
     try {
-      const { data } = await axiosInstance.post(
-        config.baseURL + "/Auth/register",
-        model
-      );
+      const { data } = await axiosInstance.post("/Auth/register", model);
       await useAuthStore.getState().getUsers();
     } catch (error) {
       throw error;
@@ -99,10 +93,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
   updateUser: async (userID, model) => {
     try {
-      const { data } = await axiosInstance.put(
-        config.baseURL + "/Auth/update/" + userID,
-        model
-      );
+      const { data } = await axiosInstance.put("/Auth/update/" + userID, model);
       await useAuthStore.getState().getUsers();
     } catch (error) {
       throw error;
@@ -110,10 +101,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
   disableUser: async (userID) => {
     try {
-      const { data } = await axiosInstance.put(
-        config.baseURL + "/Auth/disable/" + userID,
-        null
-      );
+      const { data } = await axiosInstance.put("/Auth/disable/" + userID, null);
       await useAuthStore.getState().getUsers();
     } catch (error) {
       throw error;
@@ -121,10 +109,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
   activeUser: async (userID) => {
     try {
-      const { data } = await axiosInstance.put(
-        config.baseURL + "/Auth/active/" + userID,
-        null
-      );
+      const { data } = await axiosInstance.put("/Auth/active/" + userID, null);
       await useAuthStore.getState().getUsers();
     } catch (error) {
       throw error;

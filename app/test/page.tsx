@@ -14,7 +14,7 @@ import { Show } from "@/utils/types";
 import React from "react";
 
 const page = async () => {
-  let data = await fetch(config.baseURL + "/Shows");
+  let data = await fetch("/Shows");
   let posts: Show[] = await data.json();
 
   return (
