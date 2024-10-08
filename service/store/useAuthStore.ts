@@ -40,7 +40,9 @@ interface AuthStore {
       lastName: string;
       newPassword: string;
     }
-  ) => void;
+  ) => Promise<void>;
+  disableUser: (userID: number) => Promise<void>;
+  activeUser: (userID: number) => Promise<void>;
 }
 export const useAuthStore = create<AuthStore>((set) => ({
   authLoading: false,
@@ -113,6 +115,40 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const { data } = await axios.put(
         config.baseURL + "/Auth/update/" + userID,
         model,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      await useAuthStore.getState().getUsers();
+    } catch (error) {
+      throw error;
+    }
+  },
+  disableUser: async (userID) => {
+    try {
+      const token = getCookie("auth_token");
+      const { data } = await axios.put(
+        config.baseURL + "/Auth/disable/" + userID,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      await useAuthStore.getState().getUsers();
+    } catch (error) {
+      throw error;
+    }
+  },
+  activeUser: async (userID) => {
+    try {
+      const token = getCookie("auth_token");
+      const { data } = await axios.put(
+        config.baseURL + "/Auth/active/" + userID,
+        null,
         {
           headers: {
             Authorization: `Bearer ${token}`,

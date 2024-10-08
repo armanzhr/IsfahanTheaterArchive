@@ -21,7 +21,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, PencilIcon, TrashIcon } from "lucide-react";
+import { MoreHorizontal, PencilIcon, TrashIcon, UserRound } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import DeleteVenues from "@/components/pages/venues/DeleteVenues";
 import { useAuthStore } from "@/service/store/useAuthStore";
@@ -29,6 +29,7 @@ import { Users as UsersType } from "@/utils/types";
 import { cn } from "@/utils/cn";
 import { Skeleton } from "@/components/ui/skeleton";
 import UploadUser from "@/components/pages/admin/users/UploadUser";
+import UserStatus from "@/components/pages/admin/users/userStatus";
 
 const Users = () => {
   const { getUsers, users, isGettingUsers, userInfo } = useAuthStore();
@@ -111,7 +112,10 @@ const Users = () => {
               <TableBody>
                 {filteredItems
                   ? filteredItems?.map((user) => (
-                      <TableRow key={user.id}>
+                      <TableRow
+                        key={user.id}
+                        className={cn(!user.isActive && "opacity-50")}
+                      >
                         <TableCell className="font-medium">
                           {user.userName}{" "}
                           {user.id === userInfo?.id && <span>(شما)</span>}
@@ -155,13 +159,18 @@ const Users = () => {
                                 <PencilIcon className="w-3 h-3" />
                                 <p>ویرایش</p>
                               </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => handleDeleteUser(user)}
-                                className="gap-2"
-                              >
-                                <TrashIcon className="w-3 h-3" />
-                                <p>حذف</p>
-                              </DropdownMenuItem>
+                              {userInfo?.id !== user.id && (
+                                <DropdownMenuItem
+                                  onSelect={(e) => e.preventDefault()}
+                                  className="gap-2"
+                                >
+                                  <UserRound className="w-3 h-3" />
+                                  <UserStatus
+                                    user={user}
+                                    status={user.isActive}
+                                  />
+                                </DropdownMenuItem>
+                              )}
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>

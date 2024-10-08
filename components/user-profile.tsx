@@ -33,11 +33,11 @@ export function UserProfile() {
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent className="w-40">
         <DropdownMenuLabel>حساب من</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem disabled>
+          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
             <User className="ml-2 h-4 w-4" />
             <div className="flex flex-col">
               <span className="font-semibold">
@@ -47,7 +47,7 @@ export function UserProfile() {
             </div>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuItem onClick={handleLogout}>
+        <DropdownMenuItem className="cursor-pointer" onSelect={handleLogout}>
           <LogOut className="ml-2 h-4 w-4" />
           <span>خروج</span>
         </DropdownMenuItem>
