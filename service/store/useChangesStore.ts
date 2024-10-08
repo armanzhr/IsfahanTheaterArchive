@@ -1,4 +1,4 @@
-import { Media, MediaModel, SelectedFile, Users } from "@/utils/types";
+import { Changes } from "@/utils/types";
 import { AxiosResponse } from "axios";
 import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
@@ -6,131 +6,60 @@ import config from "@/config";
 import { getCookie } from "cookies-next";
 
 interface ChangesStore {
-  authLoading: boolean;
   preLoading: boolean;
   setPreLoading: (status: boolean) => void;
-  loginUser: (user: { username: string; password: string }) => Promise<{
-    access: string;
-    isSucceed: boolean;
-    message: string;
-    roles: string[];
-  }>;
-  userInfo: {
-    id: 0;
-    userName: string;
-    firstName: string;
-    lastName: string;
-    roles: string[];
-  } | null;
-  getUserInfo: () => Promise<void>;
-  isGettingUsers: Boolean;
-  users: Users[] | null;
-  getUsers: () => Promise<void>;
-  createUser: (model: {
-    username: string;
-    password: string;
-    roles: string[];
-    firstName: string;
-    lastName: string;
-  }) => Promise<void>;
-  updateUser: (
-    userID: number,
-    model: {
-      firstName: string;
-      lastName: string;
-      newPassword: string;
-    }
-  ) => Promise<void>;
-  disableUser: (userID: number) => Promise<void>;
-  activeUser: (userID: number) => Promise<void>;
+  isGettingChanges: Boolean;
+  changesList: Changes[] | null;
+  getChangesList: () => Promise<void>;
+  showChanges: Changes | null;
+  getShowChanges: (showID: number) => Promise<void>;
+  approveChange: (showID: number) => Promise<void>;
+  declineChange: (showID: number) => Promise<void>;
 }
 export const useChangesStore = create<ChangesStore>((set) => ({
-  authLoading: false,
-  loginUser: async (user) => {
-    set({ authLoading: true });
-    try {
-      const { data } = await axios.post(config.baseURL + "/Auth/Login", user);
-      set({ authLoading: false });
-
-      return data;
-    } catch (error) {
-      set({ authLoading: false });
-      throw error;
-    }
-  },
   preLoading: true,
   setPreLoading: (status) => set({ preLoading: status }),
-  userInfo: null,
-  getUserInfo: async () => {
+
+  isGettingChanges: false,
+  changesList: null,
+  getChangesList: async () => {
+    set({ isGettingChanges: true });
     try {
       const token = getCookie("auth_token");
-      const { data } = await axios.get(config.baseURL + "/Auth/me", {
+      const { data } = await axios.get(config.baseURL + "/ChangeRequest", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      set({ userInfo: data });
-    } catch (error) {
-      throw error;
-    }
-  },
-  isGettingUsers: false,
-  users: null,
-  getUsers: async () => {
-    set({ isGettingUsers: true });
-    try {
-      const token = getCookie("auth_token");
-      const { data } = await axios.get(config.baseURL + "/Auth/users", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      set({ users: data });
+      set({ changesList: data });
     } catch (error) {
       throw error;
     } finally {
-      set({ isGettingUsers: false });
+      set({ isGettingChanges: false });
     }
   },
-  createUser: async (model) => {
+  showChanges: null,
+  getShowChanges: async (showID) => {
+    try {
+      const token = getCookie("auth_token");
+      const { data } = await axios.get(
+        config.baseURL + "/ChangeRequest" + showID,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      set({ changesList: data });
+    } catch (error) {
+      throw error;
+    }
+  },
+  approveChange: async (showID) => {
     try {
       const token = getCookie("auth_token");
       const { data } = await axios.post(
-        config.baseURL + "/Auth/register",
-        model,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      await useChangesStore.getState().getUsers();
-    } catch (error) {
-      throw error;
-    }
-  },
-  updateUser: async (userID, model) => {
-    try {
-      const token = getCookie("auth_token");
-      const { data } = await axios.put(
-        config.baseURL + "/Auth/update/" + userID,
-        model,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      await useChangesStore.getState().getUsers();
-    } catch (error) {
-      throw error;
-    }
-  },
-  disableUser: async (userID) => {
-    try {
-      const token = getCookie("auth_token");
-      const { data } = await axios.put(
-        config.baseURL + "/Auth/disable/" + userID,
+        config.baseURL + "/ChangeRequest/Approve/" + showID,
         null,
         {
           headers: {
@@ -138,16 +67,16 @@ export const useChangesStore = create<ChangesStore>((set) => ({
           },
         }
       );
-      await useChangesStore.getState().getUsers();
+      await useChangesStore.getState().getChangesList();
     } catch (error) {
       throw error;
     }
   },
-  activeUser: async (userID) => {
+  declineChange: async (showID) => {
     try {
       const token = getCookie("auth_token");
-      const { data } = await axios.put(
-        config.baseURL + "/Auth/active/" + userID,
+      const { data } = await axios.post(
+        config.baseURL + "/ChangeRequest/Decline/" + showID,
         null,
         {
           headers: {
@@ -155,7 +84,7 @@ export const useChangesStore = create<ChangesStore>((set) => ({
           },
         }
       );
-      await useChangesStore.getState().getUsers();
+      await useChangesStore.getState().getChangesList();
     } catch (error) {
       throw error;
     }

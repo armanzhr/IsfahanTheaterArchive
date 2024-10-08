@@ -73,3 +73,32 @@ export interface Users {
   isActive: boolean;
   roles: ("Admin" | "User" | "Support")[];
 }
+export interface Changes {
+  id: 0;
+  entityName: string;
+  entityId: 0;
+  requesterUserId: 0;
+  requesterUser: {
+    id: 0;
+    userName: string;
+    normalizedUserName: string;
+    email: string;
+    normalizedEmail: string;
+    emailConfirmed: true;
+    passwordHash: string;
+    securityStamp: string;
+    concurrencyStamp: string;
+    phoneNumber: string;
+    phoneNumberConfirmed: true;
+    twoFactorEnabled: true;
+    lockoutEnd: string;
+    lockoutEnabled: true;
+    accessFailedCount: 0;
+    firstName: string;
+    lastName: string;
+    isActive: true;
+  };
+  status: 0;
+  changes: string;
+  createdAt: string;
+}
