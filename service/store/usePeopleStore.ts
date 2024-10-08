@@ -2,6 +2,7 @@ import { People } from "@/utils/types";
 import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
+import axiosInstance from "../axiosInstance";
 interface PeopleStateProps {
   people: People[] | null;
   allPeople: People[] | null;
@@ -48,7 +49,7 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
   getPeople: async (page, pageSize, searchKey) => {
     set({ isGettingPeople: true });
     try {
-      const { data } = await axios.get(config.baseURL + `/People`, {
+      const { data } = await axiosInstance.get(`/People`, {
         params: { page, pageSize, searchKey },
       });
       set({ people: data });
@@ -62,7 +63,7 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
   createPeople: async (model) => {
     set({ isLoadingPeople: true });
     try {
-      const { data } = await axios.post(config.baseURL + "/People", model);
+      const { data } = await axiosInstance.post("/People", model);
     } catch (error) {
       throw error;
     } finally {
@@ -72,10 +73,7 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
   updatePeople: async (peopleID, model) => {
     set({ isLoadingPeople: true });
     try {
-      const { data } = await axios.put(
-        config.baseURL + "/People/" + peopleID,
-        model
-      );
+      const { data } = await axiosInstance.put("/People/" + peopleID, model);
     } catch (error) {
       throw error;
     } finally {
@@ -85,9 +83,7 @@ export const usePeopleStore = create<PeopleStateProps>((set) => ({
   deletePeople: async (peopleID) => {
     set({ isLoadingPeople: true });
     try {
-      const { data } = await axios.delete(
-        config.baseURL + "/People/" + peopleID
-      );
+      const { data } = await axiosInstance.delete("/People/" + peopleID);
       await usePeopleStore.getState().getPeople();
       set({ searchKey: "" });
     } catch (error) {
