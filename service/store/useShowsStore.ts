@@ -2,6 +2,7 @@ import { Roles, Show } from "@/utils/types";
 import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
+import axiosInstance from "../axiosInstance";
 interface ShowsStateStore {
   shows: Show[] | null;
   isGettingShows: boolean;
@@ -19,9 +20,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
   getShows: async () => {
     set({ isGettingShows: true });
     try {
-      const { data } = await axios.get(
-        config.baseURL + "/Shows/GetShowsForEdit"
-      );
+      const { data } = await axiosInstance.get("/Shows/GetShowsForEdit");
       set({ shows: data });
     } catch (error) {
       throw error;
@@ -32,7 +31,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
   createShows: async (model) => {
     set({ isLoadingShows: true });
     try {
-      const { data } = await axios.post(config.baseURL + "/Shows", model);
+      const { data } = await axiosInstance.post("/Shows", model);
       await useShowsStore.getState().getShows();
       return data;
     } catch (error) {
@@ -44,10 +43,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
   updateShows: async (showsID, model) => {
     set({ isLoadingShows: true });
     try {
-      const { data } = await axios.put(
-        config.baseURL + "/Shows/" + showsID,
-        model
-      );
+      const { data } = await axiosInstance.put("/Shows/" + showsID, model);
       await useShowsStore.getState().getShows();
     } catch (error) {
       throw error;
@@ -58,7 +54,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
   deleteShows: async (showsID) => {
     set({ isLoadingShows: true });
     try {
-      const { data } = await axios.delete(config.baseURL + "/Shows/" + showsID);
+      const { data } = await axiosInstance.delete("/Shows/" + showsID);
       await useShowsStore.getState().getShows();
     } catch (error) {
       throw error;
