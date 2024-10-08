@@ -100,7 +100,9 @@ const Users = () => {
                   <TableHead className="text-start">نام کاربری</TableHead>
                   <TableHead className="text-start">نام</TableHead>
                   <TableHead className="text-start">نام خانوادگی</TableHead>
-                  <TableHead className="text-start">نقش کاربری</TableHead>
+                  <TableHead className="text-start hidden sm:table-cell">
+                    نقش کاربری
+                  </TableHead>
                   <TableHead className="text-start">وضعیت</TableHead>
 
                   <TableHead>تنظیمات</TableHead>
@@ -125,7 +127,7 @@ const Users = () => {
                               : "کاربر"
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className=" hidden sm:table-cell">
                           <Badge
                             variant={user.isActive ? "secondary" : "outline"}
                           >

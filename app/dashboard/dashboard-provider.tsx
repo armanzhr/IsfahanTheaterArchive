@@ -14,7 +14,7 @@ const DashboardProvider = ({ children }: { children: ReactNode }) => {
       await getUserInfo();
       setPreLoading(false);
     } catch (error) {
-      toast.error("خطا در ورود به پنل");
+      toast.error("لطفا ابتدا وارد شوید");
       router.push("/auth/login");
     }
   };

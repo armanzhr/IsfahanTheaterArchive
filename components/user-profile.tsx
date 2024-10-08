@@ -10,47 +10,46 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import config from "@/config";
+import { useAuthStore } from "@/service/store/useAuthStore";
+import { deleteCookie } from "cookies-next";
 
 import { CreditCard, LogOut, Settings, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export function UserProfile() {
+  const { userInfo } = useAuthStore();
   const router = useRouter();
-
-  if (!config?.auth?.enabled) {
-    router.back();
-  }
+  const handleLogout = () => {
+    deleteCookie("auth_token");
+    router.push("/auth/login");
+  };
   return (
-    <DropdownMenu>
+    <DropdownMenu dir="rtl">
       <DropdownMenuTrigger asChild className="w-[2.25rem] h-[2.25rem]">
         <Avatar>
-          <AvatarFallback></AvatarFallback>
+          <AvatarFallback>
+            <User className="h-4 w-4" />
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>حساب من</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href="/user-profile">
-            <DropdownMenuItem>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-            </DropdownMenuItem>
-          </Link>
-          <Link href="/dashboard/settings">
-            <DropdownMenuItem>
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-            </DropdownMenuItem>
-          </Link>
+          <DropdownMenuItem disabled>
+            <User className="ml-2 h-4 w-4" />
+            <div className="flex flex-col">
+              <span className="font-semibold">
+                {userInfo?.firstName} {userInfo?.lastName}
+              </span>
+              <span className="text-xs">@{userInfo?.userName}</span>
+            </div>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuItem>
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+        <DropdownMenuItem onClick={handleLogout}>
+          <LogOut className="ml-2 h-4 w-4" />
+          <span>خروج</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
