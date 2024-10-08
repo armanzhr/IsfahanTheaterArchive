@@ -4,6 +4,7 @@ import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
 import { getCookie } from "cookies-next";
+import axiosInstance from "../axiosInstance";
 
 interface ChangesStore {
   preLoading: boolean;
@@ -25,12 +26,9 @@ export const useChangesStore = create<ChangesStore>((set) => ({
   getChangesList: async () => {
     set({ isGettingChanges: true });
     try {
-      const token = getCookie("auth_token");
-      const { data } = await axios.get(config.baseURL + "/ChangeRequest", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const { data } = await axiosInstance.get(
+        config.baseURL + "/ChangeRequest"
+      );
       set({ changesList: data });
     } catch (error) {
       throw error;
@@ -41,14 +39,8 @@ export const useChangesStore = create<ChangesStore>((set) => ({
   showChanges: null,
   getShowChanges: async (showID) => {
     try {
-      const token = getCookie("auth_token");
-      const { data } = await axios.get(
-        config.baseURL + "/ChangeRequest" + showID,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const { data } = await axiosInstance.get(
+        config.baseURL + "/ChangeRequest" + showID
       );
       set({ changesList: data });
     } catch (error) {
@@ -57,15 +49,9 @@ export const useChangesStore = create<ChangesStore>((set) => ({
   },
   approveChange: async (showID) => {
     try {
-      const token = getCookie("auth_token");
-      const { data } = await axios.post(
+      const { data } = await axiosInstance.post(
         config.baseURL + "/ChangeRequest/Approve/" + showID,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        null
       );
       await useChangesStore.getState().getChangesList();
     } catch (error) {
@@ -74,15 +60,9 @@ export const useChangesStore = create<ChangesStore>((set) => ({
   },
   declineChange: async (showID) => {
     try {
-      const token = getCookie("auth_token");
-      const { data } = await axios.post(
+      const { data } = await axiosInstance.post(
         config.baseURL + "/ChangeRequest/Decline/" + showID,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        null
       );
       await useChangesStore.getState().getChangesList();
     } catch (error) {
