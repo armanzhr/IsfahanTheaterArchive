@@ -4,6 +4,7 @@ import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
 import { getCookie } from "cookies-next";
+import axiosInstance from "../axiosInstance";
 
 interface AuthStore {
   authLoading: boolean;
@@ -49,7 +50,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
   loginUser: async (user) => {
     set({ authLoading: true });
     try {
-      const { data } = await axios.post(config.baseURL + "/Auth/Login", user);
+      const { data } = await axiosInstance.post(
+        config.baseURL + "/Auth/Login",
+        user
+      );
       set({ authLoading: false });
 
       return data;
@@ -64,7 +68,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   getUserInfo: async () => {
     try {
       const token = getCookie("auth_token");
-      const { data } = await axios.get(config.baseURL + "/Auth/me", {
+      const { data } = await axiosInstance.get(config.baseURL + "/Auth/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -80,7 +84,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set({ isGettingUsers: true });
     try {
       const token = getCookie("auth_token");
-      const { data } = await axios.get(config.baseURL + "/Auth/users", {
+      const { data } = await axiosInstance.get(config.baseURL + "/Auth/users", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -95,7 +99,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   createUser: async (model) => {
     try {
       const token = getCookie("auth_token");
-      const { data } = await axios.post(
+      const { data } = await axiosInstance.post(
         config.baseURL + "/Auth/register",
         model,
         {
@@ -112,7 +116,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   updateUser: async (userID, model) => {
     try {
       const token = getCookie("auth_token");
-      const { data } = await axios.put(
+      const { data } = await axiosInstance.put(
         config.baseURL + "/Auth/update/" + userID,
         model,
         {
@@ -129,7 +133,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   disableUser: async (userID) => {
     try {
       const token = getCookie("auth_token");
-      const { data } = await axios.put(
+      const { data } = await axiosInstance.put(
         config.baseURL + "/Auth/disable/" + userID,
         null,
         {
@@ -146,7 +150,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   activeUser: async (userID) => {
     try {
       const token = getCookie("auth_token");
-      const { data } = await axios.put(
+      const { data } = await axiosInstance.put(
         config.baseURL + "/Auth/active/" + userID,
         null,
         {

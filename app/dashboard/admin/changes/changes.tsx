@@ -30,44 +30,29 @@ import { cn } from "@/utils/cn";
 import { Skeleton } from "@/components/ui/skeleton";
 import UploadUser from "@/components/pages/admin/users/UploadUser";
 import UserStatus from "@/components/pages/admin/users/userStatus";
+import { useChangesStore } from "@/service/store/useChangesStore";
 
 const Changes = () => {
-  const { getUsers, users, isGettingUsers, userInfo } = useAuthStore();
+  const { changesList, getChangesList } = useChangesStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<UsersType | null>();
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<UsersType>();
-  const [searchInputValue, setSearchInputValue] = useState<string>("");
   const [filteredItems, setFilteredItems] = useState<UsersType[] | null>();
 
-  const handleFilterItems = () => {
-    setFilteredItems(
-      users?.filter((item) => item.userName.includes(searchInputValue))
-    );
-  };
-
-  useEffect(() => {
-    handleFilterItems();
-  }, [searchInputValue]);
-
-  const fetchUsers = async () => {
+  const fetchChangesList = async () => {
     try {
-      const res = await getUsers();
+      const res = await getChangesList();
     } catch (error) {
       toast.error("خطا در دریافت کاربران");
     }
   };
   useEffect(() => {
-    setFilteredItems(users);
-    if (!users) {
-      fetchUsers();
+    if (!changesList) {
+      fetchChangesList();
     }
-  }, [users]);
+  }, [changesList]);
 
-  const handleCreateUser = () => {
-    setEditValue(null);
-    setOpen(true);
-  };
   const handleEditUser = (item: UsersType) => {
     setEditValue(item);
     setOpen(true);
@@ -102,8 +87,8 @@ const Changes = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredItems
-                  ? filteredItems?.map((user) => (
+                {changesList
+                  ? changesList?.map((user) => (
                       <TableRow
                         key={user.id}
                         className={cn(!user.isActive && "opacity-50")}
