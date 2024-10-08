@@ -2,6 +2,7 @@ import { Roles } from "@/utils/types";
 import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
+import axiosInstance from "../axiosInstance";
 interface RolesStateStore {
   roles: Roles[] | null;
   isGettingRoles: boolean;
@@ -19,7 +20,7 @@ export const useRolesStore = create<RolesStateStore>((set) => ({
   getRoles: async () => {
     set({ isGettingRoles: true });
     try {
-      const { data } = await axios.get(config.baseURL + "/Roles");
+      const { data } = await axiosInstance.get("/Roles");
       set({ roles: data });
     } catch (error) {
       throw error;
@@ -30,7 +31,7 @@ export const useRolesStore = create<RolesStateStore>((set) => ({
   createRole: async (model) => {
     set({ isLoadingRoles: true });
     try {
-      const { data } = await axios.post(config.baseURL + "/Roles", model);
+      const { data } = await axiosInstance.post("/Roles", model);
       await useRolesStore.getState().getRoles();
     } catch (error) {
       throw error;
@@ -41,10 +42,7 @@ export const useRolesStore = create<RolesStateStore>((set) => ({
   updateRole: async (RolesID, model) => {
     set({ isLoadingRoles: true });
     try {
-      const { data } = await axios.put(
-        config.baseURL + "/Roles/" + RolesID,
-        model
-      );
+      const { data } = await axiosInstance.put("/Roles/" + RolesID, model);
       await useRolesStore.getState().getRoles();
     } catch (error) {
       throw error;
@@ -55,7 +53,7 @@ export const useRolesStore = create<RolesStateStore>((set) => ({
   deleteRole: async (RolesID) => {
     set({ isLoadingRoles: true });
     try {
-      const { data } = await axios.delete(config.baseURL + "/Roles/" + RolesID);
+      const { data } = await axiosInstance.delete("/Roles/" + RolesID);
       await useRolesStore.getState().getRoles();
     } catch (error) {
       throw error;
