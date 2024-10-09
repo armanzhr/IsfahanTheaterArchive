@@ -4,24 +4,24 @@ import axios, { AxiosPromise } from "axios";
 import config from "@/config";
 import axiosInstance from "../axiosInstance";
 interface ShowsStateStore {
-  shows: Show[] | null;
+  showsList: Show[] | null;
   isGettingShows: boolean;
   isLoadingShows: boolean;
-  getShows: () => Promise<void>;
+  getShowsList: () => Promise<void>;
   createShows: (model: Show) => Promise<Show>;
   updateShows: (showsID: number, model: Show) => Promise<void>;
   deleteShows: (peopleID: number) => Promise<void>;
 }
 
 export const useShowsStore = create<ShowsStateStore>((set) => ({
-  shows: null,
+  showsList: null,
   isGettingShows: false,
   isLoadingShows: false,
-  getShows: async () => {
+  getShowsList: async () => {
     set({ isGettingShows: true });
     try {
-      const { data } = await axiosInstance.get("/Shows/GetShowsForEdit");
-      set({ shows: data });
+      const { data } = await axiosInstance.get("/Shows");
+      set({ showsList: data });
     } catch (error) {
       throw error;
     } finally {
@@ -32,7 +32,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
     set({ isLoadingShows: true });
     try {
       const { data } = await axiosInstance.post("/Shows", model);
-      await useShowsStore.getState().getShows();
+      await useShowsStore.getState().getShowsList();
       return data;
     } catch (error) {
       throw error;
@@ -44,7 +44,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
     set({ isLoadingShows: true });
     try {
       const { data } = await axiosInstance.put("/Shows/" + showsID, model);
-      await useShowsStore.getState().getShows();
+      await useShowsStore.getState().getShowsList();
     } catch (error) {
       throw error;
     } finally {
@@ -55,7 +55,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
     set({ isLoadingShows: true });
     try {
       const { data } = await axiosInstance.delete("/Shows/" + showsID);
-      await useShowsStore.getState().getShows();
+      await useShowsStore.getState().getShowsList();
     } catch (error) {
       throw error;
     } finally {

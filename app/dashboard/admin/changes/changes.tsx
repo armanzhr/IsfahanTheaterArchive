@@ -41,6 +41,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import UploadUser from "@/components/pages/admin/users/UploadUser";
 import UserStatus from "@/components/pages/admin/users/userStatus";
 import { useChangesStore } from "@/service/store/useChangesStore";
+import ShowChanges from "@/components/pages/admin/changes/ShowChanges";
 var moment = require("moment-jalaali");
 
 const Changes = () => {
@@ -157,9 +158,7 @@ const Changes = () => {
                             )}
                           </TableCell>
                           <TableCell className="text-sm">
-                            <Button variant="outline" size="sm" className="h-7">
-                              بررسی تغییرات
-                            </Button>
+                            <ShowChanges />
                           </TableCell>
                           <TableCell className="text-sm">
                             <div className="flex gap-1">
