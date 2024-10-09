@@ -45,7 +45,8 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const Shows = () => {
-  const { getShowsList, showsList, createShows } = useShowsStore();
+  const { getShowsList, showsList, createShows, resetShowInfo } =
+    useShowsStore();
   const { getMediasList, listMedias } = useMediaStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<Show | null>();
@@ -94,6 +95,7 @@ const Shows = () => {
 
   const handleCreateRole = () => {
     setEditValue(null);
+    resetShowInfo();
     setOpen(true);
   };
   const handleEditRole = (item: Show) => {
@@ -104,17 +106,6 @@ const Shows = () => {
     setSelectedShow(item);
     setOpenDeleteModal(true);
   };
-  const fetchAllPeople = async () => {
-    try {
-      const res = await getPeople();
-      setAllPeople(res);
-    } catch (error) {
-      toast.error("خطا در دریافت عوامل");
-    }
-  };
-  useEffect(() => {
-    fetchAllPeople();
-  }, []);
 
   const handleDuplicateShow = async (item: Show) => {
     const model: Show = {

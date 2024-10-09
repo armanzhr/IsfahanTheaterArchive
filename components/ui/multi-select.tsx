@@ -72,16 +72,31 @@ interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
    * An array of option objects to be displayed in the multi-select component.
    * Each option object has a label, value, and an optional icon.
    */
-  options: People[];
 
   /**
    * Callback function triggered when the selected values change.
    * Receives an array of the new selected values.
    */
-  onValueChange: (value: { roleId: number; people: number[] }) => void;
+  onValueChange: (value: {
+    roleId: number;
+    people: {
+      id?: number;
+      roleId?: number;
+      firstName?: string;
+      lastName?: string;
+    }[];
+  }) => void;
 
   /** The default selected values when the component mounts. */
-  defaultValue: { roleId: number; people: number[] };
+  defaultValue: {
+    roleId: number;
+    people: {
+      id?: number;
+      roleId?: number;
+      firstName?: string;
+      lastName?: string;
+    }[];
+  };
 
   /**
    * Placeholder text to be displayed when no values are selected.
@@ -129,7 +144,6 @@ export const MultiSelect = React.forwardRef<
 >(
   (
     {
-      options,
       onValueChange,
       variant,
       defaultValue = { roleId: 0, people: [] },
@@ -146,7 +160,12 @@ export const MultiSelect = React.forwardRef<
   ) => {
     const [selectedValues, setSelectedValues] = React.useState<{
       roleId: number;
-      people: number[];
+      people: {
+        id?: number;
+        roleId?: number;
+        firstName?: string;
+        lastName?: string;
+      }[];
     }>(defaultValue);
     const [newOption, setNewOption] = React.useState(false);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
@@ -154,10 +173,16 @@ export const MultiSelect = React.forwardRef<
     const { listMedias } = useMediaStore();
     React.useEffect(() => {
       setSelectedValues(defaultValue);
+      console.log(defaultValue);
     }, [defaultValue]);
     const [displayedUsers, setDisplayedUsers] = React.useState<any>([]);
 
-    const toggleOption = (value: number) => {
+    const toggleOption = (value: {
+      id?: number;
+      roleId?: number;
+      firstName?: string;
+      lastName?: string;
+    }) => {
       if (!newOption) {
         const newSelectedValues = selectedValues.people.includes(value)
           ? selectedValues.people.filter((v) => v !== value)
@@ -317,13 +342,11 @@ export const MultiSelect = React.forwardRef<
                     scrollableTarget="scrollableDiv"
                   >
                     {filteredItems?.map((option) => {
-                      const isSelected = selectedValues.people.includes(
-                        option.id
-                      );
+                      const isSelected = selectedValues.people.includes(option);
                       return (
                         <CommandItem
                           key={option.id}
-                          onSelect={() => toggleOption(option.id)}
+                          onSelect={() => toggleOption(option)}
                           className="cursor-pointer"
                           value={option.firstName + " " + option.lastName}
                         >
@@ -371,11 +394,9 @@ export const MultiSelect = React.forwardRef<
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-wrap items-center">
             {selectedValues.people.map((value) => {
-              const option = options.find((o) => o.id === value);
-
               return (
                 <Badge
-                  key={value}
+                  key={value.id}
                   className={cn(
                     isAnimating ? "animate-bounce" : "",
                     multiSelectVariants({ variant })
@@ -387,7 +408,7 @@ export const MultiSelect = React.forwardRef<
                       <AvatarImage
                         src={`${config.fileURL}/${
                           listMedias?.find(
-                            (item) => item.id === option?.avatarImageId
+                            (item) => item.id === value?.avatarImageId
                           )?.url
                         }`}
                         alt="Avatar"
@@ -396,10 +417,10 @@ export const MultiSelect = React.forwardRef<
                         <UserIcon className="opacity-50 h-5 w-5" />
                       </AvatarFallback>
                     </Avatar>
-                    {`${option?.firstName} ${option?.lastName}`}
-                    {option?.startYear && (
+                    {`${value?.firstName} ${value?.lastName}`}
+                    {value?.startYear && (
                       <p className=" text-gray-500 text-xs">
-                        {option?.startYear?.toString().slice(-2)}{" "}
+                        {value?.startYear?.toString().slice(-2)}{" "}
                       </p>
                     )}
                     <XCircle

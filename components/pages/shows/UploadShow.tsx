@@ -13,7 +13,7 @@ import { useRolesStore } from "@/service/store/useRolesStore";
 import { Media, Show, Venues } from "@/utils/types";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Upload, XIcon } from "lucide-react";
+import { Upload, UploadIcon, XIcon } from "lucide-react";
 import { usePeopleStore } from "@/service/store/usePeopleStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Content } from "@tiptap/core";
@@ -48,7 +48,8 @@ const UploadShow = ({
   const handleCloseMediaModal = () => {
     setIsOpenMediaModal(false);
   };
-  const { createShows, updateShows, getShowInfo, showInfo } = useShowsStore();
+  const { createShows, updateShows, getShowInfo, showInfo, resetShowInfo } =
+    useShowsStore();
   const [commandValue, setCommandValue] = useState<Venues | null>();
 
   const title = watch("title");
@@ -64,7 +65,7 @@ const UploadShow = ({
     }[]
   >([]);
   const [selectedPeopleByRole, setSelectedPeopleByRole] = useState<any>({}); // State for tracking selected people per role
-  const [isGettingShow, setIsGettingShow] = useState(true);
+  const [isGettingShow, setIsGettingShow] = useState(false);
   const { getRoles, roles } = useRolesStore();
   const { getVenues, venues } = useVenuesStore();
   const { listMedias } = useMediaStore();
@@ -150,17 +151,19 @@ const UploadShow = ({
     if (!roles) {
       fetchRoles();
     }
-    fetchShowInfo();
-  }, [editValue?.id]);
+    if (editValue?.id) {
+      fetchShowInfo();
+    }
+  }, [editValue]);
   useEffect(() => {
     console.log(isGettingShow);
   }, [isGettingShow]);
   const onSubmit = async (data: any) => {
     const result: any = [];
 
-    for (const [roleId, peopleIds] of Object.entries(selectedPeopleByRole)) {
-      (peopleIds as any).forEach((personId: any) => {
-        result.push({ roleId: parseInt(roleId), personId });
+    for (const [roleId, peopleInfo] of Object.entries(selectedPeopleByRole)) {
+      (peopleInfo as any).forEach((item: any) => {
+        result.push({ roleId: parseInt(roleId), personId: item.id });
       });
     }
 
@@ -243,12 +246,23 @@ const UploadShow = ({
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>Open</DrawerTrigger>
         <DrawerContent className="h-full">
-          <DrawerHeader>
-            <DrawerTitle className="text-center">
-              {editValue
-                ? `ویرایش نمایش ${editValue.title}`
-                : "ایجاد نمایش جدید"}
-            </DrawerTitle>
+          <DrawerHeader className="p-0 pb-2 flex justify-center">
+            <div className="max-w-[59rem] w-full flex items-center justify-between">
+              <DrawerTitle className="text-center">
+                {editValue
+                  ? `ویرایش نمایش ${editValue.title}`
+                  : "ایجاد نمایش جدید"}
+              </DrawerTitle>
+              <div className="flex gap-2">
+                <Button type="submit" form="show-form">
+                  {editValue ? "بروزرسانی" : "ایجاد"}
+                  <UploadIcon className="mr-2 h-4 w-4" />
+                </Button>
+                <DrawerClose asChild>
+                  <Button variant="outline">لغو</Button>
+                </DrawerClose>
+              </div>
+            </div>
           </DrawerHeader>
           {!isGettingShow ? (
             <main className="grid overflow-y-auto flex-1 items-start gap-4 sm:px-6 sm:py-0 md:gap-8">
@@ -382,15 +396,6 @@ const UploadShow = ({
                     </Card>
                   </div>
                 </div>
-
-                <DrawerFooter className="mb-2 p-0">
-                  <Button type="submit" form="show-form">
-                    آپلود
-                  </Button>
-                  <DrawerClose asChild>
-                    <Button variant="outline">لغو</Button>
-                  </DrawerClose>
-                </DrawerFooter>
               </div>
             </main>
           ) : (

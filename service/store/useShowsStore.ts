@@ -8,6 +8,7 @@ interface ShowsStateStore {
   showInfo: Show | null;
   isGettingShows: boolean;
   isLoadingShows: boolean;
+  resetShowInfo: () => void;
   getShowsList: () => Promise<void>;
   getShowInfo: (showID: number) => Promise<void>;
   createShows: (model: Show) => Promise<Show>;
@@ -20,6 +21,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
   showInfo: null,
   isGettingShows: false,
   isLoadingShows: false,
+  resetShowInfo: () => set({ showInfo: null }),
   getShowsList: async () => {
     set({ isGettingShows: true });
     try {
