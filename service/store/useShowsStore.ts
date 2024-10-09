@@ -5,9 +5,11 @@ import config from "@/config";
 import axiosInstance from "../axiosInstance";
 interface ShowsStateStore {
   showsList: Show[] | null;
+  showInfo: Show | null;
   isGettingShows: boolean;
   isLoadingShows: boolean;
   getShowsList: () => Promise<void>;
+  getShowInfo: (showID: number) => Promise<void>;
   createShows: (model: Show) => Promise<Show>;
   updateShows: (showsID: number, model: Show) => Promise<void>;
   deleteShows: (peopleID: number) => Promise<void>;
@@ -15,6 +17,7 @@ interface ShowsStateStore {
 
 export const useShowsStore = create<ShowsStateStore>((set) => ({
   showsList: null,
+  showInfo: null,
   isGettingShows: false,
   isLoadingShows: false,
   getShowsList: async () => {
@@ -26,6 +29,14 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
       throw error;
     } finally {
       set({ isGettingShows: false });
+    }
+  },
+  getShowInfo: async (showID) => {
+    try {
+      const { data } = await axiosInstance.get("/Shows/ShowsForEdit/" + showID);
+      set({ showInfo: data });
+    } catch (error) {
+      throw error;
     }
   },
   createShows: async (model) => {
