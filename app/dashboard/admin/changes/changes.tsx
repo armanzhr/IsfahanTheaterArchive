@@ -58,9 +58,7 @@ const Changes = () => {
     }
   };
   useEffect(() => {
-    if (!changesList) {
-      fetchChangesList();
-    }
+    fetchChangesList();
   }, [changesList]);
 
   const handleOpenChanges = (item: ChangesType) => {
