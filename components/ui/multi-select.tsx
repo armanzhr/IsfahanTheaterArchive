@@ -177,7 +177,6 @@ export const MultiSelect = React.forwardRef<
     const { listMedias } = useMediaStore();
     React.useEffect(() => {
       setSelectedValues(defaultValue);
-      console.log(defaultValue);
     }, [defaultValue]);
     const [displayedUsers, setDisplayedUsers] = React.useState<any>([]);
 

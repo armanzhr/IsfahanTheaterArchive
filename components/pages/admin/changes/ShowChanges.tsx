@@ -40,7 +40,36 @@ const ShowChanges = ({
   const { getRoles, roles } = useRolesStore();
   const { getMediasList, listMedias } = useMediaStore();
   const [isGettingShow, setIsGettingShow] = useState(true);
-  const [showChanges, setShowChanges] = useState<Show | null>();
+  const [showChanges, setShowChanges] = useState<{
+    id: number;
+    posterImageId: number;
+    imageIds: number[];
+    title: string;
+    slug: string;
+    description: string;
+    metaDescription: string;
+    showTimes: {
+      id?: number;
+      showId?: number;
+      venueId?: number;
+      startDate?: string;
+      endDate?: string;
+      showTimeStart?: string;
+      isDeleted?: boolean;
+    }[];
+    showPeopleRoles: {
+      id?: number;
+      showId?: number;
+      personId: number;
+      roleId: number;
+      createdAt?: string;
+      isDeleted?: boolean;
+      firstName?: string;
+      lastName?: string;
+      startYear: number;
+      avatarImageId: number;
+    }[];
+  } | null>();
 
   function formatTime(inputTime: string) {
     // اگر ورودی به شکل "HH:MM:SS" است، فقط "HH:MM" را برگردان
@@ -99,7 +128,6 @@ const ShowChanges = ({
       fetchShowInfo();
       setShowChanges(JSON.parse(selectedRequest.changes));
     }
-    console.log(selectedRequest);
   }, [selectedRequest]);
 
   return (
@@ -354,6 +382,51 @@ const ShowChanges = ({
                             </ul>
                           </div>
                         ))}
+                    </ul>
+                  </article>
+                  <Separator />
+                  <article className="grid grid-cols-5 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      گالری:
+                    </Label>
+                    <ul className="font-semibold col-span-2 text-sm ">
+                      <div className="grid grid-cols-3 gap-2">
+                        {showInfo?.imagesIDs
+                          .split(",")
+                          ?.map((image: string) => (
+                            <li key={image} className="flex flex-col">
+                              <img
+                                width={80}
+                                height={80}
+                                alt={showInfo?.title}
+                                className="aspect-square rounded-md object-cover w-full"
+                                src={`${config.fileURL}/${
+                                  listMedias?.find(
+                                    (item) => item.id === Number(image)
+                                  )?.url
+                                }`}
+                              />
+                            </li>
+                          ))}
+                      </div>
+                    </ul>
+                    <ul className="font-semibold col-span-2 text-sm ">
+                      <div className="grid grid-cols-3 gap-2">
+                        {showChanges?.imageIds?.map((image: number) => (
+                          <li key={image} className="flex flex-col">
+                            <img
+                              width={80}
+                              height={80}
+                              alt={showInfo?.title}
+                              className="aspect-square rounded-md object-cover w-full"
+                              src={`${config.fileURL}/${
+                                listMedias?.find((item) => item.id === image)
+                                  ?.url
+                              }`}
+                            />
+                          </li>
+                        ))}
+                      </div>
                     </ul>
                   </article>
                   <Separator />
