@@ -4,6 +4,7 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -38,7 +39,14 @@ const UploadShow = ({
   setOpen: (data: boolean) => void;
   editValue?: Show | null;
 }) => {
-  const { handleSubmit, register, watch, setValue, reset } = useForm();
+  const {
+    handleSubmit,
+    register,
+    watch,
+    setValue,
+    reset,
+    formState: { isValid },
+  } = useForm();
   const [galleryImage, setGalleryImage] = useState<{
     poster: Media | null;
     otherImages: Media[];
@@ -253,22 +261,38 @@ const UploadShow = ({
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>Open</DrawerTrigger>
         <DrawerContent className="h-full">
-          <DrawerHeader className="p-0 pb-2 flex justify-center">
-            <div className="max-w-[59rem] w-full flex items-center justify-between">
-              <DrawerTitle className="text-center">
-                {editValue
-                  ? `ویرایش نمایش ${editValue.title}`
-                  : "ایجاد نمایش جدید"}
-              </DrawerTitle>
-              <div className="flex gap-2">
-                <Button type="submit" form="show-form">
-                  {editValue ? "بروزرسانی" : "ایجاد"}
-                  <UploadIcon className="mr-2 h-4 w-4" />
-                </Button>
-                <DrawerClose asChild>
-                  <Button variant="outline">لغو</Button>
-                </DrawerClose>
+          <DrawerHeader className="p-0 pb-2 ">
+            <div className="flex justify-center flex-col items-center">
+              <div className="max-w-[59rem] w-full flex items-center justify-between">
+                <DrawerTitle className="text-center">
+                  {editValue
+                    ? `ویرایش نمایش ${editValue.title}`
+                    : "ایجاد نمایش جدید"}
+                </DrawerTitle>
+
+                <div className="flex gap-2">
+                  <Button
+                    type="submit"
+                    form="show-form"
+                    disabled={
+                      !isValid ||
+                      showTimes?.length === 0 ||
+                      selectedPeopleByRole?.length === 0 ||
+                      !galleryImage?.poster
+                    }
+                  >
+                    {editValue ? "بروزرسانی" : "ایجاد"}
+                    <UploadIcon className="mr-2 h-4 w-4" />
+                  </Button>
+                  <DrawerClose asChild>
+                    <Button variant="outline">لغو</Button>
+                  </DrawerClose>
+                </div>
               </div>
+              <DrawerDescription className=" max-w-[59rem] ">
+                توجه داشته باشید که موارد *ستاره دار الزامی هستند و نمیتواند
+                خالی باشد
+              </DrawerDescription>
             </div>
           </DrawerHeader>
           {!isGettingShow ? (
@@ -304,7 +328,7 @@ const UploadShow = ({
                       </CardHeader>
                       <CardContent>
                         <div className="grid gap-2">
-                          <p>پوستر نمایش</p>
+                          <p>پوستر نمایش*</p>
                           <Card>
                             <button
                               type="button"

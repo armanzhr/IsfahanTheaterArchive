@@ -14,12 +14,12 @@ import { Show } from "@/utils/types";
 import React from "react";
 
 const page = async () => {
-  let data = await fetch("/Shows");
+  let data = await fetch(config.baseURL + "/Shows");
   let posts: Show[] = await data.json();
 
   return (
     <>
-      {/* <Carousel className="w-full max-w-xs">
+      <Carousel className="w-full max-w-xs">
         <CarouselContent>
           {Array.from({ length: 5 }).map((_, index) => (
             <CarouselItem key={index}>
@@ -41,7 +41,7 @@ const page = async () => {
           <li key={index}>{item.title}</li>
         ))}
       </ul>
-      <SideBySide /> */}
+      <SideBySide />
     </>
   );
 };

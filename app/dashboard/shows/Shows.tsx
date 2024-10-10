@@ -26,6 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import config from "@/config";
+import { useAuthStore } from "@/service/store/useAuthStore";
 import { useMediaStore } from "@/service/store/useMediaStore";
 import { usePeopleStore } from "@/service/store/usePeopleStore";
 import { useRolesStore } from "@/service/store/useRolesStore";
@@ -45,8 +46,9 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const Shows = () => {
-  const { getShowsList, showsList, createShows, resetShowInfo } =
+  const { getShowsList, showsList, createShows, resetShowInfo, copyShow } =
     useShowsStore();
+  const { userInfo } = useAuthStore();
   const { getMediasList, listMedias } = useMediaStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<Show | null>();
@@ -108,15 +110,12 @@ const Shows = () => {
   };
 
   const handleDuplicateShow = async (item: Show) => {
-    const model: Show = {
-      ...item,
-      title: `کپی ${item.title}`,
-      slug: `کپی-${item.slug}`,
-    };
+    console.log(item);
+
     toast.promise(
       async () => {
         try {
-          const data = await createShows(model);
+          const data = await copyShow(item.id);
           setEditValue(data);
           setOpen(true);
         } catch (error) {
@@ -196,13 +195,15 @@ const Shows = () => {
                                 <PencilIcon className="w-3 h-3" />
                                 <p>ویرایش</p>
                               </DropdownMenuItem>
-                              <DropdownMenuItem
-                                className="gap-2"
-                                onClick={() => handleDuplicateShow(show)}
-                              >
-                                <ClipboardIcon className="w-3 h-3" />
-                                <p>کپی</p>
-                              </DropdownMenuItem>
+                              {userInfo?.roles.includes("Admin") && (
+                                <DropdownMenuItem
+                                  className="gap-2"
+                                  onClick={() => handleDuplicateShow(show)}
+                                >
+                                  <ClipboardIcon className="w-3 h-3" />
+                                  <p>کپی</p>
+                                </DropdownMenuItem>
+                              )}
                               <DropdownMenuItem
                                 onClick={() => handleDeleteShow(show)}
                                 className="gap-2"
