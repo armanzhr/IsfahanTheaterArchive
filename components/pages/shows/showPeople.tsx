@@ -35,7 +35,7 @@ const ShowPeople = ({
   return (
     <Card x-chunk="dashboard-07-chunk-3">
       <CardHeader>
-        <CardTitle className="text-lg">عوامل</CardTitle>
+        <CardTitle className="text-lg">عوامل*</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid gap-6">

@@ -154,7 +154,7 @@ const ShowTime = ({
     <>
       <Card x-chunk="dashboard-07-chunk-1">
         <CardHeader>
-          <CardTitle className="text-lg">زمان و محل اجرا</CardTitle>
+          <CardTitle className="text-lg">زمان و محل اجرا*</CardTitle>
         </CardHeader>
         <CardContent>
           {showTimes?.length ? (

@@ -25,23 +25,23 @@ const ShowDetail = ({
         <div className="grid gap-6">
           <div className="grid grid-cols-3 gap-3">
             <div className="grid gap-3 col-span-2">
-              <Label htmlFor="name">نام نمایش</Label>
+              <Label htmlFor="name">نام نمایش*</Label>
               <Input
                 id="name"
                 type="text"
                 className="w-full"
                 placeholder="نام نمایش را وارد نمایید"
-                {...register("title")}
+                {...register("title", { required: true })}
               />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="slug">نامک</Label>
+              <Label htmlFor="slug">نامک*</Label>
               <Input
                 id="slug"
                 type="text"
                 className="w-full"
                 placeholder="نامک را وارد نمایید"
-                {...register("slug")}
+                {...register("slug", { required: true })}
               />
             </div>
           </div>

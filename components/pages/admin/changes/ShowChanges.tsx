@@ -41,6 +41,7 @@ const ShowChanges = ({
   const { getRoles, roles } = useRolesStore();
   const { getMediasList, listMedias } = useMediaStore();
   const [isGettingShow, setIsGettingShow] = useState(true);
+  const [isShowEdit, setIsShowEdit] = useState(false);
   const [showChanges, setShowChanges] = useState<{
     id: number;
     posterImageId: number;
@@ -116,17 +117,22 @@ const ShowChanges = ({
   };
 
   useEffect(() => {
-    if (!listMedias) {
-      fetchMedias();
-    }
-    if (!venues) {
-      fetchVenues();
-    }
-    if (!roles) {
-      fetchRoles();
-    }
     if (selectedRequest) {
-      fetchShowInfo();
+      if (!listMedias) {
+        fetchMedias();
+      }
+      if (!venues) {
+        fetchVenues();
+      }
+      if (!roles) {
+        fetchRoles();
+      }
+      if (selectedRequest?.entityId) {
+        fetchShowInfo();
+        setIsShowEdit(true);
+      } else {
+        setIsShowEdit(false);
+      }
       setShowChanges(JSON.parse(selectedRequest.changes));
     }
   }, [selectedRequest]);
@@ -147,9 +153,12 @@ const ShowChanges = ({
             </div>
             <DrawerDescription className="max-w-[59rem] w-full text-start grid grid-cols-5">
               <span></span>
-              <div className="col-span-2">
-                <Badge>اصلی</Badge>
-              </div>
+              {isShowEdit && (
+                <div className="col-span-2">
+                  <Badge>اصلی</Badge>
+                </div>
+              )}
+
               <div className="col-span-2">
                 <Badge>تغییرات</Badge>
               </div>
@@ -164,19 +173,21 @@ const ShowChanges = ({
                     <Label htmlFor="name" className="text-right">
                       پوستر
                     </Label>
-                    <div className="col-span-2">
-                      <img
-                        width={80}
-                        height={80}
-                        alt={showInfo?.title}
-                        className="aspect-square rounded-md object-cover w-full"
-                        src={`${config.fileURL}/${
-                          listMedias?.find(
-                            (item) => item.id === showInfo?.posterImageId
-                          )?.url
-                        }`}
-                      />
-                    </div>
+                    {isShowEdit && (
+                      <div className="col-span-2">
+                        <img
+                          width={80}
+                          height={80}
+                          alt={showInfo?.title}
+                          className="aspect-square rounded-md object-cover w-full"
+                          src={`${config.fileURL}/${
+                            listMedias?.find(
+                              (item) => item.id === showInfo?.posterImageId
+                            )?.url
+                          }`}
+                        />
+                      </div>
+                    )}
                     <div className="col-span-2">
                       <img
                         width={80}
@@ -196,9 +207,11 @@ const ShowChanges = ({
                     <Label htmlFor="name" className="text-right">
                       نام نمایش:
                     </Label>
-                    <h6 className="font-bold col-span-2 text-sm">
-                      {showInfo?.title}
-                    </h6>
+                    {isShowEdit && (
+                      <h6 className="font-bold col-span-2 text-sm">
+                        {showInfo?.title}
+                      </h6>
+                    )}
                     <h6 className="font-bold col-span-2 text-sm">
                       {showChanges?.title}
                     </h6>
@@ -208,9 +221,11 @@ const ShowChanges = ({
                     <Label htmlFor="name" className="text-right">
                       نامک :
                     </Label>
-                    <h6 className="font-semibold col-span-2 text-sm">
-                      {showInfo?.slug}
-                    </h6>
+                    {isShowEdit && (
+                      <h6 className="font-semibold col-span-2 text-sm">
+                        {showInfo?.slug}
+                      </h6>
+                    )}
                     <h6 className="font-semibold col-span-2 text-sm">
                       {showChanges?.slug}
                     </h6>
@@ -220,15 +235,17 @@ const ShowChanges = ({
                     <Label htmlFor="name" className="text-right">
                       توضیحات :
                     </Label>
-                    <h6 className="font-semibold col-span-2 text-sm">
-                      {showInfo?.description && (
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: showInfo?.description,
-                          }}
-                        />
-                      )}
-                    </h6>
+                    {isShowEdit && (
+                      <h6 className="font-semibold col-span-2 text-sm">
+                        {showInfo?.description && (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: showInfo?.description,
+                            }}
+                          />
+                        )}
+                      </h6>
+                    )}
                     <h6 className="font-semibold col-span-2 text-sm">
                       {showChanges?.description && (
                         <div
@@ -244,28 +261,33 @@ const ShowChanges = ({
                     <Label htmlFor="name" className="text-right">
                       محل های اجرا :
                     </Label>
-                    <ul className="font-semibold col-span-2 text-sm">
-                      {showInfo?.showTimes.map((showTime) => (
-                        <li key={showTime.id} className="flex flex-col">
-                          <span>
-                            {
-                              venues?.filter(
-                                (venue) => venue.id === Number(showTime.venueId)
-                              )[0]?.name
-                            }
-                          </span>
-                          <span className="font-medium text-xs">
-                            (از{" "}
-                            {moment(showTime?.startDate).format(
-                              "jYYYY/jMM/jDD"
-                            )}
-                            تا
-                            {moment(showTime?.endDate).format("jYYYY/jMM/jDD")}
-                            ساعت {formatTime(showTime?.showTimeStart!)})
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                    {isShowEdit && (
+                      <ul className="font-semibold col-span-2 text-sm">
+                        {showInfo?.showTimes.map((showTime) => (
+                          <li key={showTime.id} className="flex flex-col">
+                            <span>
+                              {
+                                venues?.filter(
+                                  (venue) =>
+                                    venue.id === Number(showTime.venueId)
+                                )[0]?.name
+                              }
+                            </span>
+                            <span className="font-medium text-xs">
+                              (از{" "}
+                              {moment(showTime?.startDate).format(
+                                "jYYYY/jMM/jDD"
+                              )}
+                              تا
+                              {moment(showTime?.endDate).format(
+                                "jYYYY/jMM/jDD"
+                              )}
+                              ساعت {formatTime(showTime?.showTimeStart!)})
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                     <ul className="font-semibold col-span-2 text-sm">
                       {showChanges?.showTimes.map((showTime) => (
                         <li key={showTime.id} className="flex flex-col">
@@ -294,56 +316,58 @@ const ShowChanges = ({
                     <Label htmlFor="name" className="text-right">
                       عوامل:
                     </Label>
-                    <ul className="font-semibold col-span-2 text-sm">
-                      {roles
-                        ?.filter((role) =>
-                          showInfo?.showPeopleRoles.some(
-                            (person) => person.roleId === role.id
+                    {isShowEdit && (
+                      <ul className="font-semibold col-span-2 text-sm">
+                        {roles
+                          ?.filter((role) =>
+                            showInfo?.showPeopleRoles.some(
+                              (person) => person.roleId === role.id
+                            )
                           )
-                        )
-                        ?.map((item) => (
-                          <div className="mb-2" key={item.id}>
-                            <h3 className="text-sm font-semibold">
-                              {item.name}
-                            </h3>
-                            <ul>
-                              {showInfo?.showPeopleRoles
-                                .filter((person) => person.roleId === item.id)
-                                .map((person) => (
-                                  <li key={person.id}>
-                                    <Badge variant="outline" className="m-1">
-                                      <div className="flex w-full items-center gap-2">
-                                        <Avatar className=" h-7 w-7 sm:flex">
-                                          <AvatarImage
-                                            src={`${config.fileURL}/${
-                                              listMedias?.find(
-                                                (item) =>
-                                                  item.id ===
-                                                  person?.avatarImageId
-                                              )?.url
-                                            }`}
-                                            alt="Avatar"
-                                          />
-                                          <AvatarFallback>
-                                            <UserIcon className="opacity-50 h-5 w-5" />
-                                          </AvatarFallback>
-                                        </Avatar>
-                                        {`${person?.firstName} ${person?.lastName}`}
-                                        {person?.startYear && (
-                                          <p className=" text-gray-500 text-xs">
-                                            {person?.startYear
-                                              ?.toString()
-                                              .slice(-2)}{" "}
-                                          </p>
-                                        )}
-                                      </div>
-                                    </Badge>
-                                  </li>
-                                ))}
-                            </ul>
-                          </div>
-                        ))}
-                    </ul>
+                          ?.map((item) => (
+                            <div className="mb-2" key={item.id}>
+                              <h3 className="text-sm font-semibold">
+                                {item.name}
+                              </h3>
+                              <ul>
+                                {showInfo?.showPeopleRoles
+                                  .filter((person) => person.roleId === item.id)
+                                  .map((person) => (
+                                    <li key={person.id}>
+                                      <Badge variant="outline" className="m-1">
+                                        <div className="flex w-full items-center gap-2">
+                                          <Avatar className=" h-7 w-7 sm:flex">
+                                            <AvatarImage
+                                              src={`${config.fileURL}/${
+                                                listMedias?.find(
+                                                  (item) =>
+                                                    item.id ===
+                                                    person?.avatarImageId
+                                                )?.url
+                                              }`}
+                                              alt="Avatar"
+                                            />
+                                            <AvatarFallback>
+                                              <UserIcon className="opacity-50 h-5 w-5" />
+                                            </AvatarFallback>
+                                          </Avatar>
+                                          {`${person?.firstName} ${person?.lastName}`}
+                                          {person?.startYear && (
+                                            <p className=" text-gray-500 text-xs">
+                                              {person?.startYear
+                                                ?.toString()
+                                                .slice(-2)}{" "}
+                                            </p>
+                                          )}
+                                        </div>
+                                      </Badge>
+                                    </li>
+                                  ))}
+                              </ul>
+                            </div>
+                          ))}
+                      </ul>
+                    )}
                     <ul className="font-semibold col-span-2 text-sm">
                       {roles
                         ?.filter((role) =>
@@ -400,27 +424,29 @@ const ShowChanges = ({
                     <Label htmlFor="name" className="text-right">
                       گالری:
                     </Label>
-                    <ul className="font-semibold col-span-2 text-sm ">
-                      <div className="grid grid-cols-3 gap-2">
-                        {showInfo?.imagesIDs
-                          .split(",")
-                          ?.map((image: string) => (
-                            <li key={image} className="flex flex-col">
-                              <img
-                                width={80}
-                                height={80}
-                                alt={showInfo?.title}
-                                className="aspect-square rounded-md object-cover w-full"
-                                src={`${config.fileURL}/${
-                                  listMedias?.find(
-                                    (item) => item.id === Number(image)
-                                  )?.url
-                                }`}
-                              />
-                            </li>
-                          ))}
-                      </div>
-                    </ul>
+                    {isShowEdit && (
+                      <ul className="font-semibold col-span-2 text-sm ">
+                        <div className="grid grid-cols-3 gap-2">
+                          {showInfo?.imagesIDs
+                            .split(",")
+                            ?.map((image: string) => (
+                              <li key={image} className="flex flex-col">
+                                <img
+                                  width={80}
+                                  height={80}
+                                  alt={showInfo?.title}
+                                  className="aspect-square rounded-md object-cover w-full"
+                                  src={`${config.fileURL}/${
+                                    listMedias?.find(
+                                      (item) => item.id === Number(image)
+                                    )?.url
+                                  }`}
+                                />
+                              </li>
+                            ))}
+                        </div>
+                      </ul>
+                    )}
                     <ul className="font-semibold col-span-2 text-sm ">
                       <div className="grid grid-cols-3 gap-2">
                         {showChanges?.imageIds?.map((image: number) => (

@@ -14,6 +14,7 @@ interface ShowsStateStore {
   createShows: (model: Show) => Promise<Show>;
   updateShows: (showsID: number, model: Show) => Promise<void>;
   deleteShows: (peopleID: number) => Promise<void>;
+  copyShow: (showID: number) => any;
 }
 
 export const useShowsStore = create<ShowsStateStore>((set) => ({
@@ -22,6 +23,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
   isGettingShows: false,
   isLoadingShows: false,
   resetShowInfo: () => set({ showInfo: null }),
+
   getShowsList: async () => {
     set({ isGettingShows: true });
     try {
@@ -73,6 +75,22 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
       throw error;
     } finally {
       set({ isLoadingShows: false });
+    }
+  },
+  copyShow: async (showID) => {
+    try {
+      const { data: showData } = await axiosInstance.get(
+        "/Shows/ShowsForEdit/" + showID
+      );
+      const model: Show = {
+        ...showData,
+        title: `کپی ${showData.title}`,
+        slug: `کپی-${showData.slug}`,
+      };
+      const res = await useShowsStore.getState().createShows(model);
+      return res;
+    } catch (error) {
+      throw error;
     }
   },
 }));
