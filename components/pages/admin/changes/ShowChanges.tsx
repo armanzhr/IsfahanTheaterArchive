@@ -1,3 +1,5 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -13,29 +15,47 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import config from "@/config";
 import { useMediaStore } from "@/service/store/useMediaStore";
+import { useRolesStore } from "@/service/store/useRolesStore";
 
 import { useShowsStore } from "@/service/store/useShowsStore";
-import { Show } from "@/utils/types";
+import { useVenuesStore } from "@/service/store/useVenuesStore";
+import { cn } from "@/utils/cn";
+import { Changes, Show } from "@/utils/types";
+import { UserIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+var moment = require("moment-jalaali");
 
 const ShowChanges = ({
   open,
   setOpen,
-  selectedShow,
+  selectedRequest,
 }: {
   open: boolean;
   setOpen: (data: boolean) => void;
-  selectedShow?: Show | null;
+  selectedRequest?: Changes | null;
 }) => {
   const { getShowInfo, showInfo } = useShowsStore();
+  const { getVenues, venues } = useVenuesStore();
+  const { getRoles, roles } = useRolesStore();
   const { getMediasList, listMedias } = useMediaStore();
   const [isGettingShow, setIsGettingShow] = useState(true);
+  const [showChanges, setShowChanges] = useState<Show | null>();
+
+  function formatTime(inputTime: string) {
+    // اگر ورودی به شکل "HH:MM:SS" است، فقط "HH:MM" را برگردان
+    if (inputTime.length === 8) {
+      return inputTime.slice(0, 5);
+    }
+    // اگر ورودی به شکل "HH:MM" است، همان را برگردان
+    return inputTime;
+  }
+
   const fetchShowInfo = async () => {
     setIsGettingShow(true);
 
     try {
-      const res = await getShowInfo(selectedShow?.id!);
+      const res = await getShowInfo(selectedRequest?.entityId!);
       setIsGettingShow(false);
     } catch (error) {
       toast.error("خطا در دریافت اطلاعات نمایش");
@@ -50,13 +70,38 @@ const ShowChanges = ({
       toast.error("خطا در دریافت لیست رسانه ها");
     }
   };
+  const fetchRoles = async () => {
+    try {
+      const res = await getRoles();
+    } catch (error) {
+      toast.error("خطا در دریافت لیست نقش ها");
+    }
+  };
+  const fetchVenues = async () => {
+    try {
+      const res = await getVenues();
+    } catch (error) {
+      toast.error("خطا در دریافت لیست محل های اجرا");
+    }
+  };
 
   useEffect(() => {
-    if (listMedias) {
+    if (!listMedias) {
       fetchMedias();
     }
-    fetchShowInfo();
-  }, [selectedShow]);
+    if (!venues) {
+      fetchVenues();
+    }
+    if (!roles) {
+      fetchRoles();
+    }
+    if (selectedRequest) {
+      fetchShowInfo();
+      setShowChanges(JSON.parse(selectedRequest.changes));
+    }
+    console.log(selectedRequest);
+  }, [selectedRequest]);
+
   return (
     <>
       <Drawer open={open} onOpenChange={setOpen}>
@@ -74,90 +119,244 @@ const ShowChanges = ({
 
           <main className="grid overflow-y-auto flex-1 items-start gap-4 sm:px-6 sm:py-0 md:gap-8">
             <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
-              <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
-                <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-5 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                        پوستر
-                      </Label>
-                      <div className="col-span-2">
-                        <img
-                          width={80}
-                          height={80}
-                          alt={showInfo?.title}
-                          className="aspect-square rounded-md object-cover w-full"
-                          src={`${config.fileURL}/${
-                            listMedias?.find(
-                              (item) => item.id === showInfo?.posterImageId
-                            )?.url
-                          }`}
+              <div className="grid gap-4 md:grid-cols-[1fr_250px]">
+                <div className="grid auto-rows-max items-start gap-4 lg:col-span-3 lg:gap-8">
+                  <article className="grid grid-cols-5 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      پوستر
+                    </Label>
+                    <div className="col-span-2">
+                      <img
+                        width={80}
+                        height={80}
+                        alt={showInfo?.title}
+                        className="aspect-square rounded-md object-cover w-full"
+                        src={`${config.fileURL}/${
+                          listMedias?.find(
+                            (item) => item.id === showInfo?.posterImageId
+                          )?.url
+                        }`}
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <img
+                        width={80}
+                        height={80}
+                        alt={showInfo?.title}
+                        className="aspect-square rounded-md object-cover w-full"
+                        src={`${config.fileURL}/${
+                          listMedias?.find(
+                            (item) => item.id === showChanges?.posterImageId
+                          )?.url
+                        }`}
+                      />
+                    </div>
+                  </article>
+                  <Separator />
+                  <article className="grid grid-cols-5 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      نام نمایش:
+                    </Label>
+                    <h6 className="font-bold col-span-2 text-sm">
+                      {showInfo?.title}
+                    </h6>
+                    <h6 className="font-bold col-span-2 text-sm">
+                      {showChanges?.title}
+                    </h6>
+                  </article>
+                  <Separator />
+                  <article className="grid grid-cols-5 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      نامک :
+                    </Label>
+                    <h6 className="font-semibold col-span-2 text-sm">
+                      {showInfo?.slug}
+                    </h6>
+                    <h6 className="font-semibold col-span-2 text-sm">
+                      {showChanges?.slug}
+                    </h6>
+                  </article>
+                  <Separator />
+                  <article className="grid grid-cols-5 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      توضیحات :
+                    </Label>
+                    <h6 className="font-semibold col-span-2 text-sm">
+                      {showInfo?.description && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: showInfo?.description,
+                          }}
                         />
-                      </div>
-                      <div className="col-span-2">
-                        <img
-                          width={80}
-                          height={80}
-                          alt={showInfo?.title}
-                          className="aspect-square rounded-md object-cover w-full"
-                          src={`${config.fileURL}/${
-                            listMedias?.find(
-                              (item) => item.id === showInfo?.posterImageId
-                            )?.url
-                          }`}
+                      )}
+                    </h6>
+                    <h6 className="font-semibold col-span-2 text-sm">
+                      {showChanges?.description && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: showChanges?.description,
+                          }}
                         />
-                      </div>
-                    </div>
-                    <Separator />
-                    <div className="grid grid-cols-5 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                        نام نمایش:
-                      </Label>
-                      <h6 className="font-bold col-span-2 text-sm">
-                        {showInfo?.title}
-                      </h6>
-                      <h6 className="font-bold col-span-2 text-sm">
-                        {showInfo?.title}
-                      </h6>
-                    </div>
-                    <Separator />
-                    <div className="grid grid-cols-5 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                        نامک :
-                      </Label>
-                      <h6 className="font-semibold col-span-2 text-sm">
-                        {showInfo?.slug}
-                      </h6>
-                      <h6 className="font-semibold col-span-2 text-sm">
-                        {showInfo?.slug}
-                      </h6>
-                    </div>
-                    <Separator />
-                    <div className="grid grid-cols-5 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                        توضیحات :
-                      </Label>
-                      <h6 className="font-semibold col-span-2 text-sm">
-                        {showInfo?.description}
-                      </h6>
-                      <h6 className="font-semibold col-span-2 text-sm">
-                        {showInfo?.description}
-                      </h6>
-                    </div>
-                    <Separator />
-                    <div className="grid grid-cols-5 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                        محل های اجرا :
-                      </Label>
-                      <h6 className="font-semibold col-span-2 text-sm">
-                        {showInfo?.description}
-                      </h6>
-                      <h6 className="font-semibold col-span-2 text-sm">
-                        {showInfo?.description}
-                      </h6>
-                    </div>
-                    <Separator />
-                  </div>
+                      )}
+                    </h6>
+                  </article>
+                  <Separator />
+                  <article className="grid grid-cols-5 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      محل های اجرا :
+                    </Label>
+                    <ul className="font-semibold col-span-2 text-sm">
+                      {showInfo?.showTimes.map((showTime) => (
+                        <li key={showTime.id} className="flex flex-col">
+                          <span>
+                            {
+                              venues?.filter(
+                                (venue) => venue.id === Number(showTime.venueId)
+                              )[0]?.name
+                            }
+                          </span>
+                          <span className="font-medium text-xs">
+                            (از{" "}
+                            {moment(showTime?.startDate).format(
+                              "jYYYY/jMM/jDD"
+                            )}
+                            تا
+                            {moment(showTime?.endDate).format("jYYYY/jMM/jDD")}
+                            ساعت {formatTime(showTime?.showTimeStart!)})
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                    <ul className="font-semibold col-span-2 text-sm">
+                      {showChanges?.showTimes.map((showTime) => (
+                        <li key={showTime.id} className="flex flex-col">
+                          <span>
+                            {
+                              venues?.filter(
+                                (venue) => venue.id === Number(showTime.venueId)
+                              )[0]?.name
+                            }
+                          </span>
+                          <span className="font-medium text-xs">
+                            (از{" "}
+                            {moment(showTime?.startDate).format(
+                              "jYYYY/jMM/jDD"
+                            )}
+                            تا
+                            {moment(showTime?.endDate).format("jYYYY/jMM/jDD")}
+                            ساعت {formatTime(showTime?.showTimeStart!)})
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                  <Separator />
+                  <article className="grid grid-cols-5 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      عوامل:
+                    </Label>
+                    <ul className="font-semibold col-span-2 text-sm">
+                      {roles
+                        ?.filter((role) =>
+                          showInfo?.showPeopleRoles.some(
+                            (person) => person.roleId === role.id
+                          )
+                        )
+                        ?.map((item) => (
+                          <div className="mb-2" key={item.id}>
+                            <h3 className="text-sm font-semibold">
+                              {item.name}
+                            </h3>
+                            <ul>
+                              {showInfo?.showPeopleRoles
+                                .filter((person) => person.roleId === item.id)
+                                .map((person) => (
+                                  <li key={person.id}>
+                                    <Badge variant="outline" className="m-1">
+                                      <div className="flex w-full items-center gap-2">
+                                        <Avatar className=" h-7 w-7 sm:flex">
+                                          <AvatarImage
+                                            src={`${config.fileURL}/${
+                                              listMedias?.find(
+                                                (item) =>
+                                                  item.id ===
+                                                  person?.avatarImageId
+                                              )?.url
+                                            }`}
+                                            alt="Avatar"
+                                          />
+                                          <AvatarFallback>
+                                            <UserIcon className="opacity-50 h-5 w-5" />
+                                          </AvatarFallback>
+                                        </Avatar>
+                                        {`${person?.firstName} ${person?.lastName}`}
+                                        {person?.startYear && (
+                                          <p className=" text-gray-500 text-xs">
+                                            {person?.startYear
+                                              ?.toString()
+                                              .slice(-2)}{" "}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </Badge>
+                                  </li>
+                                ))}
+                            </ul>
+                          </div>
+                        ))}
+                    </ul>
+                    <ul className="font-semibold col-span-2 text-sm">
+                      {roles
+                        ?.filter((role) =>
+                          showChanges?.showPeopleRoles.some(
+                            (person) => person.roleId === role.id
+                          )
+                        )
+                        ?.map((item) => (
+                          <div className="mb-2" key={item.id}>
+                            <h3 className="text-sm font-semibold">
+                              {item.name}
+                            </h3>
+                            <ul>
+                              {showChanges?.showPeopleRoles
+                                .filter((person) => person.roleId === item.id)
+                                .map((person) => (
+                                  <li key={person.id}>
+                                    <Badge variant="outline" className="m-1">
+                                      <div className="flex w-full items-center gap-2">
+                                        <Avatar className=" h-7 w-7 sm:flex">
+                                          <AvatarImage
+                                            src={`${config.fileURL}/${
+                                              listMedias?.find(
+                                                (item) =>
+                                                  item.id ===
+                                                  person?.avatarImageId
+                                              )?.url
+                                            }`}
+                                            alt="Avatar"
+                                          />
+                                          <AvatarFallback>
+                                            <UserIcon className="opacity-50 h-5 w-5" />
+                                          </AvatarFallback>
+                                        </Avatar>
+                                        {`${person?.firstName} ${person?.lastName}`}
+                                        {person?.startYear && (
+                                          <p className=" text-gray-500 text-xs">
+                                            {person?.startYear
+                                              ?.toString()
+                                              .slice(-2)}{" "}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </Badge>
+                                  </li>
+                                ))}
+                            </ul>
+                          </div>
+                        ))}
+                    </ul>
+                  </article>
+                  <Separator />
                 </div>
               </div>
             </div>

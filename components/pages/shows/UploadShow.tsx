@@ -166,7 +166,7 @@ const UploadShow = ({
         result.push({ roleId: parseInt(roleId), personId: item.personId });
       });
     }
-
+    console.log(result);
     const model = {
       posterImageId: galleryImage.poster?.id,
       title: data.title,

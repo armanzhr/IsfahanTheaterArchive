@@ -45,7 +45,8 @@ export interface Show {
     id?: number;
     showId?: number;
     venueId?: number;
-    showDate?: string;
+    startDate?: string;
+    endDate?: string;
     showTimeStart?: string;
     isDeleted?: boolean;
   }[];
@@ -56,6 +57,10 @@ export interface Show {
     roleId: number;
     createdAt?: string;
     isDeleted?: boolean;
+    firstName?: string;
+    lastName?: string;
+    startYear: number;
+    avatarImageId: number;
   }[];
 }
 export interface SelectedFile {

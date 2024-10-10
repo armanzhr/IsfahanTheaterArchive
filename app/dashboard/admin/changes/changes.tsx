@@ -46,9 +46,7 @@ const Changes = () => {
   const { changesList, getChangesList } = useChangesStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<UsersType | null>();
-  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-  const [selectedUser, setSelectedUser] = useState<UsersType>();
-  const [selectedShow, setSelectedShow] = useState<Show | null>();
+  const [selectedRequest, setSelectedRequest] = useState<ChangesType | null>();
 
   const fetchChangesList = async () => {
     try {
@@ -64,7 +62,7 @@ const Changes = () => {
   }, [changesList]);
 
   const handleOpenChanges = (item: ChangesType) => {
-    setSelectedShow(JSON.parse(item.changes));
+    setSelectedRequest(item);
     setOpen(true);
   };
   return (
@@ -207,8 +205,11 @@ const Changes = () => {
           </ScrollArea>
         </CardContent>
       </Card>
-      <ShowChanges selectedShow={selectedShow} setOpen={setOpen} open={open} />
-      <UploadUser open={open} setOpen={setOpen} editValue={editValue} />
+      <ShowChanges
+        selectedRequest={selectedRequest}
+        setOpen={setOpen}
+        open={open}
+      />
     </main>
   );
 };

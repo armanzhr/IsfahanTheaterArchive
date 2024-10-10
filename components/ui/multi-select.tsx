@@ -95,6 +95,8 @@ interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
       roleId?: number;
       firstName?: string;
       lastName?: string;
+      avatarImageId?: number;
+      startYear: number;
     }[];
   };
 
@@ -165,6 +167,8 @@ export const MultiSelect = React.forwardRef<
         roleId?: number;
         firstName?: string;
         lastName?: string;
+        avatarImageId?: number;
+        startYear: number;
       }[];
     }>(defaultValue);
     const [newOption, setNewOption] = React.useState(false);
@@ -182,6 +186,8 @@ export const MultiSelect = React.forwardRef<
       roleId?: number;
       firstName?: string;
       lastName?: string;
+      avatarImageId?: number;
+      startYear: number;
     }) => {
       if (!newOption) {
         const newSelectedValues = selectedValues.people.includes(value)
