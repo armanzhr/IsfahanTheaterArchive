@@ -163,7 +163,7 @@ const UploadShow = ({
 
     for (const [roleId, peopleInfo] of Object.entries(selectedPeopleByRole)) {
       (peopleInfo as any).forEach((item: any) => {
-        result.push({ roleId: parseInt(roleId), personId: item.id });
+        result.push({ roleId: parseInt(roleId), personId: item.personId });
       });
     }
 

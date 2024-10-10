@@ -14,13 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import {
   CircleCheck,
   CirclePlusIcon,
@@ -35,7 +29,11 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import DeleteVenues from "@/components/pages/venues/DeleteVenues";
 import { useAuthStore } from "@/service/store/useAuthStore";
-import { Show, Users as UsersType } from "@/utils/types";
+import {
+  Changes as ChangesType,
+  Show,
+  Users as UsersType,
+} from "@/utils/types";
 import { cn } from "@/utils/cn";
 import { Skeleton } from "@/components/ui/skeleton";
 import UploadUser from "@/components/pages/admin/users/UploadUser";
@@ -50,13 +48,13 @@ const Changes = () => {
   const [editValue, setEditValue] = useState<UsersType | null>();
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<UsersType>();
-  const [filteredItems, setFilteredItems] = useState<UsersType[] | null>();
+  const [selectedShow, setSelectedShow] = useState<Show | null>();
 
   const fetchChangesList = async () => {
     try {
       const res = await getChangesList();
     } catch (error) {
-      toast.error("خطا در دریافت کاربران");
+      toast.error("خطا در دریافت لیست تغییرات");
     }
   };
   useEffect(() => {
@@ -65,13 +63,9 @@ const Changes = () => {
     }
   }, [changesList]);
 
-  const handleEditUser = (item: UsersType) => {
-    setEditValue(item);
+  const handleOpenChanges = (item: ChangesType) => {
+    setSelectedShow(JSON.parse(item.changes));
     setOpen(true);
-  };
-  const handleDeleteUser = (item: UsersType) => {
-    setSelectedUser(item);
-    setOpenDeleteModal(true);
   };
   return (
     <main className="flex flex-col gap-4 p-1 lg:gap-6">
@@ -158,7 +152,15 @@ const Changes = () => {
                             )}
                           </TableCell>
                           <TableCell className="text-sm">
-                            <ShowChanges />
+                            <Button
+                              onClick={() => handleOpenChanges(change)}
+                              variant="outline"
+                              size="sm"
+                              className="h-7"
+                            >
+                              <CircleCheck className="w-4 h-4 ml-1" />
+                              <span className="text-xs">بررسی تغییرات</span>
+                            </Button>
                           </TableCell>
                           <TableCell className="text-sm">
                             <div className="flex gap-1">
@@ -205,6 +207,7 @@ const Changes = () => {
           </ScrollArea>
         </CardContent>
       </Card>
+      <ShowChanges selectedShow={selectedShow} setOpen={setOpen} open={open} />
       <UploadUser open={open} setOpen={setOpen} editValue={editValue} />
     </main>
   );
