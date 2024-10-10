@@ -18,9 +18,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export function UserProfile() {
-  const { userInfo } = useAuthStore();
+  const { userInfo, resetUserInfo } = useAuthStore();
   const router = useRouter();
   const handleLogout = () => {
+    resetUserInfo();
     deleteCookie("auth_token");
     router.push("/auth/login");
   };

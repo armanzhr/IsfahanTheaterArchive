@@ -19,7 +19,7 @@ const page = async () => {
 
   return (
     <>
-      <Carousel className="w-full max-w-xs">
+      {/* <Carousel className="w-full max-w-xs">
         <CarouselContent>
           {Array.from({ length: 5 }).map((_, index) => (
             <CarouselItem key={index}>
@@ -41,7 +41,7 @@ const page = async () => {
           <li key={index}>{item.title}</li>
         ))}
       </ul>
-      <SideBySide />
+      <SideBySide /> */}
     </>
   );
 };

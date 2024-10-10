@@ -1,6 +1,7 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
+import { useAuthStore } from "@/service/store/useAuthStore";
 import { manageItems, menuItems } from "@/utils/menu-items";
 import clsx from "clsx";
 import {
@@ -10,15 +11,32 @@ import {
   MapPin,
   Settings,
   Theater,
+  UserCog,
   UsersIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function DashboardSideBar() {
+  const { userInfo } = useAuthStore();
   const pathname = usePathname();
   const items = menuItems();
   const manage = manageItems();
+  const [manageMenus, setManageMenues] = useState(manage);
+  useEffect(() => {
+    if (userInfo?.roles.includes("Admin")) {
+      setManageMenues((prev) => [
+        ...prev,
+        {
+          name: "مدیریت کاربران",
+          pathname: "/dashboard/admin/users",
+          icon: <UserCog className="h-3 w-3" />,
+          row: "second",
+        },
+      ]);
+    }
+  }, [userInfo]);
   return (
     <div className="lg:block hidden border-l h-full">
       <div className="flex h-full max-h-screen flex-col gap-2 ">
@@ -48,7 +66,7 @@ export default function DashboardSideBar() {
               </Link>
             ))}
             <Separator />
-            {manage.map((item) => (
+            {manageMenus.map((item) => (
               <Link
                 key={item.name}
                 className={clsx(

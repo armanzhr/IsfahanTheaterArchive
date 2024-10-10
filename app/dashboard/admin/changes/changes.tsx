@@ -40,10 +40,12 @@ import UploadUser from "@/components/pages/admin/users/UploadUser";
 import UserStatus from "@/components/pages/admin/users/userStatus";
 import { useChangesStore } from "@/service/store/useChangesStore";
 import ShowChanges from "@/components/pages/admin/changes/ShowChanges";
+import SetChangeStatus from "@/components/pages/admin/changes/SetChangeStatus";
 var moment = require("moment-jalaali");
 
 const Changes = () => {
   const { changesList, getChangesList } = useChangesStore();
+  const { userInfo } = useAuthStore();
   const [open, setOpen] = useState(false);
   const [editValue, setEditValue] = useState<UsersType | null>();
   const [selectedRequest, setSelectedRequest] = useState<ChangesType | null>();
@@ -84,7 +86,9 @@ const Changes = () => {
                   <TableHead className="text-start">وضعیت</TableHead>
                   <TableHead className="text-start">زمان درخواست</TableHead>
                   <TableHead className="text-start">تغییرات</TableHead>
-                  <TableHead className="text-start">تعیین وضعیت</TableHead>
+                  {userInfo?.roles.includes("Admin") && (
+                    <TableHead className="text-start">تعیین وضعیت</TableHead>
+                  )}
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -145,9 +149,10 @@ const Changes = () => {
                             </Badge>
                           </TableCell>
                           <TableCell className="text-sm">
-                            {moment(change.createdAt).format(
-                              "jYYYY/jMM/jDD - ساعت : HH:mm"
-                            )}
+                            {moment(change.createdAt)
+                              .add(3, "hours")
+                              .add(30, "minutes")
+                              .format("jYYYY/jMM/jDD - ساعت : HH:mm")}
                           </TableCell>
                           <TableCell className="text-sm">
                             <Button
@@ -159,26 +164,14 @@ const Changes = () => {
                               <span className="text-xs">بررسی تغییرات</span>
                             </Button>
                           </TableCell>
-                          <TableCell className="text-sm">
-                            <div className="flex gap-1">
-                              <Button
-                                variant="default"
-                                size="sm"
-                                className="h-7"
-                              >
-                                <CircleCheck className="w-4 h-4 ml-1" />
-                                <span className="text-xs">پذیرفتن</span>
-                              </Button>
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                className="h-7"
-                              >
-                                <CircleX className="w-4 h-4 ml-1" />
-                                رد کردن
-                              </Button>
-                            </div>
-                          </TableCell>
+                          {userInfo?.roles.includes("Admin") &&
+                          change.status === 0 ? (
+                            <TableCell className="text-sm">
+                              <SetChangeStatus requestID={change.id} />
+                            </TableCell>
+                          ) : (
+                            <span></span>
+                          )}
                         </TableRow>
                       );
                     })

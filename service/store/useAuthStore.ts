@@ -23,6 +23,7 @@ interface AuthStore {
     lastName: string;
     roles: string[];
   } | null;
+  resetUserInfo: () => void;
   getUserInfo: () => Promise<void>;
   isGettingUsers: Boolean;
   users: Users[] | null;
@@ -62,6 +63,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   preLoading: true,
   setPreLoading: (status) => set({ preLoading: status }),
   userInfo: null,
+  resetUserInfo: () => set({ userInfo: null }),
   getUserInfo: async () => {
     try {
       const { data } = await axiosInstance.get("/Auth/me");

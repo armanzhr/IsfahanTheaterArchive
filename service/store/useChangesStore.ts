@@ -14,8 +14,8 @@ interface ChangesStore {
   getChangesList: () => Promise<void>;
   showChanges: Changes | null;
   getShowChanges: (showID: number) => Promise<void>;
-  approveChange: (showID: number) => Promise<void>;
-  declineChange: (showID: number) => Promise<void>;
+  approveChange: (reqID: number) => Promise<void>;
+  declineChange: (reqID: number) => Promise<void>;
 }
 export const useChangesStore = create<ChangesStore>((set) => ({
   preLoading: true,
@@ -43,10 +43,10 @@ export const useChangesStore = create<ChangesStore>((set) => ({
       throw error;
     }
   },
-  approveChange: async (showID) => {
+  approveChange: async (reqID) => {
     try {
       const { data } = await axiosInstance.post(
-        "/ChangeRequest/Approve/" + showID,
+        "/ChangeRequest/Approve/" + reqID,
         null
       );
       await useChangesStore.getState().getChangesList();
@@ -54,10 +54,10 @@ export const useChangesStore = create<ChangesStore>((set) => ({
       throw error;
     }
   },
-  declineChange: async (showID) => {
+  declineChange: async (reqID) => {
     try {
       const { data } = await axiosInstance.post(
-        "/ChangeRequest/Decline/" + showID,
+        "/ChangeRequest/Decline/" + reqID,
         null
       );
       await useChangesStore.getState().getChangesList();
