@@ -36,7 +36,7 @@ export interface MediaModel {
 export interface Show {
   id: number;
   posterImageId: number;
-  imagesIDs: number[];
+  imagesIDs: number[] | any;
   title: string;
   slug: string;
   description: string;

@@ -156,7 +156,6 @@ const Changes = () => {
                               size="sm"
                               className="h-7"
                             >
-                              <CircleCheck className="w-4 h-4 ml-1" />
                               <span className="text-xs">بررسی تغییرات</span>
                             </Button>
                           </TableCell>

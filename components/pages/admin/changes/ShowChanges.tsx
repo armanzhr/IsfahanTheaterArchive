@@ -6,6 +6,7 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -134,15 +135,25 @@ const ShowChanges = ({
     <>
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerContent className="h-full">
-          <DrawerHeader className="p-0 pb-2 flex justify-center">
+          <DrawerHeader className="p-0 pb-2 flex flex-col items-center justify-center">
             <div className="max-w-[59rem] w-full flex items-center justify-between">
               <DrawerTitle className="text-center">مشاهده تغییرات</DrawerTitle>
+
               <div className="flex gap-2">
                 <DrawerClose asChild>
                   <Button variant="outline">لغو</Button>
                 </DrawerClose>
               </div>
             </div>
+            <DrawerDescription className="max-w-[59rem] w-full text-start grid grid-cols-5">
+              <span></span>
+              <div className="col-span-2">
+                <Badge>اصلی</Badge>
+              </div>
+              <div className="col-span-2">
+                <Badge>تغییرات</Badge>
+              </div>
+            </DrawerDescription>
           </DrawerHeader>
 
           <main className="grid overflow-y-auto flex-1 items-start gap-4 sm:px-6 sm:py-0 md:gap-8">
