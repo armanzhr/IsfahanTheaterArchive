@@ -140,7 +140,7 @@ const ShowChanges = ({
   return (
     <>
       <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerContent className="h-full">
+        <DrawerContent className="h-full px-4">
           <DrawerHeader className="p-0 pb-2 flex flex-col items-center justify-center">
             <div className="max-w-[59rem] w-full flex items-center justify-between">
               <DrawerTitle className="text-center">مشاهده تغییرات</DrawerTitle>

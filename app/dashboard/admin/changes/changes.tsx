@@ -36,8 +36,6 @@ import {
 } from "@/utils/types";
 import { cn } from "@/utils/cn";
 import { Skeleton } from "@/components/ui/skeleton";
-import UploadUser from "@/components/pages/admin/users/UploadUser";
-import UserStatus from "@/components/pages/admin/users/userStatus";
 import { useChangesStore } from "@/service/store/useChangesStore";
 import ShowChanges from "@/components/pages/admin/changes/ShowChanges";
 import SetChangeStatus from "@/components/pages/admin/changes/SetChangeStatus";
@@ -59,7 +57,7 @@ const Changes = () => {
   };
   useEffect(() => {
     fetchChangesList();
-  }, [changesList]);
+  }, []);
 
   const handleOpenChanges = (item: ChangesType) => {
     setSelectedRequest(item);
@@ -117,7 +115,7 @@ const Changes = () => {
                             </span>
                           </TableCell>
 
-                          <TableCell className=" hidden sm:table-cell">
+                          <TableCell>
                             <Badge
                               className={cn(
                                 change.status === 0
