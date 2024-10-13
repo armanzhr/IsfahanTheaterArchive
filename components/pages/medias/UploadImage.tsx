@@ -176,6 +176,7 @@ const UploadImage = () => {
                     <CardContent className="flex aspect-square items-center justify-center p-0 ">
                       <div className="relative rounded-md">
                         <img
+                          loading="lazy"
                           alt="Product image"
                           className="aspect-square rounded-md object-cover w-full h-full "
                           height="300"

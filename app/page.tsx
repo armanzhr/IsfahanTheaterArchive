@@ -28,6 +28,7 @@ const page = () => {
         </div>
         <div className="hidden relative bg-muted lg:block">
           <img
+            loading="lazy"
             src="/theater.jpg"
             alt="Image"
             className="h-full w-full object-cover max-h-[100dvh] aspect-square dark:brightness-[0.2] dark:grayscale"

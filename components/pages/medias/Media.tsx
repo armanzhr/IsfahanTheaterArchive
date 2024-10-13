@@ -153,6 +153,7 @@ const Medias = ({ mode }: { mode: "edit" | "view" }) => {
                 >
                   <CardContent className="overflow-visible p-0 relative">
                     <img
+                      loading="lazy"
                       width={200}
                       height={200}
                       alt={item.title}

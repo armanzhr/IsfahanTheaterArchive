@@ -73,7 +73,10 @@ const Changes = () => {
             </p>
           </div>
 
-          <ScrollArea dir="rtl" className="h-[calc(100dvh-170px)] px-4 mt-4">
+          <ScrollArea
+            dir="rtl"
+            className="h-[calc(100dvh-170px)] w-96 px-4 mt-4"
+          >
             <Table>
               <TableHeader>
                 <TableRow>

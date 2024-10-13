@@ -161,6 +161,7 @@ const Shows = () => {
                       <TableRow key={show.title}>
                         <TableCell className="">
                           <img
+                            loading="lazy"
                             width={80}
                             height={80}
                             alt={show.title}

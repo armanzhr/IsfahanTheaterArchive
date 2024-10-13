@@ -176,6 +176,7 @@ const ShowChanges = ({
                     {isShowEdit && (
                       <div className="col-span-2">
                         <img
+                          loading="lazy"
                           width={80}
                           height={80}
                           alt={showInfo?.title}
@@ -190,6 +191,7 @@ const ShowChanges = ({
                     )}
                     <div className="col-span-2">
                       <img
+                        loading="lazy"
                         width={80}
                         height={80}
                         alt={showInfo?.title}
@@ -432,6 +434,7 @@ const ShowChanges = ({
                             ?.map((image: string) => (
                               <li key={image} className="flex flex-col">
                                 <img
+                                  loading="lazy"
                                   width={80}
                                   height={80}
                                   alt={showInfo?.title}
@@ -452,6 +455,7 @@ const ShowChanges = ({
                         {showChanges?.imageIds?.map((image: number) => (
                           <li key={image} className="flex flex-col">
                             <img
+                              loading="lazy"
                               width={80}
                               height={80}
                               alt={showInfo?.title}

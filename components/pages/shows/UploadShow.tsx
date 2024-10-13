@@ -260,7 +260,7 @@ const UploadShow = ({
     <>
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>Open</DrawerTrigger>
-        <DrawerContent className="h-full">
+        <DrawerContent className="h-full p-4">
           <DrawerHeader className="p-0 pb-2 ">
             <div className="flex justify-center flex-col items-center">
               <div className="max-w-[59rem] w-full flex items-center justify-between">
@@ -340,6 +340,7 @@ const UploadShow = ({
                             >
                               {galleryImage?.poster ? (
                                 <img
+                                  loading="lazy"
                                   alt="Product image"
                                   className="aspect-square w-full rounded-md object-cover"
                                   height="300"
@@ -378,6 +379,7 @@ const UploadShow = ({
                               <Card key={image.id}>
                                 <button type="button">
                                   <img
+                                    loading="lazy"
                                     alt="show poster"
                                     className="aspect-square w-full rounded-md object-cover"
                                     height="84"

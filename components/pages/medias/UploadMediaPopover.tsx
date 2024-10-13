@@ -151,6 +151,7 @@ const UploadMediaPopover = ({
                   <Label>تصویر جدید : </Label>
                   <Card className="relative col-span-2">
                     <img
+                      loading="lazy"
                       alt="تصویر جدید"
                       className="aspect-square rounded-md object-cover "
                       height="300"

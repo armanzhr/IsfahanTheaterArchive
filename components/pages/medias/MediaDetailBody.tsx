@@ -14,6 +14,7 @@ const MediaDetailBody = ({
   return (
     <>
       <img
+        loading="lazy"
         width={300}
         height={300}
         alt={selectedImage?.alt}
