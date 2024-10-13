@@ -30,6 +30,10 @@ export default function RootLayout({
           href="https://utfs.io/f/69a12ab1-4d57-4913-90f9-38c6aca6c373-1txg2.png"
           as="image"
         />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
       </head>
       <body className={`h-full ${vazir.className}`}>
         <ThemeProvider

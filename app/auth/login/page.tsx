@@ -6,8 +6,8 @@ import Login from "./login";
 
 const page = () => {
   return (
-    <div className="w-full lg:grid h-[100dvh] lg:grid-cols-2">
-      <div className="flex items-center justify-center py-12">
+    <div className="w-full lg:grid h-[100dvh] lg:grid-cols-2 ">
+      <div className="flex items-center justify-center py-12 h-full p-4">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
             <h1 className="text-xl font-bold">ورود به پنل کاربری</h1>
