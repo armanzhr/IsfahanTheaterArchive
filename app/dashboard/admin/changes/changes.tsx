@@ -26,7 +26,7 @@ import {
   TrashIcon,
   UserRound,
 } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import DeleteVenues from "@/components/pages/venues/DeleteVenues";
 import { useAuthStore } from "@/service/store/useAuthStore";
 import {
@@ -75,7 +75,7 @@ const Changes = () => {
 
           <ScrollArea
             dir="rtl"
-            className="h-[calc(100dvh-170px)] w-96 px-4 mt-4"
+            className="h-[calc(100dvh-170px)] w-[calc(100vw-50px)] md:w-full px-4 mt-4"
           >
             <Table>
               <TableHeader>
@@ -193,6 +193,7 @@ const Changes = () => {
                     ))}
               </TableBody>
             </Table>
+            <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </CardContent>
       </Card>
