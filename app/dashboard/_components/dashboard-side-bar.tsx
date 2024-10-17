@@ -2,7 +2,7 @@
 
 import { Separator } from "@/components/ui/separator";
 import { useAuthStore } from "@/service/store/useAuthStore";
-import { manageItems, menuItems } from "@/utils/menu-items";
+import { manageItems, dashboardMenuItems } from "@/utils/menu-items";
 import clsx from "clsx";
 import {
   Banknote,
@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 export default function DashboardSideBar() {
   const { userInfo } = useAuthStore();
   const pathname = usePathname();
-  const items = menuItems();
+  const items = dashboardMenuItems();
   const manage = manageItems();
   const [manageMenus, setManageMenues] = useState(manage);
   useEffect(() => {
