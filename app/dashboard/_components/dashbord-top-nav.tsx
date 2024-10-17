@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sheet";
 import { UserProfile } from "@/components/user-profile";
 import config from "@/config";
-import { manageItems, menuItems } from "@/utils/menu-items";
+import { manageItems, dashboardMenuItems } from "@/utils/menu-items";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import clsx from "clsx";
 import { Banknote, Folder, HomeIcon, Settings } from "lucide-react";
@@ -21,7 +21,7 @@ import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 
 export default function DashboardTopNav({ children }: { children: ReactNode }) {
-  const items = menuItems();
+  const items = dashboardMenuItems();
   const manage = manageItems();
   const pathname = usePathname();
 

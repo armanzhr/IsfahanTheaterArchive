@@ -23,152 +23,79 @@ import {
 import config from "@/config";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogClose } from "@radix-ui/react-dialog";
-
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: "Marketing Page",
-    href: "/marketing-page",
-    description: "Write some wavy here to get them to click.",
-  },
-  {
-    title: "Marketing Page",
-    href: "/marketing-page",
-    description: "Write some wavy here to get them to click.",
-  },
-  {
-    title: "Marketing Page",
-    href: "/marketing-page",
-    description: "Write some wavy here to get them to click.",
-  },
-];
+import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import clsx from "clsx";
+import { usePathname } from "next/navigation";
+import { clientMenuItems } from "@/utils/menu-items";
+import { Separator } from "../ui/separator";
 
 export default function NavBar() {
   let userId = null;
+  const pathname = usePathname();
+  const items = clientMenuItems();
 
   return (
     <div className="flex min-w-full fixed justify-between p-2 border-b z-10 dark:bg-black dark:bg-opacity-50 bg-white">
       <div className="flex justify-between w-full min-[825px]:hidden">
         <Dialog>
-          <SheetTrigger className="p-2 transition">
-            <Button
-              size="icon"
-              variant="ghost"
-              className="w-4 h-4"
-              aria-label="Open menu"
-              asChild
-            >
-              <GiHamburgerMenu />
-            </Button>
+          <SheetTrigger className="min-[1024px]:hidden p-2 transition">
+            <HamburgerMenuIcon />
+            <Link href="/dashboard">
+              <span className="sr-only">Home</span>
+            </Link>
           </SheetTrigger>
-          <SheetContent side="left">
+          <SheetContent side="right">
             <SheetHeader>
-              <SheetTitle>Next Starter</SheetTitle>
+              <Link href="/">
+                <SheetTitle>آرشیو تئاتر اصفهان</SheetTitle>
+              </Link>
             </SheetHeader>
             <div className="flex flex-col space-y-3 mt-[1rem]">
-              <DialogClose asChild>
-                <Link href="/">
-                  <Button variant="outline" className="w-full">
-                    Home
-                  </Button>
-                </Link>
-              </DialogClose>
-              <DialogClose asChild>
-                <Link
-                  href="/dashboard"
-                  legacyBehavior
-                  passHref
-                  className="cursor-pointer"
-                >
-                  <Button variant="outline">Dashboard</Button>
-                </Link>
-              </DialogClose>
-              {config?.features?.blog && (
-                <DialogClose asChild>
+              {items.map((item) => (
+                <DialogClose key={item.name} asChild>
                   <Link
-                    href="/blog"
-                    legacyBehavior
-                    passHref
-                    className="cursor-pointer"
+                    key={item.name}
+                    className={clsx(
+                      "flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50",
+                      {
+                        "flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-gray-900  transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50":
+                          pathname === item.pathname,
+                      }
+                    )}
+                    href={item.pathname}
                   >
-                    <Button variant="outline">Blog</Button>
+                    <div className="border rounded-lg dark:bg-black dark:border-gray-800 border-gray-400 p-1 bg-white">
+                      {item.icon}
+                    </div>
+                    {item.name}
                   </Link>
                 </DialogClose>
-              )}
+              ))}
             </div>
           </SheetContent>
         </Dialog>
         <ModeToggle />
       </div>
-      <NavigationMenu>
-        <NavigationMenuList className="max-[825px]:hidden flex gap-3 w-[100%] justify-between">
-          <Link href="/" className="pl-2 flex items-center" aria-label="Home">
-            <BlocksIcon aria-hidden="true" />
-            <span className="sr-only">Home</span>
-          </Link>
-        </NavigationMenuList>
+      <NavigationMenu dir="rtl">
         <NavigationMenuList>
-          <NavigationMenuItem className="max-[825px]:hidden ml-5">
-            <NavigationMenuTrigger className="dark:bg-black dark:bg-opacity-50">
-              Features
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="flex flex-col w-[400px] gap-3 p-4 lg:w-[500px]">
-                {components.map((component) => (
-                  <ListItem
-                    key={component.title}
-                    title={component.title}
-                    href={component.href}
-                  >
-                    {component.description}
-                  </ListItem>
-                ))}
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-          {config?.features?.blog && (
-            <NavigationMenuItem className="max-[825px]:hidden">
-              <Link href="/blog" legacyBehavior passHref>
-                <Button variant="ghost">Blog</Button>
-              </Link>
-            </NavigationMenuItem>
-          )}
-          <NavigationMenuItem className="max-[825px]:hidden">
-            <Link href="/dashboard" legacyBehavior passHref>
-              <Button variant="ghost">Dashboard</Button>
-            </Link>
-          </NavigationMenuItem>
+          {items.map((item, index) => (
+            <>
+              <NavigationMenuItem key={index} className="max-[825px]:hidden">
+                <Link href={item.pathname} legacyBehavior passHref>
+                  <Button variant="ghost" className="flex gap-1">
+                    <div>{item.icon}</div>
+                    <span className="text-sm">{item.name}</span>
+                  </Button>
+                </Link>
+              </NavigationMenuItem>
+            </>
+          ))}
+          <Separator orientation="vertical" />
         </NavigationMenuList>
       </NavigationMenu>
       <div className="flex items-center gap-2 max-[825px]:hidden">
-        {userId && <UserProfile />}
         <ModeToggle />
       </div>
     </div>
   );
 }
-
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  );
-});
-ListItem.displayName = "ListItem";
