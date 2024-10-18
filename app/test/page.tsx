@@ -19,7 +19,7 @@ const page = async () => {
   let posts: Show[] = await data.json();
 
   return (
-    <div className="mx-auto max-w-7xl px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl w-full px-6 lg:px-8">
       <Header />
       <SideBySide />
     </div>
