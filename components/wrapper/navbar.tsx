@@ -34,30 +34,6 @@ export default function NavBar() {
   const pathname = usePathname();
   const items = clientMenuItems();
 
-  const [scrollUp, setScrollUp] = React.useState(true);
-  const [lastScrollY, setLastScrollY] = React.useState(0);
-
-  const handleScroll = () => {
-    const currentScrollY = window.scrollY;
-
-    // Check if the page is scrolling up or down
-    if (currentScrollY < lastScrollY) {
-      setScrollUp(true); // Scrolling up
-    } else {
-      setScrollUp(false); // Scrolling down
-    }
-
-    setLastScrollY(currentScrollY);
-  };
-
-  React.useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [lastScrollY]);
-
   return (
     <div
       className={clsx(
