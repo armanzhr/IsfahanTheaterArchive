@@ -1,5 +1,5 @@
 import { Show } from "@/utils/types";
-import { DramaIcon, Theater } from "lucide-react";
+import { ArrowLeft, DramaIcon, Theater } from "lucide-react";
 import React from "react";
 import ShowItem from "./show-item";
 import {
@@ -10,17 +10,24 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const Shows = ({ shows }: { shows: Show[] }) => {
   console.log(shows);
   return (
     <div>
-      <h3 className="text-lg font-semibold flex gap-2 items-center">
-        <span>
-          <DramaIcon />
-        </span>
-        نمایش ها
-      </h3>
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold flex gap-2 items-center">
+          <span>
+            <DramaIcon />
+          </span>
+          نمایش ها
+        </h3>
+        <Button className="group" variant="outline" size="sm">
+          <span>همه نمایش ها</span>
+          <ArrowLeft className="mr-1 size-3 transition-transform duration-300 ease-in-out group-hover:-translate-x-1" />
+        </Button>
+      </div>
 
       <div dir="rtl" className="relative">
         <Carousel dir="ltr" className="w-full">

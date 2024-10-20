@@ -6,6 +6,7 @@ import { cn } from "@/utils/cn";
 import { Button } from "../ui/button";
 import Particles from "../ui/particles";
 import { useTheme } from "next-themes";
+import ShinyButton from "../ui/shiny-button";
 
 const Header = () => {
   const { theme } = useTheme();
@@ -39,10 +40,9 @@ const Header = () => {
               هر شکل و سبکی، در زنده نگه داشتن تئاتر اصفهان سهم داشته‌اند.
             </h4>
           </div>
-          <Button size="sm">
+          <ShinyButton className="flex">
             <span>صفحه نمایش ها</span>
-            <ArrowLeft className="mr-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
-          </Button>
+          </ShinyButton>
         </div>
       </div>
       <Particles
