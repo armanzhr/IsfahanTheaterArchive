@@ -1,5 +1,5 @@
 import Header from "@/components/homepage/header";
-import Shows from "@/components/homepage/shows";
+import Shows from "@/components/homepage/shows/shows";
 import SideBySide from "@/components/homepage/side-by-side";
 import CarouselShow from "@/components/pages/home/CarouselShow";
 import { Card, CardContent } from "@/components/ui/card";
