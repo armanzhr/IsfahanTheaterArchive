@@ -38,9 +38,6 @@ const Shows = ({ shows }: { shows: Show[] }) => {
                 key={index}
               >
                 <ShowItem item={item} />
-                <div className="group-hover:opacity-0 transition-all duration-500 rounded-lg text-center text-base font-semibold mt-1">
-                  {item.title}
-                </div>
               </CarouselItem>
             ))}
           </CarouselContent>

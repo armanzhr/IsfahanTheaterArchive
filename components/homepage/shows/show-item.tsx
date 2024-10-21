@@ -2,7 +2,7 @@ import React from "react";
 
 const ShowItem = ({ item }: { item: any }) => {
   return (
-    <div>
+    <>
       <img
         loading="lazy"
         src="/theater.jpg"
@@ -14,7 +14,10 @@ const ShowItem = ({ item }: { item: any }) => {
         <span className="text-xs">نمایش</span>
         <h3 className=" font-medium">{item.title}</h3>
       </div>
-    </div>
+      <div className="group-hover:opacity-0 transition-all duration-500 rounded-lg text-center text-base font-semibold mt-1">
+        {item.title}
+      </div>
+    </>
   );
 };
 
