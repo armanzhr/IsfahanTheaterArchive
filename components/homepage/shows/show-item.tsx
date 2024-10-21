@@ -1,8 +1,9 @@
+import Link from "next/link";
 import React from "react";
 
 const ShowItem = ({ item }: { item: any }) => {
   return (
-    <>
+    <Link href={`test/${item.id}`}>
       <img
         loading="lazy"
         src="/theater.jpg"
@@ -17,7 +18,7 @@ const ShowItem = ({ item }: { item: any }) => {
       <div className="group-hover:opacity-0 transition-all duration-500 rounded-lg text-center text-base font-semibold mt-1">
         {item.title}
       </div>
-    </>
+    </Link>
   );
 };
 
