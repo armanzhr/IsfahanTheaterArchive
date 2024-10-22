@@ -29,12 +29,12 @@ const Shows = ({ shows }: { shows: Show[] }) => {
         </Button>
       </div>
 
-      <div dir="rtl" className="relative">
+      <div dir="rtl" className="relative mt-5">
         <Carousel dir="ltr" className="w-full">
           <CarouselContent>
             {shows.splice(-5).map((item, index) => (
               <CarouselItem
-                className="basis-1/2 md:basis-1/4 lg:basis-1/5 mt-5 group relative cursor-pointer  transition-all duration-500"
+                className="basis-1/2 group md:basis-1/4 lg:basis-1/5 cursor-pointer transition-all duration-500"
                 key={index}
               >
                 <ShowItem item={item} />
