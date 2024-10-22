@@ -1,5 +1,14 @@
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { Show } from "@/utils/types";
+import { ChevronLeft, Share2 } from "lucide-react";
 import React from "react";
 
 const ShowDetails = ({ show }: { show: Show }) => {
@@ -15,7 +24,7 @@ const ShowDetails = ({ show }: { show: Show }) => {
           />
         </aside>
         <main className=" col-span-3">
-          <header className="h-14 flex items-center">{show.title}</header>
+          <header className="h-14 flex items-center"></header>
           <Separator />
           <div>show people</div>
         </main>
