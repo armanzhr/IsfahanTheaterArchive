@@ -1,7 +1,8 @@
 import { Separator } from "@/components/ui/separator";
+import { Show } from "@/utils/types";
 import React from "react";
 
-const ShowDetails = () => {
+const ShowDetails = ({ show }: { show: Show }) => {
   return (
     <div className="w-full">
       <header className=" grid grid-cols-4 gap-5 h-full">
@@ -14,7 +15,7 @@ const ShowDetails = () => {
           />
         </aside>
         <main className=" col-span-3">
-          <header className="h-14 flex items-center">show detail</header>
+          <header className="h-14 flex items-center">{show.title}</header>
           <Separator />
           <div>show people</div>
         </main>

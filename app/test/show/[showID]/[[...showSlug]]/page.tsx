@@ -3,13 +3,17 @@ import config from "@/config";
 import { Show } from "@/utils/types";
 import React from "react";
 
-const Page = async ({ params }: { params: { showID: string } }) => {
+const Page = async ({
+  params,
+}: {
+  params: { showID: string; showSlug: string };
+}) => {
   let data = await fetch(config.baseURL + "/Shows/" + params.showID);
-  let posts: Show = await data.json();
-  console.log(posts);
+  let show: Show = await data.json();
+
   return (
     <div className="w-full">
-      <ShowDetails />
+      <ShowDetails show={show} />
     </div>
   );
 };
