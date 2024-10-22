@@ -8,9 +8,10 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { Show } from "@/utils/types";
-import { ChevronLeft, Share2 } from "lucide-react";
+import { ChevronLeft, EyeIcon, Share2 } from "lucide-react";
 import React from "react";
 import ShowBreadcrumb from "./show-breadcrumb";
+import { Button } from "@/components/ui/button";
 
 const ShowDetails = ({ show }: { show: Show }) => {
   return (
@@ -23,10 +24,21 @@ const ShowDetails = ({ show }: { show: Show }) => {
             alt="Image"
             className="w-full h-96 object-cover rounded-xl group-hover:brightness-50 duration-500 transition-all"
           />
+          <p className="text-sm mt-2 flex gap-1 opacity-50">
+            <span>
+              <EyeIcon className="h-5 w-5" />
+            </span>
+            <span className="font-semibold">50</span>
+          </p>
         </aside>
         <main className=" col-span-3">
-          <header className="h-14 flex items-center">
+          <header className="h-14 flex items-center justify-between">
             <ShowBreadcrumb title={show.title} />
+            <div>
+              <Button className="h-7 w-7" variant="ghost" size="icon">
+                <Share2 className="h-5 w-5" />
+              </Button>
+            </div>
           </header>
           <Separator />
           <div>show people</div>
