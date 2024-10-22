@@ -10,7 +10,7 @@ import { Show } from "@/utils/types";
 import { ChevronLeft } from "lucide-react";
 import React from "react";
 
-const ShowBreadcrumb = ({ show }: { show: Show }) => {
+const ShowBreadcrumb = ({ title }: { title: string }) => {
   return (
     <Breadcrumb>
       <BreadcrumbList>
@@ -22,7 +22,7 @@ const ShowBreadcrumb = ({ show }: { show: Show }) => {
         </BreadcrumbSeparator>
         <BreadcrumbItem>
           <BreadcrumbPage className="font-bold text-base flex items-center">
-            <h2>{show.title}</h2>
+            <h2>{title}</h2>
           </BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
