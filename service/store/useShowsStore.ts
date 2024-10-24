@@ -3,6 +3,7 @@ import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
 import axiosInstance from "../axiosInstance";
+import { getShows } from "../api/shows";
 interface ShowsStateStore {
   showsList: ShowResponse | null;
   showInfo: Show | null;
@@ -31,9 +32,7 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
   getShowsList: async (pageNumber, pageSize, searchKey) => {
     set({ isGettingShows: true });
     try {
-      const { data } = await axiosInstance.get("/Shows", {
-        params: { pageNumber, pageSize, searchKey },
-      });
+      const data = await getShows(pageNumber, pageSize, searchKey);
       set({ showsList: data });
       return data;
     } catch (error) {

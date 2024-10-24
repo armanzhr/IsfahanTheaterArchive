@@ -14,13 +14,22 @@ import {
 } from "@/components/ui/pagination";
 import Ripple from "@/components/ui/ripple";
 import config from "@/config";
+import { getShows } from "@/service/api/shows";
 import { ShowResponse } from "@/utils/types";
 import { InfoIcon } from "lucide-react";
 import React from "react";
 
-const page = async () => {
-  let data = await fetch(config.baseURL + "/Shows");
-  let shows: ShowResponse = await data.json();
+const page = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) => {
+  const pageNumber =
+    typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
+  const pageSize =
+    typeof searchParams.limit === "string" ? Number(searchParams.limit) : 10;
+
+  let shows: ShowResponse = await getShows(pageNumber, pageSize);
   return (
     <>
       <ShowsHeader />
