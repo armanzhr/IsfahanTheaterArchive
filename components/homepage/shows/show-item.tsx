@@ -5,7 +5,10 @@ import React from "react";
 
 const ShowItem = ({ item }: { item: ShowInclusive }) => {
   return (
-    <Link href={`test/show/${item.id}/${item.slug}`}>
+    <Link
+      className="group cursor-pointer transition-all duration-500"
+      href={`test/show/${item.id}/${item.slug}`}
+    >
       <div className="relative">
         <img
           loading="lazy"

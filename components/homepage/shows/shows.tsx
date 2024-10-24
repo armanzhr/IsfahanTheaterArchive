@@ -19,7 +19,7 @@ const Shows = ({ shows }: { shows: ShowInclusive[] }) => {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold flex gap-2 items-center">
+        <h3 className="text-base lg:text-lg font-semibold flex gap-2 items-center">
           <span>
             <DramaIcon />
           </span>
@@ -38,7 +38,7 @@ const Shows = ({ shows }: { shows: ShowInclusive[] }) => {
           <CarouselContent>
             {shows.splice(-5).map((item, index) => (
               <CarouselItem
-                className="basis-1/2 group md:basis-1/4 lg:basis-1/5 cursor-pointer transition-all duration-500"
+                className="basis-1/2 md:basis-1/4 lg:basis-1/5"
                 key={index}
               >
                 <ShowItem item={item} />
