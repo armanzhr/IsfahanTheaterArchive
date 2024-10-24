@@ -1,5 +1,7 @@
 import ShowItem from "@/components/homepage/shows/show-item";
 import ShowsHeader from "@/components/homepage/shows/shows-header";
+import ShowsMain from "@/components/homepage/shows/shows-main";
+import ShowsPaginations from "@/components/homepage/shows/shows-pagination";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Pagination,
@@ -22,31 +24,8 @@ const page = async () => {
   return (
     <>
       <ShowsHeader />
-      <ShowsMain />
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink isActive href="#">
-              1
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">2</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">3</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      <ShowsMain shows={shows.data} />
+      <ShowsPaginations />
     </>
   );
 };
