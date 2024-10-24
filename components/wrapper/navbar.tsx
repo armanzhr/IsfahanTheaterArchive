@@ -37,7 +37,7 @@ export default function NavBar() {
   return (
     <div
       className={clsx(
-        "flex min-w-full fixed justify-between p-2 border-y z-10 dark:bg-black dark:bg-opacity-50 bg-white transition-transform backdrop-blur-[12px]"
+        "flex min-w-full fixed justify-between p-2 border-y z-10 dark:bg-black dark:bg-opacity-50 bg-white transition-transform bg-opacity-50 backdrop-blur-[12px]"
       )}
     >
       <div className="flex justify-between w-full min-[825px]:hidden">

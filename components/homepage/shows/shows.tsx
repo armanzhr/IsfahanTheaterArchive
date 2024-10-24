@@ -1,4 +1,3 @@
-"use client";
 import { Show, ShowInclusive } from "@/utils/types";
 import { ArrowLeft, DramaIcon, Theater } from "lucide-react";
 import React from "react";
@@ -12,6 +11,8 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Shows = ({ shows }: { shows: ShowInclusive[] }) => {
   console.log(shows);
@@ -24,10 +25,12 @@ const Shows = ({ shows }: { shows: ShowInclusive[] }) => {
           </span>
           نمایش ها
         </h3>
-        <Button className="group" variant="outline" size="sm">
-          <span>همه نمایش ها</span>
-          <ArrowLeft className="mr-1 size-3 transition-transform duration-300 ease-in-out group-hover:-translate-x-1" />
-        </Button>
+        <Link href="/test/show">
+          <Button className="group" variant="outline" size="sm">
+            <span>همه نمایش ها</span>
+            <ArrowLeft className="mr-1 size-3 transition-transform duration-300 ease-in-out group-hover:-translate-x-1" />
+          </Button>
+        </Link>
       </div>
 
       <div dir="rtl" className="relative mt-5">
