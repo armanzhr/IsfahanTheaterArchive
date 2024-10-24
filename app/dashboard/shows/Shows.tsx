@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { toast } from "sonner";
 
 const Shows = () => {
@@ -55,23 +56,33 @@ const Shows = () => {
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [selectedShow, setSelectedShow] = useState<ShowInclusive>();
   const [searchInputValue, setSearchInputValue] = useState<string>("");
-  const [filteredItems, setFilteredItems] = useState<ShowInclusive[] | null>();
+  const [filteredItems, setFilteredItems] = useState<ShowInclusive[] | null>(
+    []
+  );
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState<string>("");
   const { getPeople, setAllPeople } = usePeopleStore();
-  const handleFilterItems = () => {
-    setFilteredItems(
-      showsList?.data?.filter((item) => item.title.includes(searchInputValue))
-    );
-  };
-
-  useEffect(() => {
-    handleFilterItems();
-  }, [searchInputValue]);
+  const [hasMore, setHasMore] = useState(true);
 
   const fetchShows = async () => {
     try {
-      const res = await getShowsList();
+      const params: { page: number; search?: string } = {
+        page: page,
+      };
+
+      if (query.length > 2) {
+        params.search = query;
+      }
+      const response = await getShowsList(page, 10, params.search);
+
+      if (response.data.length === 0) {
+        setHasMore(false);
+      } else {
+        setFilteredItems((prev) => [...(prev ?? []), ...response.data]);
+        setPage((prev) => prev + 1);
+      }
     } catch (error) {
-      toast.error("خطا در دریافت  لیست نمایش ها");
+      toast.error("خطا در دریافت لیست نمایش ها");
     }
   };
   const fetchMedias = async () => {
@@ -83,11 +94,11 @@ const Shows = () => {
   };
 
   useEffect(() => {
-    setFilteredItems(showsList?.data);
-    if (!showsList) {
+    // بارگذاری کاربران زمانی که query تغییر کند (برای جستجو)
+    if (filteredItems?.length === 0) {
       fetchShows();
     }
-  }, [showsList]);
+  }, [query, filteredItems]);
 
   useEffect(() => {
     if (!listMedias) {
@@ -145,92 +156,100 @@ const Shows = () => {
             <Button onClick={() => handleCreateRole()}>نمایش جدید</Button>
           </div>
 
-          <ScrollArea dir="rtl" className="h-[calc(100dvh-170px)] px-4 mt-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-start w-[150px]"></TableHead>
-                  <TableHead className="text-start">نام اجرا</TableHead>
+          <div
+            id="scrollableDiv"
+            dir="rtl"
+            className="overflow-auto h-[calc(100dvh-170px)] px-4 mt-4"
+          >
+            <InfiniteScroll
+              dataLength={filteredItems?.length!}
+              next={fetchShows}
+              hasMore={hasMore}
+              loader={<p className="overflow-hidden">درحال بارگذاری...</p>}
+              scrollableTarget="scrollableDiv"
+            >
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-start w-[150px]"></TableHead>
+                    <TableHead className="text-start">نام اجرا</TableHead>
 
-                  <TableHead>تنظیمات</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredItems
-                  ? filteredItems?.map((show) => (
-                      <TableRow key={show.title}>
-                        <TableCell className="">
-                          <img
-                            loading="lazy"
-                            width={80}
-                            height={80}
-                            alt={show.title}
-                            className="aspect-square rounded-md object-cover"
-                            src={`${config.fileURL}/${
-                              listMedias?.find(
-                                (item) => item.id === show.posterImageId
-                              )?.url
-                            }`}
-                          />
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          {show.title}
-                        </TableCell>
-                        <TableCell className="text-end">
-                          <DropdownMenu dir="rtl">
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                              <DropdownMenuLabel>تنظیمات</DropdownMenuLabel>
-                              <DropdownMenuItem
-                                className="gap-2"
-                                onClick={() => handleEditRole(show)}
-                              >
-                                <PencilIcon className="w-3 h-3" />
-                                <p>ویرایش</p>
-                              </DropdownMenuItem>
-                              {userInfo?.roles.includes("Admin") && (
+                    <TableHead>تنظیمات</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredItems
+                    ? filteredItems?.map((show) => (
+                        <TableRow key={show.title}>
+                          <TableCell className="">
+                            <img
+                              loading="lazy"
+                              width={80}
+                              height={80}
+                              alt={show.title}
+                              className="aspect-square rounded-md object-cover"
+                              src={`${config.fileURL}/${show.posterImageUrl}`}
+                            />
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {show.title}
+                          </TableCell>
+                          <TableCell className="text-end">
+                            <DropdownMenu dir="rtl">
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  aria-haspopup="true"
+                                  size="icon"
+                                  variant="ghost"
+                                >
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent>
+                                <DropdownMenuLabel>تنظیمات</DropdownMenuLabel>
                                 <DropdownMenuItem
                                   className="gap-2"
-                                  onClick={() => handleDuplicateShow(show)}
+                                  onClick={() => handleEditRole(show)}
                                 >
-                                  <ClipboardIcon className="w-3 h-3" />
-                                  <p>کپی</p>
+                                  <PencilIcon className="w-3 h-3" />
+                                  <p>ویرایش</p>
                                 </DropdownMenuItem>
-                              )}
-                              <DropdownMenuItem
-                                onClick={() => handleDeleteShow(show)}
-                                className="gap-2"
-                              >
-                                <TrashIcon className="w-3 h-3" />
-                                <p>حذف</p>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  : Array.from({ length: 5 }).map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell className="">
-                          <Skeleton className={`h-[80px] w-[80px]`} />
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          <Skeleton className="h-4 w-[100px]" />
-                        </TableCell>
-                        <TableCell className="text-end"></TableCell>
-                      </TableRow>
-                    ))}
-              </TableBody>
-            </Table>
-          </ScrollArea>
+                                {userInfo?.roles.includes("Admin") && (
+                                  <DropdownMenuItem
+                                    className="gap-2"
+                                    onClick={() => handleDuplicateShow(show)}
+                                  >
+                                    <ClipboardIcon className="w-3 h-3" />
+                                    <p>کپی</p>
+                                  </DropdownMenuItem>
+                                )}
+                                <DropdownMenuItem
+                                  onClick={() => handleDeleteShow(show)}
+                                  className="gap-2"
+                                >
+                                  <TrashIcon className="w-3 h-3" />
+                                  <p>حذف</p>
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    : Array.from({ length: 5 }).map((item, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="">
+                            <Skeleton className={`h-[80px] w-[80px]`} />
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            <Skeleton className="h-4 w-[100px]" />
+                          </TableCell>
+                          <TableCell className="text-end"></TableCell>
+                        </TableRow>
+                      ))}
+                </TableBody>
+              </Table>
+            </InfiniteScroll>
+          </div>
         </CardContent>
       </Card>
       <UploadShow editValue={editValue} setOpen={setOpen} open={open} />

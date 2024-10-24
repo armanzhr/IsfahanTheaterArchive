@@ -9,7 +9,11 @@ interface ShowsStateStore {
   isGettingShows: boolean;
   isLoadingShows: boolean;
   resetShowInfo: () => void;
-  getShowsList: () => Promise<void>;
+  getShowsList: (
+    pageNumber?: number,
+    pageSize?: number,
+    searchKey?: string
+  ) => Promise<ShowResponse>;
   getShowInfo: (showID: number) => Promise<void>;
   createShows: (model: Show) => Promise<Show>;
   updateShows: (showsID: number, model: Show) => Promise<void>;
@@ -24,11 +28,14 @@ export const useShowsStore = create<ShowsStateStore>((set) => ({
   isLoadingShows: false,
   resetShowInfo: () => set({ showInfo: null }),
 
-  getShowsList: async () => {
+  getShowsList: async (pageNumber, pageSize, searchKey) => {
     set({ isGettingShows: true });
     try {
-      const { data } = await axiosInstance.get("/Shows");
+      const { data } = await axiosInstance.get("/Shows", {
+        params: { pageNumber, pageSize, searchKey },
+      });
       set({ showsList: data });
+      return data;
     } catch (error) {
       throw error;
     } finally {

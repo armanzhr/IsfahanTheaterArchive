@@ -88,6 +88,7 @@ const People = () => {
     setEditValue(item);
     setOpen(true);
   };
+
   const fetchMedias = async () => {
     try {
       const res = await getMediasList();
