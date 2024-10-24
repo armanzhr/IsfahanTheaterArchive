@@ -1,3 +1,4 @@
+"use client";
 import { Show } from "@/utils/types";
 import { ArrowLeft, DramaIcon, Theater } from "lucide-react";
 import React from "react";

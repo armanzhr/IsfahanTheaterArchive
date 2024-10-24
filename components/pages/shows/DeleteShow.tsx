@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { usePeopleStore } from "@/service/store/usePeopleStore";
 import { useRolesStore } from "@/service/store/useRolesStore";
 import { useShowsStore } from "@/service/store/useShowsStore";
-import { People, Roles, Show } from "@/utils/types";
+import { People, Roles, Show, ShowInclusive } from "@/utils/types";
 import { TrashIcon } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -23,7 +23,7 @@ const DeleteShow = ({
   setOpen,
   open,
 }: {
-  show: Show;
+  show: ShowInclusive;
   setOpen: (status: boolean) => void;
   open: boolean;
 }) => {

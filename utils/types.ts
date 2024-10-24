@@ -36,9 +36,12 @@ export interface MediaModel {
 export interface Show {
   id: number;
   posterImageId: number;
+  posterImageUrl: string;
+  posterImageAlt: string;
+  posterImageTitle: string;
+  slug: string;
   imagesIDs: number[] | any;
   title: string;
-  slug: string;
   description: string;
   metaDescription: string;
   showTimes: {
@@ -62,6 +65,22 @@ export interface Show {
     startYear: number;
     avatarImageId: number;
   }[];
+}
+export interface ShowInclusive {
+  id: number;
+  title: string;
+  posterImageId: number;
+  posterImageUrl: string;
+  posterImageAlt: string;
+  posterImageTitle: string;
+  slug: string;
+}
+export interface ShowResponse {
+  pageNumber: number;
+  pageSize: number;
+  totalRecords: number;
+  totalPages: number;
+  data: ShowInclusive[];
 }
 export interface SelectedFile {
   id: number;

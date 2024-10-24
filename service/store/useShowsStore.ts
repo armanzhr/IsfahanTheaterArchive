@@ -1,10 +1,10 @@
-import { Roles, Show } from "@/utils/types";
+import { Roles, Show, ShowInclusive, ShowResponse } from "@/utils/types";
 import { create } from "zustand";
 import axios, { AxiosPromise } from "axios";
 import config from "@/config";
 import axiosInstance from "../axiosInstance";
 interface ShowsStateStore {
-  showsList: Show[] | null;
+  showsList: ShowResponse | null;
   showInfo: Show | null;
   isGettingShows: boolean;
   isLoadingShows: boolean;

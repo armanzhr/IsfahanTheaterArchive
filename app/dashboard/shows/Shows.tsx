@@ -32,7 +32,7 @@ import { usePeopleStore } from "@/service/store/usePeopleStore";
 import { useRolesStore } from "@/service/store/useRolesStore";
 import { useShowsStore } from "@/service/store/useShowsStore";
 
-import { Roles as RolesType, Show } from "@/utils/types";
+import { Roles as RolesType, Show, ShowInclusive } from "@/utils/types";
 import {
   ClipboardIcon,
   DramaIcon,
@@ -51,15 +51,15 @@ const Shows = () => {
   const { userInfo } = useAuthStore();
   const { getMediasList, listMedias } = useMediaStore();
   const [open, setOpen] = useState(false);
-  const [editValue, setEditValue] = useState<Show | null>();
+  const [editValue, setEditValue] = useState<ShowInclusive | null>();
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-  const [selectedShow, setSelectedShow] = useState<Show>();
+  const [selectedShow, setSelectedShow] = useState<ShowInclusive>();
   const [searchInputValue, setSearchInputValue] = useState<string>("");
-  const [filteredItems, setFilteredItems] = useState<Show[] | null>();
+  const [filteredItems, setFilteredItems] = useState<ShowInclusive[] | null>();
   const { getPeople, setAllPeople } = usePeopleStore();
   const handleFilterItems = () => {
     setFilteredItems(
-      showsList?.filter((item) => item.title.includes(searchInputValue))
+      showsList?.data?.filter((item) => item.title.includes(searchInputValue))
     );
   };
 
@@ -83,7 +83,7 @@ const Shows = () => {
   };
 
   useEffect(() => {
-    setFilteredItems(showsList);
+    setFilteredItems(showsList?.data);
     if (!showsList) {
       fetchShows();
     }
@@ -100,16 +100,16 @@ const Shows = () => {
     resetShowInfo();
     setOpen(true);
   };
-  const handleEditRole = (item: Show) => {
+  const handleEditRole = (item: ShowInclusive) => {
     setEditValue(item);
     setOpen(true);
   };
-  const handleDeleteShow = (item: Show) => {
+  const handleDeleteShow = (item: ShowInclusive) => {
     setSelectedShow(item);
     setOpenDeleteModal(true);
   };
 
-  const handleDuplicateShow = async (item: Show) => {
+  const handleDuplicateShow = async (item: ShowInclusive) => {
     console.log(item);
 
     toast.promise(

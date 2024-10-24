@@ -11,7 +11,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useRolesStore } from "@/service/store/useRolesStore";
-import { Media, Show, Venues } from "@/utils/types";
+import { Media, Show, ShowInclusive, Venues } from "@/utils/types";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Upload, UploadIcon, XIcon } from "lucide-react";
@@ -37,7 +37,7 @@ const UploadShow = ({
 }: {
   open: boolean;
   setOpen: (data: boolean) => void;
-  editValue?: Show | null;
+  editValue?: ShowInclusive | null;
 }) => {
   const {
     handleSubmit,
