@@ -1,14 +1,15 @@
-import { Show } from "@/utils/types";
+import config from "@/config";
+import { Show, ShowInclusive } from "@/utils/types";
 import Link from "next/link";
 import React from "react";
 
-const ShowItem = ({ item }: { item: Show }) => {
+const ShowItem = ({ item }: { item: ShowInclusive }) => {
   return (
     <Link href={`test/show/${item.id}/${item.slug}`}>
       <div className="relative">
         <img
           loading="lazy"
-          src="/theater.jpg"
+          src={`${config.fileURL}/${item.posterImageUrl}`}
           alt="Image"
           className="w-full h-64 object-cover rounded-lg group-hover:brightness-50 duration-500 transition-all"
         />

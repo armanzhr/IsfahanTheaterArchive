@@ -1,5 +1,5 @@
 "use client";
-import { Show } from "@/utils/types";
+import { Show, ShowInclusive } from "@/utils/types";
 import { ArrowLeft, DramaIcon, Theater } from "lucide-react";
 import React from "react";
 import ShowItem from "./show-item";
@@ -13,7 +13,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-const Shows = ({ shows }: { shows: Show[] }) => {
+const Shows = ({ shows }: { shows: ShowInclusive[] }) => {
   console.log(shows);
   return (
     <div>
