@@ -28,6 +28,7 @@ import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { clientMenuItems } from "@/utils/menu-items";
 import { Separator } from "../ui/separator";
+import { Input } from "../ui/input";
 
 export default function NavBar() {
   let userId = null;
@@ -78,6 +79,7 @@ export default function NavBar() {
             </div>
           </SheetContent>
         </Dialog>
+        <Input placeholder="نام نمایش..." />
         <ModeToggle />
       </div>
       <NavigationMenu dir="rtl">

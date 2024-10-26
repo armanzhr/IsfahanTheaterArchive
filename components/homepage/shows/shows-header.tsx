@@ -8,7 +8,7 @@ const ShowsHeader = () => {
     <>
       <div className="relative flex h-[150px] w-full flex-col items-center justify-center overflow-hidden rounded-lg  bg-background md:shadow-xl">
         <p className="z-10 whitespace-pre-wrap text-center text-3xl font-medium tracking-tighter text-white">
-          تئاتر زنده است...
+          تئاتر زندگیست...
         </p>
         <Ripple />
       </div>
