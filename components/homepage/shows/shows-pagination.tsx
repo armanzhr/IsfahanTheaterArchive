@@ -89,21 +89,25 @@ const ShowsPaginations = ({
   return (
     <Pagination className="my-5">
       <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious
-            href={`?page=${currentPage > 1 ? currentPage - 1 : 1}`}
-          />
-        </PaginationItem>
+        {currentPage !== 1 && (
+          <PaginationItem>
+            <PaginationPrevious
+              href={`?page=${currentPage > 1 ? currentPage - 1 : 1}`}
+            />
+          </PaginationItem>
+        )}
 
         {renderPaginationItems()}
 
-        <PaginationItem>
-          <PaginationNext
-            href={`?page=${
-              currentPage < totalPages ? currentPage + 1 : totalPages
-            }`}
-          />
-        </PaginationItem>
+        {currentPage !== totalPages && (
+          <PaginationItem>
+            <PaginationNext
+              href={`?page=${
+                currentPage < totalPages ? currentPage + 1 : totalPages
+              }`}
+            />
+          </PaginationItem>
+        )}
       </PaginationContent>
     </Pagination>
   );
