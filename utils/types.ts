@@ -82,6 +82,15 @@ export interface ShowResponse {
   totalPages: number;
   data: ShowInclusive[];
 }
+export interface ShowPeople {
+  id: number;
+  roleId: number;
+  personId: number;
+  name: string;
+  firstName: string;
+  lastName: string;
+  startYear: number;
+}
 export interface SelectedFile {
   id: number;
   title?: string;

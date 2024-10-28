@@ -12,6 +12,8 @@ import { ChevronLeft, EyeIcon, Share2 } from "lucide-react";
 import React from "react";
 import ShowBreadcrumb from "./show-breadcrumb";
 import { Button } from "@/components/ui/button";
+import config from "@/config";
+import ShowPeople from "./show-people";
 
 const ShowDetails = ({ show }: { show: Show }) => {
   return (
@@ -20,7 +22,7 @@ const ShowDetails = ({ show }: { show: Show }) => {
         <aside className="col-span-1">
           <img
             loading="lazy"
-            src="/sina.jpg"
+            src={`${config.fileURL}/${show.posterImageUrl}`}
             alt="Image"
             className="w-full h-96 object-cover rounded-xl group-hover:brightness-50 duration-500 transition-all"
           />
@@ -41,7 +43,9 @@ const ShowDetails = ({ show }: { show: Show }) => {
             </div>
           </header>
           <Separator />
-          <div>show people</div>
+          <div>
+            <ShowPeople people={show.showPeopleRoles} />
+          </div>
         </main>
       </header>
     </div>
