@@ -13,31 +13,89 @@ const ShowsPaginations = ({
   totalPages,
   currentPage,
 }: {
-  totalPages: string;
-  currentPage: string;
+  totalPages: number;
+  currentPage: number;
 }) => {
+  const renderPaginationItems = () => {
+    const items = [];
+
+    if (totalPages <= 7) {
+      // اگر تعداد صفحات کمتر از 7 باشد، تمام صفحات را نمایش می‌دهیم
+      for (let i = 1; i <= totalPages; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink isActive={currentPage === i} href={`?page=${i}`}>
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+    } else {
+      // اگر تعداد صفحات بیشتر از 7 باشد، از Ellipsis استفاده می‌کنیم
+      items.push(
+        <PaginationItem key={1}>
+          <PaginationLink isActive={currentPage === 1} href={`?page=${1}`}>
+            {1}
+          </PaginationLink>
+        </PaginationItem>
+      );
+
+      if (currentPage > 4) {
+        items.push(
+          <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+
+      // نمایش صفحات اطراف صفحه جاری
+      for (
+        let i = Math.max(2, currentPage - 1);
+        i <= Math.min(totalPages - 1, currentPage + 1);
+        i++
+      ) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink isActive={currentPage === i} href={`?page=${i}`}>
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+
+      if (currentPage < totalPages - 3) {
+        items.push(
+          <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+
+      items.push(
+        <PaginationItem key={totalPages}>
+          <PaginationLink
+            isActive={currentPage === totalPages}
+            href={`?page=${totalPages}`}
+          >
+            {totalPages}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    return items;
+  };
+
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={`?page=${
-              Number(currentPage) > 1 ? Number(currentPage) - 1 : 1
-            }`}
+            href={`?page=${currentPage > 1 ? currentPage - 1 : 1}`}
           />
         </PaginationItem>
 
-        {/* ایجاد داینامیک PaginationItem */}
-        {Array.from({ length: Number(totalPages) }).map((_, index) => (
-          <PaginationItem key={index}>
-            <PaginationLink
-              href={`?page=${index + 1}`}
-              isActive={Number(currentPage) === index + 1}
-            >
-              {index + 1}
-            </PaginationLink>
-          </PaginationItem>
-        ))}
+        {renderPaginationItems()}
 
         <PaginationItem>
           <PaginationNext

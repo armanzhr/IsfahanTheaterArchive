@@ -35,8 +35,8 @@ const page = async ({
       <ShowsHeader />
       <ShowsMain shows={shows.data} />
       <ShowsPaginations
-        currentPage={shows.pageNumber.toString()}
-        totalPages={shows.totalPages.toString()}
+        currentPage={shows.pageNumber}
+        totalPages={shows.totalPages}
       />
     </>
   );
