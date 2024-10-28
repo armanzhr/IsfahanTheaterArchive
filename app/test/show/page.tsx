@@ -27,12 +27,11 @@ const page = async ({
   const pageNumber =
     typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
   const pageSize =
-    typeof searchParams.limit === "string" ? Number(searchParams.limit) : 10;
+    typeof searchParams.limit === "string" ? Number(searchParams.limit) : 20;
 
   let shows: ShowResponse = await getShows(pageNumber, pageSize);
   return (
     <>
-      <ShowsHeader />
       <ShowsMain shows={shows.data} />
       <ShowsPaginations
         currentPage={shows.pageNumber}
