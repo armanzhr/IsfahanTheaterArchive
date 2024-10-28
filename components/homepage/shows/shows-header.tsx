@@ -6,7 +6,7 @@ import React from "react";
 const ShowsHeader = () => {
   return (
     <>
-      <div className="relative flex h-[150px] w-full flex-col items-center justify-center overflow-hidden rounded-lg  bg-background md:shadow-xl">
+      <div className="relative flex h-[150px] w-full flex-col items-center justify-center overflow-hidden rounded-lg  bg-background">
         <p className="z-10 whitespace-pre-wrap text-center text-3xl font-medium tracking-tighter text-white">
           تئاتر زندگیست...
         </p>

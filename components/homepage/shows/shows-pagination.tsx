@@ -87,7 +87,7 @@ const ShowsPaginations = ({
   };
 
   return (
-    <Pagination>
+    <Pagination className="my-5">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
