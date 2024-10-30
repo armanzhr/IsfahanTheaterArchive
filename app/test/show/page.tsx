@@ -31,8 +31,9 @@ const page = async ({
     typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
   const pageSize =
     typeof searchParams.limit === "string" ? Number(searchParams.limit) : 20;
-  const 
-  let shows: ShowResponse = await getShows(pageNumber, pageSize);
+  const searchKey =
+    typeof searchParams.title === "string" ? searchParams.title : null;
+  let shows: ShowResponse = await getShows(pageNumber, pageSize, searchKey);
   return (
     <>
       <ShowsOptions />
