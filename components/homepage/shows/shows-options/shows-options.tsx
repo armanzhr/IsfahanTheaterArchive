@@ -12,10 +12,11 @@ import {
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import VenueDateModal from "./venue-date-modal";
 
 const ShowsOptions = () => {
   const [titleValue, setTitleValue] = useState("");
-
+  const [openVenueDateModal, setOpenVenueDateModal] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
@@ -80,7 +81,11 @@ const ShowsOptions = () => {
           </div>
 
           <div className="flex">
-            <Button variant="outline" className="rounded-l-none focus:z-10">
+            <Button
+              onClick={() => setOpenVenueDateModal(true)}
+              variant="outline"
+              className="rounded-l-none focus:z-10"
+            >
               <span>
                 <MapPin className="h-4 w-4" />
               </span>
@@ -104,6 +109,10 @@ const ShowsOptions = () => {
           </div>
         </div>
       </div>
+      <VenueDateModal
+        open={openVenueDateModal}
+        setOpen={setOpenVenueDateModal}
+      />
     </div>
   );
 };

@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,6 +17,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import React, { useEffect, useState } from "react";
+import VenueDateContainer from "./venue-date-container";
 
 const VenueDateModal = ({
   open,
@@ -47,7 +49,7 @@ const VenueDateModal = ({
               Make changes to your profile here. Click save when done.
             </DialogDescription>
           </DialogHeader>
-          <div>hello</div>
+          <VenueDateContainer />
         </DialogContent>
       </Dialog>
     );
@@ -62,7 +64,8 @@ const VenueDateModal = ({
             Make changes to your profile here. Click save when done.
           </DrawerDescription>
         </DrawerHeader>
-        <div>helloi</div>
+        <VenueDateContainer />
+
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>
