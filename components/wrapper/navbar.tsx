@@ -79,7 +79,7 @@ export default function NavBar() {
             </div>
           </SheetContent>
         </Dialog>
-        <Input placeholder="نام نمایش..." />
+
         <ModeToggle />
       </div>
       <NavigationMenu dir="rtl">

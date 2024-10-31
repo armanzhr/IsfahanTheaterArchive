@@ -1,24 +1,20 @@
-"use client"
-import { useForm } from 'react-hook-form';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
+"use client";
+import { useForm } from "react-hook-form";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 export default function Footer() {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-    } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
 
-
-    const onSubmit = async (data: any) => {
-
-
-    };
-    return (
-        <footer className="border-t dark:bg-black">
-            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+  const onSubmit = async (data: any) => {};
+  return (
+    <footer className="border-t dark:bg-black">
+      {/* <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                 <div className="lg:grid lg:grid-cols-2">
                     <div
                         className="border-b   py-8 lg:order-last lg:border-b-0 lg:border-s lg:py-16 lg:ps-16"
@@ -91,8 +87,7 @@ export default function Footer() {
                         </div>
                     </div>
                 </div>
-            </div>
-        </footer>
-
-    )
+            </div> */}
+    </footer>
+  );
 }
