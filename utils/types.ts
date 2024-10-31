@@ -91,7 +91,14 @@ export interface OneShowResponse {
   posterImageUrl: string;
   posterImageTitle: string;
   posterImageAlt: string;
-  images: string[];
+  images: {
+    id: number;
+    url: string;
+    alt: string;
+    title: string;
+    isDeleted: boolean;
+    createdAt: string;
+  }[];
   showPeopleRoles: ShowPeople[];
 }
 export interface ShowPeople {
