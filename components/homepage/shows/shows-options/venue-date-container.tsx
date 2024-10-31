@@ -77,6 +77,7 @@ const VenueDateContainer = ({
   }, []);
   useEffect(() => {
     if (selectedVenue) {
+      params.delete("page");
       params.set("venue", selectedVenue.toString());
     } else {
       params.delete("venue");
@@ -87,6 +88,7 @@ const VenueDateContainer = ({
 
   useEffect(() => {
     if (startDate) {
+      params.delete("page");
       params.set("startdate", moment(startDate).format("YYYY-MM-DD"));
     } else {
       params.delete("startdate");
@@ -97,6 +99,7 @@ const VenueDateContainer = ({
 
   useEffect(() => {
     if (endDate) {
+      params.delete("page");
       params.set("enddate", moment(endDate).format("YYYY-MM-DD"));
     } else {
       params.delete("enddate");
