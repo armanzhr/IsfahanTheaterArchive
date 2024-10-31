@@ -85,7 +85,7 @@ const ShowDetails = ({ show }: { show: OneShowResponse }) => {
               </div>
             </>
           )}
-          {show.showTimes.length > 0 && (
+          {show.showTimes?.length > 0 && (
             <>
               <Separator />
               <div className="my-5">
@@ -118,7 +118,7 @@ const ShowDetails = ({ show }: { show: OneShowResponse }) => {
               </div>
             </>
           )}
-          {show.images.length > 0 && (
+          {show.images?.length > 0 && (
             <>
               <Separator />
               <div className="my-5">
