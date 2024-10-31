@@ -19,7 +19,13 @@ import { useHomepageStore } from "@/service/store/useHomepageStore";
 import { useVenuesStore } from "@/service/store/useVenuesStore";
 import { cn } from "@/utils/cn";
 import { Venues } from "@/utils/types";
-import { CalendarClock, CalendarIcon, MapPin, XIcon } from "lucide-react";
+import {
+  CalendarClock,
+  CalendarIcon,
+  MapPin,
+  XCircle,
+  XIcon,
+} from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -143,6 +149,15 @@ const VenueDateContainer = ({
                 onClick={() => setSelectedVenue(venue.id)}
               >
                 {venue.name}
+                {venue.id === selectedVenue && (
+                  <XCircle
+                    className="h-4 w-4 mr-1"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedVenue(null);
+                    }}
+                  />
+                )}
               </Badge>
             ))
           )}
