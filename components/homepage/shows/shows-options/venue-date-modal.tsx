@@ -22,9 +22,11 @@ import VenueDateContainer from "./venue-date-container";
 const VenueDateModal = ({
   open,
   setOpen,
+  selectedTab,
 }: {
   open: boolean;
   setOpen: (status: boolean) => void;
+  selectedTab: "venue" | "date";
 }) => {
   const [isDesktop, setIsDesktop] = useState(
     typeof window !== "undefined" && window.innerWidth > 768
@@ -51,7 +53,7 @@ const VenueDateModal = ({
             </DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          <VenueDateContainer />
+          <VenueDateContainer selectedTab={selectedTab} />
         </DialogContent>
       </Dialog>
     );
@@ -64,7 +66,7 @@ const VenueDateModal = ({
           <DrawerTitle>Edit profile</DrawerTitle>
           <DrawerDescription>Make</DrawerDescription>
         </DrawerHeader>
-        <VenueDateContainer />
+        <VenueDateContainer selectedTab={selectedTab} />
 
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>

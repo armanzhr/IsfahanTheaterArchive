@@ -17,6 +17,7 @@ import VenueDateModal from "./venue-date-modal";
 const ShowsOptions = () => {
   const [titleValue, setTitleValue] = useState("");
   const [openVenueDateModal, setOpenVenueDateModal] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<"venue" | "date">("venue");
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
@@ -82,7 +83,10 @@ const ShowsOptions = () => {
 
           <div className="flex">
             <Button
-              onClick={() => setOpenVenueDateModal(true)}
+              onClick={() => {
+                setOpenVenueDateModal(true);
+                setSelectedTab("venue");
+              }}
               variant="outline"
               className="rounded-l-none focus:z-10"
             >
@@ -91,7 +95,14 @@ const ShowsOptions = () => {
               </span>
               محل اجرا
             </Button>
-            <Button variant="outline" className="rounded-r-none focus:z-10">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setOpenVenueDateModal(true);
+                setSelectedTab("date");
+              }}
+              className="rounded-r-none focus:z-10"
+            >
               <span>
                 <CalendarClock className="h-4 w-4" />
               </span>
@@ -112,6 +123,7 @@ const ShowsOptions = () => {
       <VenueDateModal
         open={openVenueDateModal}
         setOpen={setOpenVenueDateModal}
+        selectedTab={selectedTab}
       />
     </div>
   );

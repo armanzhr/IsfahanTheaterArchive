@@ -26,7 +26,11 @@ import { toast } from "sonner";
 import { Calendar, CalendarProvider } from "zaman";
 var moment = require("moment-jalaali");
 
-const VenueDateContainer = () => {
+const VenueDateContainer = ({
+  selectedTab,
+}: {
+  selectedTab: "venue" | "date";
+}) => {
   const { getVenues, venues } = useVenuesStore();
   const {
     selectedVenue,
@@ -74,23 +78,56 @@ const VenueDateContainer = () => {
 
     router.push(`/test/show?${params.toString()}`);
   }, [selectedVenue]);
+
+  useEffect(() => {
+    if (startDate) {
+      params.set("startdate", moment(startDate).format("YYYY-MM-DD"));
+    } else {
+      params.delete("startdate");
+    }
+
+    router.push(`/test/show?${params.toString()}`);
+  }, [startDate]);
+
+  useEffect(() => {
+    if (endDate) {
+      params.set("enddate", moment(endDate).format("YYYY-MM-DD"));
+    } else {
+      params.delete("enddate");
+    }
+
+    router.push(`/test/show?${params.toString()}`);
+  }, [endDate]);
+
+  useEffect(() => {
+    const hour = showTime?.substring(0, 2);
+    const min = showTime?.substring(2, 4);
+    if (showTime) {
+      params.set("time", `${hour}-${min}`);
+    } else {
+      params.delete("time");
+    }
+
+    router.push(`/test/show?${params.toString()}`);
+  }, [showTime]);
+
   return (
-    <Tabs defaultValue="account" dir="rtl">
-      <TabsList className="grid grid-cols-2 w-2/4">
-        <TabsTrigger value="account">
+    <Tabs defaultValue={selectedTab} dir="rtl">
+      <TabsList className="grid grid-cols-2 w-2/4 h-9">
+        <TabsTrigger className="h-7 text-xs" value="venue">
           <span className="ml-1">
             <MapPin className="h-4 w-4" />
           </span>
           محل اجرا
         </TabsTrigger>
-        <TabsTrigger value="password">
+        <TabsTrigger className="h-7 text-xs" value="date">
           <span className="ml-1">
             <CalendarClock className="h-4 w-4" />
           </span>
           زمان اجرا
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="account">
+      <TabsContent value="venue">
         <ScrollArea className="h-40 w-full overflow-hidden" dir="rtl">
           {isLoading ? (
             <div className="flex items-center justify-center flex-col gap-3">
@@ -111,7 +148,7 @@ const VenueDateContainer = () => {
           )}
         </ScrollArea>
       </TabsContent>
-      <TabsContent value="password">
+      <TabsContent value="date">
         <div className="h-40 flex flex-col gap-3">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">

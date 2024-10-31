@@ -35,11 +35,20 @@ const page = async ({
     typeof searchParams.title === "string" ? searchParams.title : null;
   const venueId =
     typeof searchParams.venue === "string" ? searchParams.venue : null;
+  const startDate =
+    typeof searchParams.startdate === "string" ? searchParams.startdate : null;
+  const endDate =
+    typeof searchParams.enddate === "string" ? searchParams.enddate : null;
+  const showTimeStart =
+    typeof searchParams.time === "string" ? searchParams.time : null;
   let shows: ShowResponse = await getShows(
     pageNumber,
     pageSize,
     searchKey,
-    venueId
+    venueId,
+    startDate,
+    endDate,
+    showTimeStart
   );
 
   return (
