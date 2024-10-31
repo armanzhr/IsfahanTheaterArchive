@@ -32,7 +32,7 @@ const ShowPeople = ({ people }: { people: ShowPeopleType[] }) => {
                     <UserCircle className="opacity-50 h-5 w-5" />
                   </AvatarFallback>
                 </Avatar>
-                <span>
+                <span className="pl-2">
                   {person.firstName} {person.lastName}
                 </span>
               </Badge>

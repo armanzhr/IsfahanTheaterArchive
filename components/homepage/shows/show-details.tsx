@@ -7,7 +7,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
-import { Show } from "@/utils/types";
+import { OneShowResponse, Show } from "@/utils/types";
 import { ChevronLeft, EyeIcon, Share2 } from "lucide-react";
 import React from "react";
 import ShowBreadcrumb from "./show-breadcrumb";
@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import config from "@/config";
 import ShowPeople from "./show-people";
 
-const ShowDetails = ({ show }: { show: Show }) => {
+const ShowDetails = ({ show }: { show: OneShowResponse }) => {
   return (
     <div className="w-full">
       <header className=" grid grid-cols-4 gap-5 h-full">
@@ -44,6 +44,7 @@ const ShowDetails = ({ show }: { show: Show }) => {
           </header>
           <Separator />
           <div>
+            <h2 className="font-semibold text-lg my-2">عوامل</h2>
             <ShowPeople people={show.showPeopleRoles} />
           </div>
         </main>
