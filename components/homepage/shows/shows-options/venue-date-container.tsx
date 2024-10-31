@@ -108,7 +108,7 @@ const VenueDateContainer = ({
   useEffect(() => {
     const hour = showTime?.substring(0, 2);
     const min = showTime?.substring(2, 4);
-    if (showTime) {
+    if (showTime && showTime.length === 4) {
       params.set("time", `${hour}-${min}`);
     } else {
       params.delete("time");
@@ -166,8 +166,20 @@ const VenueDateContainer = ({
       <TabsContent value="date">
         <div className="h-40 flex flex-col gap-3">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
+            <Label
+              htmlFor="startdate"
+              className="text-right flex items-center gap-1 whitespace-nowrap"
+            >
               تاریخ شروع
+              {startDate && (
+                <XCircle
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setStartDate(null);
+                  }}
+                  className="h-4 w-4 cursor-pointer"
+                />
+              )}
             </Label>
             <div
               dir="rtl"
@@ -208,8 +220,20 @@ const VenueDateContainer = ({
             </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
+            <Label
+              htmlFor="username"
+              className="text-right flex gap-1 items-center"
+            >
               تاریخ پایان
+              {endDate && (
+                <XCircle
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEndDate(null);
+                  }}
+                  className="h-4 w-4 cursor-pointer"
+                />
+              )}
             </Label>
             <div
               dir="rtl"
@@ -226,7 +250,9 @@ const VenueDateContainer = ({
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {endDate ? (
-                      <span>{moment(endDate).format("jYYYY/jMM/jDD")}</span>
+                      <>
+                        <span>{moment(endDate).format("jYYYY/jMM/jDD")}</span>
+                      </>
                     ) : (
                       <span>تاریخ پایان را انتخاب کنید</span>
                     )}
@@ -250,8 +276,20 @@ const VenueDateContainer = ({
             </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
+            <Label
+              htmlFor="username"
+              className="text-right flex gap-1 items-center"
+            >
               ساعت اجرا
+              {showTime && (
+                <XCircle
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowTime(null);
+                  }}
+                  className="h-4 w-4 cursor-pointer"
+                />
+              )}
             </Label>
             <div dir="ltr" className="col-span-3 flex flex-col gap-2">
               <InputOTP value={showTime!} onChange={setShowTime} maxLength={4}>
