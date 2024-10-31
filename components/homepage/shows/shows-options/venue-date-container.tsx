@@ -1,19 +1,43 @@
 import Loading from "@/components/loading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useHomepageStore } from "@/service/store/useHomePageStore";
+import { useHomepageStore } from "@/service/store/useHomepageStore";
 import { useVenuesStore } from "@/service/store/useVenuesStore";
+import { cn } from "@/utils/cn";
 import { Venues } from "@/utils/types";
-import { CalendarClock, MapPin, XIcon } from "lucide-react";
+import { CalendarClock, CalendarIcon, MapPin, XIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Calendar, CalendarProvider } from "zaman";
+var moment = require("moment-jalaali");
 
 const VenueDateContainer = () => {
   const { getVenues, venues } = useVenuesStore();
-  const { selectedVenue, setSelectedVenue } = useHomepageStore();
+  const {
+    selectedVenue,
+    setSelectedVenue,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    showTime,
+    setShowTime,
+  } = useHomepageStore();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -67,9 +91,9 @@ const VenueDateContainer = () => {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="account">
-        <div>
+        <ScrollArea className="h-40 w-full overflow-hidden" dir="rtl">
           {isLoading ? (
-            <div className="flex items-center justify-center flex-col gap-3 h-72">
+            <div className="flex items-center justify-center flex-col gap-3">
               <Loading />
               <p>درحال دریافت اطلاعات</p>
             </div>
@@ -85,10 +109,113 @@ const VenueDateContainer = () => {
               </Badge>
             ))
           )}
-        </div>
+        </ScrollArea>
       </TabsContent>
       <TabsContent value="password">
-        <div>bye</div>
+        <div className="h-40 flex flex-col gap-3">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              تاریخ شروع
+            </Label>
+            <div
+              dir="rtl"
+              className="col-span-3 flex flex-col gap-2 datepicker"
+            >
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      " justify-start text-left font-normal",
+                      !startDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {startDate ? (
+                      <span>{moment(startDate).format("jYYYY/jMM/jDD")}</span>
+                    ) : (
+                      <span>تاریخ شروع را انتخاب کنید</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <CalendarProvider
+                    locale="fa"
+                    round="x2"
+                    accentColor="#000000"
+                  >
+                    <Calendar
+                      defaultValue={startDate ?? new Date()}
+                      onChange={({ value }) => setStartDate(value)}
+                      weekends={[6]}
+                      className="calendar"
+                    />
+                  </CalendarProvider>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              تاریخ پایان
+            </Label>
+            <div
+              dir="rtl"
+              className="col-span-3 flex flex-col gap-2 datepicker"
+            >
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      " justify-start text-left font-normal",
+                      !endDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {endDate ? (
+                      <span>{moment(endDate).format("jYYYY/jMM/jDD")}</span>
+                    ) : (
+                      <span>تاریخ پایان را انتخاب کنید</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <CalendarProvider
+                    locale="fa"
+                    round="x2"
+                    accentColor="#000000"
+                  >
+                    <Calendar
+                      defaultValue={endDate ?? new Date()}
+                      className="calendar"
+                      onChange={({ value }) => setEndDate(value)}
+                      weekends={[6]}
+                    />
+                  </CalendarProvider>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              ساعت اجرا
+            </Label>
+            <div dir="ltr" className="col-span-3 flex flex-col gap-2">
+              <InputOTP value={showTime!} onChange={setShowTime} maxLength={4}>
+                <InputOTPGroup>
+                  <InputOTPSlot className="w-8 h-8" index={0} />
+                  <InputOTPSlot className="w-8 h-8" index={1} />
+                </InputOTPGroup>
+                :
+                <InputOTPGroup>
+                  <InputOTPSlot className="w-8 h-8" index={2} />
+                  <InputOTPSlot className="w-8 h-8" index={3} />
+                </InputOTPGroup>
+              </InputOTP>
+            </div>
+          </div>
+        </div>
       </TabsContent>
     </Tabs>
   );
