@@ -29,7 +29,7 @@ const ShowsOptions = () => {
     } else {
       params.delete("title");
     }
-    router.push(`/test/show?${params.toString()}`);
+    router.push(`/test/shows?${params.toString()}`);
   };
 
   const handleKeyDown = (e: any) => {
@@ -39,7 +39,7 @@ const ShowsOptions = () => {
   };
   const handleDeleteTitle = (e: any) => {
     params.delete("title");
-    router.push(`/test/show?${params.toString()}`);
+    router.push(`/test/shows?${params.toString()}`);
     setTitleValue("");
   };
   return (

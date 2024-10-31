@@ -7,7 +7,7 @@ const ShowItem = ({ item }: { item: ShowInclusive }) => {
   return (
     <Link
       className="group cursor-pointer transition-all duration-500"
-      href={`/test/show/${item.id}/${item.slug}`}
+      href={`/test/shows/${item.id}/${item.slug}`}
     >
       <div className="relative">
         <img

@@ -15,7 +15,7 @@ const ShowBreadcrumb = ({ title }: { title: string }) => {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href="/test/show">نمایش ها</BreadcrumbLink>
+          <BreadcrumbLink href="/test/shows">نمایش ها</BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator>
           <ChevronLeft />
