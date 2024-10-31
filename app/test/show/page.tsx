@@ -1,7 +1,7 @@
 import ShowItem from "@/components/homepage/shows/show-item";
 import ShowsHeader from "@/components/homepage/shows/shows-header";
 import ShowsMain from "@/components/homepage/shows/shows-main";
-import ShowsOptions from "@/components/homepage/shows/shows-options";
+import ShowsOptions from "@/components/homepage/shows/shows-options/shows-options";
 import ShowsPaginations from "@/components/homepage/shows/shows-pagination";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
