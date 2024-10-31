@@ -82,14 +82,28 @@ export interface ShowResponse {
   totalPages: number;
   data: ShowInclusive[];
 }
-export interface ShowPeople {
+export interface OneShowResponse {
   id: number;
-  roleId: number;
-  personId: number;
+  title: string;
+  slug: string;
+  description: string;
+  posterImageId: number;
+  posterImageUrl: string;
+  posterImageTitle: string;
+  posterImageAlt: string;
+  images: string[];
+  showPeopleRoles: ShowPeople[];
+}
+export interface ShowPeople {
+  id?: number;
+  roleId?: number;
+  personId?: number;
   name: string;
-  firstName: string;
-  lastName: string;
-  startYear: number;
+  firstName?: string;
+  lastName?: string;
+  startYear?: number;
+  slug?: string;
+  avatarImageUrl?: string;
 }
 export interface SelectedFile {
   id: number;
