@@ -5,7 +5,7 @@ export const getShows: (
   pageNumber?: number,
   pageSize?: number,
   searchKey?: string | null,
-  venueId?: number | null
+  venueId?: string | null
 ) => any = async (pageNumber, pageSize, searchKey, venueId) => {
   try {
     const { data } = await axiosInstance.get("/Shows", {

@@ -39,7 +39,7 @@ const page = async ({
     pageNumber,
     pageSize,
     searchKey,
-    Number(venueId)
+    venueId
   );
 
   return (

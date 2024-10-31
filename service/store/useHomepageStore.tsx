@@ -7,8 +7,8 @@ import { getCookie } from "cookies-next";
 import axiosInstance from "../axiosInstance";
 
 interface HomepageStore {
-  selectedVenue: Venues | null;
-  setSelectedVenue: (venue: Venues | null) => void;
+  selectedVenue: number | null;
+  setSelectedVenue: (venue: number | null) => void;
 }
 export const useHomepageStore = create<HomepageStore>((set) => ({
   selectedVenue: null,

@@ -1,5 +1,7 @@
+import Loading from "@/components/loading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useHomepageStore } from "@/service/store/useHomePageStore";
 import { useVenuesStore } from "@/service/store/useVenuesStore";
@@ -35,8 +37,13 @@ const VenueDateContainer = () => {
   }, [venues]);
 
   useEffect(() => {
-    if (selectedVenue?.id) {
-      params.set("venue", selectedVenue.id.toString());
+    if (searchParams.get("venue")) {
+      setSelectedVenue(Number(searchParams.get("venue")));
+    }
+  }, []);
+  useEffect(() => {
+    if (selectedVenue) {
+      params.set("venue", selectedVenue.toString());
     } else {
       params.delete("venue");
     }
@@ -61,16 +68,23 @@ const VenueDateContainer = () => {
       </TabsList>
       <TabsContent value="account">
         <div>
-          {venues?.map((venue) => (
-            <Badge
-              className="h-8 m-1 cursor-pointer hover:scale-105 transition-all duration-300"
-              key={venue.id}
-              variant={venue.id === selectedVenue?.id ? "default" : "secondary"}
-              onClick={() => setSelectedVenue(venue)}
-            >
-              {venue.name}
-            </Badge>
-          ))}
+          {isLoading ? (
+            <div className="flex items-center justify-center flex-col gap-3 h-72">
+              <Loading />
+              <p>درحال دریافت اطلاعات</p>
+            </div>
+          ) : (
+            venues?.map((venue) => (
+              <Badge
+                className="h-8 m-1 cursor-pointer hover:scale-105 transition-all duration-300"
+                key={venue.id}
+                variant={venue.id === selectedVenue ? "default" : "secondary"}
+                onClick={() => setSelectedVenue(venue.id)}
+              >
+                {venue.name}
+              </Badge>
+            ))
+          )}
         </div>
       </TabsContent>
       <TabsContent value="password">
