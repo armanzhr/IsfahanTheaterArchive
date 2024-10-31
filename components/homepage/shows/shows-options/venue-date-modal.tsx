@@ -26,7 +26,9 @@ const VenueDateModal = ({
   open: boolean;
   setOpen: (status: boolean) => void;
 }) => {
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== "undefined" && window.innerWidth > 768
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -44,10 +46,10 @@ const VenueDateModal = ({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when done.
-            </DialogDescription>
+            <DialogTitle className="text-start mt-2">
+              فیلتر نمایش ها
+            </DialogTitle>
+            <DialogDescription></DialogDescription>
           </DialogHeader>
           <VenueDateContainer />
         </DialogContent>
@@ -60,9 +62,7 @@ const VenueDateModal = ({
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>Edit profile</DrawerTitle>
-          <DrawerDescription>
-            Make changes to your profile here. Click save when done.
-          </DrawerDescription>
+          <DrawerDescription>Make</DrawerDescription>
         </DrawerHeader>
         <VenueDateContainer />
 
