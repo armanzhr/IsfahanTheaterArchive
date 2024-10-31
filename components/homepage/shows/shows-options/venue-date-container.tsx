@@ -1,16 +1,22 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useHomepageStore } from "@/service/store/useHomePageStore";
 import { useVenuesStore } from "@/service/store/useVenuesStore";
 import { Venues } from "@/utils/types";
-import { CalendarClock, MapPin } from "lucide-react";
+import { CalendarClock, MapPin, XIcon } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const VenueDateContainer = () => {
   const { getVenues, venues } = useVenuesStore();
+  const { selectedVenue, setSelectedVenue } = useHomepageStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedVanue, setSelectedVenue] = useState<Venues | null>();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams.toString());
+
   const fetchVenues = async () => {
     setIsLoading(true);
     try {
@@ -28,6 +34,15 @@ const VenueDateContainer = () => {
     }
   }, [venues]);
 
+  useEffect(() => {
+    if (selectedVenue?.id) {
+      params.set("venue", selectedVenue.id.toString());
+    } else {
+      params.delete("venue");
+    }
+
+    router.push(`/test/show?${params.toString()}`);
+  }, [selectedVenue]);
   return (
     <Tabs defaultValue="account" dir="rtl">
       <TabsList className="grid grid-cols-2 w-2/4">
@@ -50,7 +65,7 @@ const VenueDateContainer = () => {
             <Badge
               className="h-8 m-1 cursor-pointer hover:scale-105 transition-all duration-300"
               key={venue.id}
-              variant={venue.id === selectedVanue?.id ? "default" : "secondary"}
+              variant={venue.id === selectedVenue?.id ? "default" : "secondary"}
               onClick={() => setSelectedVenue(venue)}
             >
               {venue.name}
