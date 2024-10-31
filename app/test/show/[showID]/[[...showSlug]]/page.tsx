@@ -1,6 +1,6 @@
 import ShowDetails from "@/components/homepage/shows/show-details";
 import config from "@/config";
-import { Show } from "@/utils/types";
+import { OneShowResponse, Show } from "@/utils/types";
 import React from "react";
 
 const Page = async ({
@@ -9,7 +9,7 @@ const Page = async ({
   params: { showID: string; showSlug: string };
 }) => {
   let data = await fetch(config.baseURL + "/Shows/" + params.showID);
-  let show: Show = await data.json();
+  let show: OneShowResponse = await data.json();
 
   return (
     <div className="w-full">

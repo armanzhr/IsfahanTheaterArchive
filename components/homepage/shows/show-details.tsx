@@ -1,20 +1,21 @@
 "use client";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+
 import { Separator } from "@/components/ui/separator";
 import { OneShowResponse, Show } from "@/utils/types";
-import { ChevronLeft, EyeIcon, Share2 } from "lucide-react";
+import {
+  Calendar,
+  ChevronLeft,
+  Clock,
+  EyeIcon,
+  MapPin,
+  Share2,
+} from "lucide-react";
 import React from "react";
 import ShowBreadcrumb from "./show-breadcrumb";
 import { Button } from "@/components/ui/button";
 import config from "@/config";
 import ShowPeople from "./show-people";
+var moment = require("moment-jalaali");
 
 const ShowDetails = ({ show }: { show: OneShowResponse }) => {
   const handleShare = async () => {
@@ -36,7 +37,7 @@ const ShowDetails = ({ show }: { show: OneShowResponse }) => {
 
   return (
     <div className="w-full">
-      <header className=" grid grid-cols-4 gap-5 h-full">
+      <header className=" grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 h-full">
         <aside className="col-span-1">
           <img
             loading="lazy"
@@ -51,7 +52,7 @@ const ShowDetails = ({ show }: { show: OneShowResponse }) => {
             <span className="font-semibold">50</span>
           </p>
         </aside>
-        <main className=" col-span-3">
+        <main className="md:col-span-2 lg:col-span-3">
           <header className="h-14 flex items-center justify-between">
             <ShowBreadcrumb title={show.title} />
             <div>
@@ -66,14 +67,14 @@ const ShowDetails = ({ show }: { show: OneShowResponse }) => {
             </div>
           </header>
           <Separator />
-          <div>
+          <div className="my-5">
             <h2 className="font-semibold text-lg my-2">عوامل</h2>
             <ShowPeople people={show.showPeopleRoles} />
           </div>
           {show.description && (
             <>
               <Separator />
-              <div>
+              <div className="my-5">
                 <h2 className="font-semibold text-lg my-2">توضیحات</h2>
 
                 <div
@@ -84,10 +85,43 @@ const ShowDetails = ({ show }: { show: OneShowResponse }) => {
               </div>
             </>
           )}
+          {show.showTimes.length > 0 && (
+            <>
+              <Separator />
+              <div className="my-5">
+                <h2 className="font-semibold text-lg my-2">محل های اجرا</h2>
+                <div className="grid grid-cols-1 gap-4">
+                  {show.showTimes.map((item, index) => (
+                    <div key={index}>
+                      <div className="flex items-center gap-1 mb-2">
+                        <MapPin className="h-5 w-5" />
+                        <span className="font-semibold text-base">
+                          {item.venueName}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 mb-2">
+                        <Calendar className="h-5 w-5" />
+                        <span className="text-base">
+                          از {moment(item.startDate).format("jYYYY/jMM/jDD")} تا{" "}
+                          {moment(item.endDate).format("jYYYY/jMM/jDD")}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-5 w-5" />
+                        <span className="text-base">
+                          ساعت {item.showTimeStart}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
           {show.images.length > 0 && (
             <>
               <Separator />
-              <div>
+              <div className="my-5">
                 <h2 className="font-semibold text-lg my-2">تصاویر</h2>
                 <div className="grid grid-cols-3 gap-4">
                   {show.images.map((image) => (

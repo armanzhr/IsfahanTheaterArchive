@@ -100,6 +100,14 @@ export interface OneShowResponse {
     createdAt: string;
   }[];
   showPeopleRoles: ShowPeople[];
+  showTimes: ShowTimes[];
+}
+export interface ShowTimes {
+  venueName: string;
+  venueAddress: string;
+  startDate: string;
+  endDate: string;
+  showTimeStart: string;
 }
 export interface ShowPeople {
   id?: number;
