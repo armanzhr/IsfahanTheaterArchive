@@ -4,19 +4,6 @@ import ShowsMain from "@/components/homepage/shows/shows-main";
 import ShowsOptions from "@/components/homepage/shows/shows-options/shows-options";
 import ShowsPaginations from "@/components/homepage/shows/shows-pagination";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import Ripple from "@/components/ui/ripple";
-import config from "@/config";
 import { getShows } from "@/service/api/shows";
 import { ShowResponse } from "@/utils/types";
 import { DramaIcon, InfoIcon, SearchIcon } from "lucide-react";
@@ -41,6 +28,11 @@ const page = async ({
     typeof searchParams.enddate === "string" ? searchParams.enddate : null;
   const showTimeStart =
     typeof searchParams.time === "string" ? searchParams.time : null;
+  const sortField =
+    typeof searchParams.sortfield === "string" ? searchParams.sortfield : null;
+  const sortDirection =
+    typeof searchParams.dir === "string" ? searchParams.dir : null;
+
   let shows: ShowResponse = await getShows(
     pageNumber,
     pageSize,
@@ -48,7 +40,9 @@ const page = async ({
     venueId,
     startDate,
     endDate,
-    showTimeStart
+    showTimeStart,
+    sortField,
+    sortDirection
   );
 
   return (

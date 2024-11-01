@@ -8,7 +8,9 @@ export const getShows: (
   venueId?: string | null,
   startDate?: string | null,
   endDate?: string | null,
-  showTimeStart?: string | null
+  showTimeStart?: string | null,
+  sortField?: string | null,
+  sortDirection?: string | null
 ) => any = async (
   pageNumber,
   pageSize,
@@ -16,7 +18,9 @@ export const getShows: (
   venueId,
   startDate,
   endDate,
-  showTimeStart
+  showTimeStart,
+  sortField,
+  sortDirection
 ) => {
   try {
     const { data } = await axiosInstance.get("/Shows", {
@@ -28,6 +32,8 @@ export const getShows: (
         startDate,
         endDate,
         showTimeStart: { ticks: showTimeStart?.replace("-", ":") },
+        sortField,
+        sortDirection,
       },
     });
     return data;

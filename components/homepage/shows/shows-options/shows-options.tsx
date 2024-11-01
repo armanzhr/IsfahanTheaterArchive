@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { debounce } from "@/utils/functions/debounce";
 import {
   ArrowDownNarrowWide,
+  ArrowUpNarrowWide,
   CalendarClock,
   DramaIcon,
   MapPin,
@@ -28,6 +29,8 @@ const ShowsOptions = () => {
   const [openVenueDateModal, setOpenVenueDateModal] = useState(false);
   const [openSort, setOpenSort] = useState(false);
   const [selectedTab, setSelectedTab] = useState<"venue" | "date">("venue");
+  const [selectedSort, setSelectedSort] = useState<null | string>();
+  const [sortDirection, setSortDirection] = useState<number | null>(0);
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
@@ -52,6 +55,34 @@ const ShowsOptions = () => {
     params.delete("title");
     router.push(`/shows?${params.toString()}`);
     setTitleValue("");
+  };
+
+  useEffect(() => {
+    if (selectedSort) {
+      params.set("sortfield", selectedSort);
+    } else {
+      params.delete("sortfield");
+    }
+
+    router.push(`/shows?${params.toString()}`);
+  }, [selectedSort]);
+
+  useEffect(() => {
+    if (sortDirection) {
+      params.set("dir", sortDirection.toString());
+    } else {
+      params.delete("dir");
+    }
+
+    router.push(`/shows?${params.toString()}`);
+  }, [sortDirection]);
+
+  const handleChangeSortDirection = () => {
+    if (sortDirection === 0) {
+      setSortDirection(1);
+    } else {
+      setSortDirection(0);
+    }
   };
   return (
     <div className="mb-3">
@@ -127,7 +158,10 @@ const ShowsOptions = () => {
             <Select
               open={openSort}
               onOpenChange={setOpenSort}
-              onValueChange={() => setOpenSort(true)}
+              onValueChange={(value) => {
+                setOpenSort(true);
+                setSelectedSort(value);
+              }}
             >
               <SelectTrigger className="ring-0 focus:ring-0 focus:outline-none rounded-l-none h-9">
                 <SelectValue className="" placeholder="ترتیب نمایش" />
@@ -149,8 +183,17 @@ const ShowsOptions = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <Button size="sm" variant="outline" className="rounded-r-none">
-              <ArrowDownNarrowWide className="size-4" />
+            <Button
+              onClick={handleChangeSortDirection}
+              size="sm"
+              variant="outline"
+              className="rounded-r-none"
+            >
+              {sortDirection === 0 ? (
+                <ArrowDownNarrowWide className="size-4" />
+              ) : (
+                <ArrowUpNarrowWide className="size-4" />
+              )}
             </Button>
           </div>
         </div>
