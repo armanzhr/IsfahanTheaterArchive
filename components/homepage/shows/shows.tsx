@@ -33,7 +33,7 @@ const Shows = ({ shows }: { shows: ShowInclusive[] }) => {
         </Link>
       </div>
 
-      <div dir="rtl" className="relative mt-5">
+      <div dir="rtl" className="relative my-5 mb-64">
         <Carousel dir="ltr" className="w-full">
           <CarouselContent>
             {shows.splice(-5).map((item, index) => (

@@ -92,7 +92,7 @@ const ShowDetails = ({ show }: { show: OneShowResponse }) => {
                 <h2 className="font-semibold text-lg my-2">محل های اجرا</h2>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                   {show.showTimes.map((item, index) => (
-                    <>
+                    <React.Fragment key={index}>
                       <div className="flex items-center gap-1 mb-2">
                         <MapPin className="h-5 w-5" />
                         <span className="font-semibold text-base">
@@ -112,7 +112,7 @@ const ShowDetails = ({ show }: { show: OneShowResponse }) => {
                           ساعت {item.showTimeStart}
                         </span>
                       </div>
-                    </>
+                    </React.Fragment>
                   ))}
                 </div>
               </div>

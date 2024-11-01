@@ -85,16 +85,14 @@ export default function NavBar() {
       <NavigationMenu dir="rtl">
         <NavigationMenuList>
           {items.map((item, index) => (
-            <>
-              <NavigationMenuItem key={index} className="max-[825px]:hidden">
-                <Link href={item.pathname} legacyBehavior passHref>
-                  <Button variant="ghost" className="flex gap-1">
-                    <div>{item.icon}</div>
-                    <span className="text-sm">{item.name}</span>
-                  </Button>
-                </Link>
-              </NavigationMenuItem>
-            </>
+            <NavigationMenuItem key={index} className="max-[825px]:hidden">
+              <Link href={item.pathname} legacyBehavior passHref>
+                <Button variant="ghost" className="flex gap-1">
+                  <div>{item.icon}</div>
+                  <span className="text-sm">{item.name}</span>
+                </Button>
+              </Link>
+            </NavigationMenuItem>
           ))}
           <Separator orientation="vertical" />
         </NavigationMenuList>

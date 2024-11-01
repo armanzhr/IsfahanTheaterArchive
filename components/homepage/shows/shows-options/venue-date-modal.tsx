@@ -61,16 +61,16 @@ const VenueDateModal = ({
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerContent>
+      <DrawerContent className="p-2">
         <DrawerHeader className="text-left">
-          <DrawerTitle>Edit profile</DrawerTitle>
-          <DrawerDescription>Make</DrawerDescription>
+          <DrawerTitle className="text-start">فیلتر نمایش ها</DrawerTitle>
+          <DrawerDescription></DrawerDescription>
         </DrawerHeader>
         <VenueDateContainer selectedTab={selectedTab} />
 
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline">بستن</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
