@@ -25,7 +25,7 @@ const Shows = ({ shows }: { shows: ShowInclusive[] }) => {
           </span>
           نمایش ها
         </h3>
-        <Link href="/test/shows">
+        <Link href="/shows">
           <Button className="group" variant="outline" size="sm">
             <span>همه نمایش ها</span>
             <ArrowLeft className="mr-1 size-3 transition-transform duration-300 ease-in-out group-hover:-translate-x-1" />

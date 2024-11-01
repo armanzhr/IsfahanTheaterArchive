@@ -83,7 +83,7 @@ const VenueDateContainer = ({
       params.delete("venue");
     }
 
-    router.push(`/test/shows?${params.toString()}`);
+    router.push(`/shows?${params.toString()}`);
   }, [selectedVenue]);
 
   useEffect(() => {
@@ -94,7 +94,7 @@ const VenueDateContainer = ({
       params.delete("startdate");
     }
 
-    router.push(`/test/shows?${params.toString()}`);
+    router.push(`/shows?${params.toString()}`);
   }, [startDate]);
 
   useEffect(() => {
@@ -105,7 +105,7 @@ const VenueDateContainer = ({
       params.delete("enddate");
     }
 
-    router.push(`/test/shows?${params.toString()}`);
+    router.push(`/shows?${params.toString()}`);
   }, [endDate]);
 
   useEffect(() => {
@@ -117,7 +117,7 @@ const VenueDateContainer = ({
       params.delete("time");
     }
 
-    router.push(`/test/shows?${params.toString()}`);
+    router.push(`/shows?${params.toString()}`);
   }, [showTime]);
 
   return (

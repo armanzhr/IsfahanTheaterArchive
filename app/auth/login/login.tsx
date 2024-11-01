@@ -92,7 +92,7 @@ const Login = () => {
       </div>
       <Button
         disabled={authLoading}
-        variant="ringHover"
+        variant="default"
         type="submit"
         className="w-full"
       >

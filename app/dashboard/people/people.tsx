@@ -139,7 +139,7 @@ const People = () => {
     <>
       <div className="flex gap-3">
         <Button onClick={() => handleCreatePeople()}>کاربر جدید</Button>
-        <Button size="icon" variant="gooeyRight" onClick={handleDownloadExcel}>
+        <Button size="icon" variant="default" onClick={handleDownloadExcel}>
           <FileSpreadsheet className="w-4 h-4" />
         </Button>
         <Input
